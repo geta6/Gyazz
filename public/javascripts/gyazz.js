@@ -1009,8 +1009,8 @@ function writedata(force){
 function getdata(opts){ // 20050815123456.utf のようなテキストを読み出し
     if(opts === null || typeof opts !== 'object') opts = {};
     if(typeof opts.version !== 'number' || 0 > opts.version) opts.version = 0;
-  alert('getdata(' + name + '/' + title + ')');
-  alert(root + "/" + name + "/" + title + "/json");
+  //alert('getdata(' + name + '/' + title + ')');
+  //alert(root + "/" + name + "/" + title + "/json");
     $.ajax({
         type: "GET",
         async: true,
@@ -1021,7 +1021,7 @@ function getdata(opts){ // 20050815123456.utf のようなテキストを読み�
             datestr = res['date'];
             dt = res['age'];
             data = res['data'].concat();
-          alert(data);
+          //alert(data);
             data_old = res['data'].concat();
             //orig_md5 = MD5_hexhash(utf16to8(data.join("\n").replace(/\n+$/,'')+"\n"));
             search();
