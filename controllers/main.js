@@ -6,7 +6,7 @@
 
   mongoose = require('mongoose');
 
-  Gyazz = mongoose.model('pages');
+  Pages = mongoose.model('pages');
 
   module.exports = function(app) {
     app.get('/', function(req, res) {
@@ -21,7 +21,7 @@
       console.log("title= " + title);
       //Gyazz.find({wiki:req.params.wiki, title:req.params.title}, function(err, results) {
       //Gyazz.find({'title':title}, function(err, results) {
-      Gyazz.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
+      Pages.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
         if (err) {
           res.send({'error': 'An error has occurred'});
         } else {
@@ -45,7 +45,7 @@
       // console.log(url_parts.query);
       console.log(req.query);
       
-      Gyazz.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
+      Pages.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
         if (err) {
           res.send({'error': 'An error has occurred'});
         } else {

@@ -7,7 +7,7 @@
 
   module.exports = function(app) {
 
-    var Gyazz;
+    var Pages;
     var pageSchema = new mongoose.Schema({
       wiki: String,
       title: String,
@@ -15,7 +15,7 @@
       timestamp: Date
     });
 
-    return Gyazz = mongoose.model('pages', pageSchema);
+    return Pages = mongoose.model('pages', pageSchema);
   };
 
 }).call(this);
