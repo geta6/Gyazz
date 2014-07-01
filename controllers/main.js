@@ -1,3 +1,6 @@
+//
+// メインコントローラモジュール
+//
 (function() {
   var Gyazz, debug, mongoose;
 
@@ -46,18 +49,11 @@
         if (err) {
           res.send({'error': 'An error has occurred'});
         } else {
-          // console.log(results[0].text);
-          data = {};
-          data['date'] = '20140101010101';
-          data['age'] = results[0].timestamp;
-          data['data'] = results[0].text.split(/\n/);
-          //res.send(JSON.stringify(data));
           res.send({
             'date': '20140101010101',
             'age': results[0].timestamp,
             'data': results[0].text.split(/\n/)
           });
-          // res.render('index', { title: results.length});
         }
       });
     });

@@ -1,3 +1,6 @@
+//
+// ExpressによるGyazzサーバのメインプログラム
+//
 var express = require('express');
 var path = require('path');
 
@@ -5,9 +8,9 @@ var app = express();
 
 // public以下のファイルはWikiデータとみなさないようにする
 //app.use(express.static(__dirname + '/public'));
-app.use(express.static(path.resolve('public')));
+app.use(express['static'](path.resolve('public')));
 
-// view engine setup
+// views/*.ejs を利用
 //app.set('views', path.join(__dirname, 'views')); // 不要?
 app.set('view engine', 'ejs'); // こちらは必要ぽい
 
