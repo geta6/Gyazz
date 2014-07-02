@@ -13,9 +13,11 @@
       title: String,
       text: String,
       timestamp: Date
+    }, {
+      collection:"Pages" // Mongooseは勝手に小文字の複数形にするので大文字を使うときはこういう指定が必要
     });
 
-    return Pages = mongoose.model('pages', pageSchema);
+    return Pages = mongoose.model('Pages', pageSchema);
   };
 
 }).call(this);

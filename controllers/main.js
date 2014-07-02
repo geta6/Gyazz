@@ -2,11 +2,11 @@
 // メインコントローラモジュール
 //
 (function() {
-  var Gyazz, debug, mongoose;
+  var Pages, debug, mongoose;
 
   mongoose = require('mongoose');
 
-  Pages = mongoose.model('pages');
+  Pages = mongoose.model('Pages');
 
   module.exports = function(app) {
     app.get('/', function(req, res) {
@@ -14,18 +14,19 @@
     });
 
     app.get('/:wiki/:title',function(req, res) {
-      console.log('Getting wiki/title');
+      console.log('Getting wiki/title-------------');
       wiki = req.params.wiki;
       title = req.params.title;
       console.log("wiki= " + wiki);
       console.log("title= " + title);
       //Gyazz.find({wiki:req.params.wiki, title:req.params.title}, function(err, results) {
-      //Gyazz.find({'title':title}, function(err, results) {
-      Pages.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
+      //Pages.find({'title':title}, function(err, results) {
+      //Pages.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
+      Pages.find({},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
         if (err) {
           res.send({'error': 'An error has occurred'});
         } else {
-          console.log('Success: Getting GyazzData');
+          console.log('Success: Getting GyazzData-----');
           //res.render('index', { title: req.params.title });
           res.render('page', { title: title});
           console.log(results.length);
