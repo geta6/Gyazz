@@ -14,8 +14,9 @@ app.use(express['static'](path.resolve('public')));
 //app.set('views', path.join(__dirname, 'views')); // 不要?
 app.set('view engine', 'ejs'); // こちらは必要ぽい
 
-require(path.resolve('models','page'))(app);
-require(path.resolve('controllers','main'))(app);
+page = require(path.resolve('models','page'))(app);
+pair = require(path.resolve('models','pair'))(app);
+main = require(path.resolve('controllers','main'))(app);
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/gyazz', function(err) {

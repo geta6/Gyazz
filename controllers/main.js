@@ -41,9 +41,9 @@
       
       // var url_parts = url.parse(req.url,true);
       // console.log(url_parts.query);
-      console.log(req.query);
-      
-      Pages.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
+      console.log(req.query); // suggest, version
+
+      Pages.latest({'wiki':wiki, 'title':title}, function(err,results){
         if (err) {
           res.send({'error': 'An error has occurred'});
         } else {
