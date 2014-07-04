@@ -19,10 +19,7 @@
       title = req.params.title;
       console.log("wiki= " + wiki);
       console.log("title= " + title);
-      //Gyazz.find({wiki:req.params.wiki, title:req.params.title}, function(err, results) {
-      //Pages.find({'title':title}, function(err, results) {
-      //Pages.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
-      Pages.find({},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
+      Pages.find({'wiki':wiki, 'title':title},{},{sort:{timestamp: -1},limit:1}, function(err, results){ // 最新のをひとつだけ取得
         if (err) {
           res.send({'error': 'An error has occurred'});
         } else {
