@@ -1017,11 +1017,11 @@ function getdata(opts){ // 20050815123456.utf のようなテキストを読み�
         url: root + "/" + name + "/" + title + "/json",
         data: opts,
         success: function(resstr){
-            res = JSON.parse(resstr);
+            //res = JSON.parse(resstr);
+            res = resstr; // JSONが返る?
             datestr = res['date'];
             dt = res['age'];
             data = res['data'].concat();
-          //alert(data);
             data_old = res['data'].concat();
             //orig_md5 = MD5_hexhash(utf16to8(data.join("\n").replace(/\n+$/,'')+"\n"));
             search();
