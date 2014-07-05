@@ -24,6 +24,10 @@
           res.send({'error': 'An error has occurred'});
         } else {
           console.log('Success: Getting GyazzData-----');
+
+          result.related(wiki,title);
+          // Pages.related(wiki,title) でも同じか?
+
           //res.render('index', { title: req.params.title });
           res.render('page', { title: title});
           console.log(result.timestamp);
@@ -37,8 +41,6 @@
       wiki = req.params.wiki;
       title = req.params.title;
       
-      // var url_parts = url.parse(req.url,true);
-      // console.log(url_parts.query);
       console.log(req.query); // suggest, version
 
       Pages.latest({'wiki':wiki, 'title':title}, function(err,result){

@@ -27,6 +27,18 @@
       });
     };
 
+    //
+    // 関連ページをリストするインスタンスメソッドみたいなもの
+    // page.related(callback) とする?
+    //
+    pageSchema.methods.related = function(callback){
+
+      Pairs = mongoose.model('Pairs');
+      Pairs.related(this); // 関連ページとウェイトを得る
+      //                      ここで関連ページリストを得る?
+
+    };
+
     Pages = mongoose.model('Pages', pageSchema);
 
     return Pages;
