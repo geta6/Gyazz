@@ -3,12 +3,12 @@
 #
 express = require 'express'
 path = require 'path'
+debug = require('debug')('gyazz:app')
 
 app = express()
 
 # public以下のファイルはWikiデータとみなさないようにする
-#app.use(express.static(__dirname + '/public'));
-app.use express['static'](path.resolve('public'));
+app.use express['static'] path.resolve('public')
 
 # views/*.ejs を利用
 #app.set('views', path.join(__dirname, 'views')); # 不要?
@@ -25,7 +25,7 @@ mongoose.connect 'mongodb://localhost/gyazz', (err) ->
     console.error err
     process.exit 1
     return
-  console.log "connect MongoDB"
+  debug "connect MongoDB"
 
 app.listen 3000
 console.log 'Listening on port 3000...'

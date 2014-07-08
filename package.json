@@ -8,6 +8,7 @@
     "start": "coffee gyazz.coffee"
   },
   "dependencies": {
+    "debug": "*",
     "express": "^4.4",
     "static-favicon": "~1.0.0",
     "morgan": "~1.0.0",

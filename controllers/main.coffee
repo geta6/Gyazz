@@ -2,6 +2,7 @@
 # メインコントローラモジュール
 #
 
+debug = require('debug')('gyazz:main')
 mongoose = require('mongoose');
 
 Pages = mongoose.model('Pages');
@@ -12,31 +13,31 @@ module.exports = (app) ->
       title: 'Express'
 
   app.get '/:wiki/:title', (req, res) ->
-    console.log 'Getting wiki/title-------------'
+    debug 'Getting wiki/title-------------'
     wiki = req.params.wiki
     title = req.params.title
-    console.log "wiki = #{wiki}"
-    console.log "title = #{title}"
+    debug "wiki = #{wiki}, title=#{title}"
     Pages.latest {'wiki':wiki, 'title':title}, (err,result) ->
       if err
         res.send {'error': 'An error has occurred'}
       else
-        console.log 'Success: Getting GyazzData-----'
+        debug 'Success: Getting GyazzData-----'
 	# result.related wiki,title
         #  Pages.related(wiki,title) でも同じか?
         res.render 'page', { title: title, wiki:wiki}
-        console.log result.timestamp
+        debug result.timestamp
 
   #  / getdata() で呼ばれてJSONを返す
   app.get '/:wiki/:title/json', (req, res) ->
-    console.log 'Getting wiki/title/json'
+    debug 'Getting wiki/title/json'
     wiki = req.params.wiki
     title = req.params.title
     
-    console.log req.query # suggest, version
+    debug req.query # suggest, version
     Pages.latest {'wiki':wiki, 'title':title}, (err,result) ->
-      if (err)
-        res.send {'error': 'An error has occurred'}
+      if err
+        res.send
+          'error': 'An error has occurred'
       else
         res.send
           'date': '20140101010101',
