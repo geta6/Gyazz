@@ -1,11 +1,11 @@
 {
-  "name": "GyazzNode",
+  "name": "GyazzCoffee",
   "version": "0.0.1",
   "private": true,
   "author": "Toshiyuki Masui <masui@pitecan.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node gyazz.js"
+    "start": "coffee gyazz.coffee"
   },
   "dependencies": {
     "express": "^4.4",
