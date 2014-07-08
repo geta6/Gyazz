@@ -1,6 +1,7 @@
 #
 # ExpressによるGyazzサーバのメインプログラム
 #
+
 express = require 'express'
 path = require 'path'
 debug = require('debug')('gyazz:app')
@@ -11,7 +12,6 @@ app = express()
 app.use express['static'] path.resolve('public')
 
 # views/*.ejs を利用
-#app.set('views', path.join(__dirname, 'views')); # 不要?
 app.set 'view engine', 'ejs'; # こちらは必要ぽい
 
 pair = (require path.resolve 'models','pair')(app)
@@ -21,8 +21,8 @@ main = (require path.resolve 'controllers','main')(app)
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/gyazz', (err) ->
   if (err)
-    console.error "mongoose connect failed"
-    console.error err
+    debug "mongoose connect failed"
+    debug err
     process.exit 1
     return
   debug "connect MongoDB"
