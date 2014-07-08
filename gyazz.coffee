@@ -20,8 +20,8 @@ main = (require path.resolve 'controllers','main')(app)
 
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/gyazz', (err) ->
-  if (err)
-    debug "mongoose connect failed"
+if (err)
+  debug "mongoose connect failed"
     debug err
     process.exit 1
     return
@@ -29,3 +29,5 @@ mongoose.connect 'mongodb://localhost/gyazz', (err) ->
 
 app.listen 3000
 console.log 'Listening on port 3000...'
+
+(setq coffee-tab-width 2)
