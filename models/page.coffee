@@ -22,9 +22,9 @@ module.exports = (app) ->
   # Pageクラス(?)のクラスメソッド(?)みたいなものの定義。
   # インスタンスメソッド(?)は pageSchema.methods.???? = function() ... みたいに定義するらしい
   #
-    pageSchema.statics.latest = (param,callback) ->
+  pageSchema.statics.latest = (param,callback) ->
     Pages.find param, {}, {sort:{timestamp: -1},limit:1}, (err, results) ->  # 最新のをひとつだけ取得
-      callback err,results[0]
+      callback err, results[0]
 
   #
   # 関連ページをリストするインスタンスメソッドみたいなもの
