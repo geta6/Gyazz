@@ -2,6 +2,9 @@
 # Gyazzページのデータ
 #
  
+debug = require('debug')('gyazz:page')
+pair = require('./pair')
+
 mongoose = require 'mongoose'
 
 module.exports = (app) ->
@@ -32,10 +35,11 @@ module.exports = (app) ->
   # 関連ページをリストするインスタンスメソッドみたいなもの
   # page.related(callback) とする?
   #
-#  pageSchema.methods.related = (callback) ->
-#    Pairs = mongoose.model 'Pairs'
-#    Pairs.related this # 関連ページとウェイトを得る
-#    #                      ここで関連ページリストを得る?
+  pageSchema.methods.related = (callback) ->
+    Pairs = mongoose.model 'Pairs'
+    Pairs.related this # 関連ページとウェイトを得る
+    #                      ここで関連ページリストを得る?
+
 
   # return Pages = mongoose.model 'Pages', pageSchema
   Pages = mongoose.model 'Pages', pageSchema

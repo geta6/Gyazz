@@ -14,9 +14,9 @@ app.use express['static'] path.resolve('public')
 #app.set('views', path.join(__dirname, 'views')); # 不要?
 app.set 'view engine', 'ejs'; # こちらは必要ぽい
 
+pair = (require path.resolve 'models','pair')(app)
 page = (require path.resolve 'models','page')(app)
 main = (require path.resolve 'controllers','main')(app)
-#pair = require path.resolve('models','pair'))(app)
 
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/gyazz', (err) ->

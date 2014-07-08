@@ -13,17 +13,21 @@ module.exports = (app) ->
       title: 'Express'
 
   app.get '/:wiki/:title', (req, res) ->
-    debug 'Getting wiki/title-------------'
     wiki = req.params.wiki
     title = req.params.title
-    debug "wiki = #{wiki}, title=#{title}"
+    debug "Getting /wiki/title: wiki = #{wiki}, title=#{title}"
     Pages.latest {'wiki':wiki, 'title':title}, (err,result) ->
       if err
-        res.send {'error': 'An error has occurred'}
+        res.send
+          'error': 'An error has occurred'
       else
         debug 'Success: Getting GyazzData-----'
+
+        result.related ()-> console.log('kkk')
+
 	# result.related wiki,title
         #  Pages.related(wiki,title) でも同じか?
+
         res.render 'page', { title: title, wiki:wiki}
         debug result.timestamp
 
@@ -33,7 +37,7 @@ module.exports = (app) ->
     wiki = req.params.wiki
     title = req.params.title
     
-    debug req.query # suggest, version
+    debug req.query # { suggest, version }
     Pages.latest {'wiki':wiki, 'title':title}, (err,result) ->
       if err
         res.send
