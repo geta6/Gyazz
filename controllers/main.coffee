@@ -22,10 +22,9 @@ module.exports = (app) ->
           'error': 'An error has occurred'
       else
         debug 'Success: Getting GyazzData-----'
-
         result.related ()-> console.log('kkk')
 
-	# result.related wiki,title
+       	# result.related wiki,title
         #  Pages.related(wiki,title) でも同じか?
 
         res.render 'page', { title: title, wiki:wiki}
