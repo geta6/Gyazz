@@ -16,6 +16,7 @@ app.set 'view engine', 'ejs'
 
 pair = (require path.resolve 'models','pair')(app)
 page = (require path.resolve 'models','page')(app)
+attr = (require path.resolve 'models','attr')(app)
 main = (require path.resolve 'controllers','main')(app)
 
 mongoose = require 'mongoose'
