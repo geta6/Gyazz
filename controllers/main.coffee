@@ -37,7 +37,7 @@ module.exports = (app) ->
 #      res.render 'page',
 #        title: title
 #        wiki:  wiki
-#        
+#
 #      debug result.timestamp
 
   #  / getdata() で呼ばれてJSONを返す

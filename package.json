@@ -5,7 +5,8 @@
   "author": "Toshiyuki Masui <masui@pitecan.com>",
   "license": "MIT",
   "scripts": {
-    "start": "coffee gyazz.coffee"
+    "start": "coffee gyazz.coffee",
+    "test": "grunt test"
   },
   "dependencies": {
     "underscore": "*",
@@ -18,6 +19,18 @@
     "debug": "~0.7.4",
     "ejs": "~0.8.5",
     "mongoose": "3.x"
+  },
+  "devDependencies": {
+    "coffeelint": "*",
+    "coffee-errors": "*",
+    "grunt": "*",
+    "grunt-cli": "*",
+    "grunt-coffeelint": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-notify": "*",
+    "grunt-simple-mocha": "*",
+    "mocha": "*",
+    "supertest": "*"
   },
   "homepage": "https://github.com/masuilab/Gyazz"
 }

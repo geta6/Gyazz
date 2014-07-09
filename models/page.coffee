@@ -3,9 +3,10 @@
 #
  
 debug = require('debug')('gyazz:page')
-pair = require('./pair')
-
 mongoose = require 'mongoose'
+
+require('./pair')
+
 
 module.exports = (app) ->
   
@@ -20,7 +21,13 @@ module.exports = (app) ->
 
   # Pageクラス(?)のクラスメソッド(?)みたいなものの定義。
   pageSchema.statics.latest = (wiki,title,callback) ->
-    Pages.find {wiki:wiki, title:title}, {}, {sort:{timestamp: -1},limit:1}, (err, results) ->  # 最新のをひとつだけ取得
+    Pages.find
+      wiki: wiki
+      title:title
+    .sort
+      timestamp: -1
+    .limit 1
+    .exec (err, results) ->  # 最新のをひとつだけ取得
       callback err, results[0]
 
 #  pageSchema.statics.related = (param,callback) ->
@@ -30,7 +37,7 @@ module.exports = (app) ->
 #    callback 0
 #    debug "^^^^^^^^^^^^^^^^^^^^^^^^^^^"
 #
-#      
+#
 #  # 関連ページをリストするインスタンスメソッドみたいなもの
 #  # page.related(callback) とする?
 #  #
