@@ -30,3 +30,29 @@ mongoexportしたものをどこかに置いておきます
     % npm test
     or
     % grunt
+
+
+## Deploy on Heroku
+
+### create app
+
+    % heroku create
+    % git push heroku master
+
+### config
+
+    % heroku config:add TZ=Asia/Tokyo
+    % heroku config:set "DEBUG=gyazz*"
+    % heroku config:set NODE_ENV=production
+
+### enable MongoDB plug-in
+
+    % heroku addons:add mongolab
+    # or
+    % heroku addons:add mongohq
+
+
+### logs
+
+    % heroku logs --num 300
+    % heroku logs --tail
