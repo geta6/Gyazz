@@ -9,8 +9,8 @@ mongoose = require 'mongoose'
 module.exports = (app) ->
 
   pairSchema = new mongoose.Schema {
-    wiki: String,
-    title1: String,
+    wiki: String
+    title1: String
     title2: String
   }, {
     collection: "Pairs" # Mongooseは勝手に小文字の複数形にするので大文字を使うときはこういう指定が必要
@@ -30,7 +30,6 @@ module.exports = (app) ->
         for pair in results
           related[pair.title1] = 1
         
-        debug _.keys(related)
         callback e, _.keys(related)
 
 

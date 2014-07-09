@@ -7,6 +7,8 @@ mongoose = require 'mongoose'
 
 Page = mongoose.model 'Page'
 Pair = mongoose.model 'Pair'
+Attr = mongoose.model 'Attr'
+
 
 module.exports = (app) ->
   app.get '/', (req, res) ->
@@ -21,24 +23,7 @@ module.exports = (app) ->
     return res.render 'page',
       title: req.params.title
       wiki:  req.params.wiki
-     
-#    Page.latest {'wiki':wiki, 'title':title}, (err,result) ->
-#      if err
-#        res.send
-#          'error': 'An error has occurred'
-#      else
-#        debug 'Success: Getting GyazzData-----'
-#        result.related (dummy) ->
-#          debug 'kkkkkkkkkkkkkkkkkkkkk'
-#
-#       	# result.related wiki,title
-#        #  Page.related(wiki,title) でも同じか?
-#
-#      res.render 'page',
-#        title: title
-#        wiki:  wiki
-#
-#      debug result.timestamp
+
 
   #  / getdata() で呼ばれてJSONを返す
   app.get '/:wiki/:title/json', (req, res) ->
@@ -61,13 +46,15 @@ module.exports = (app) ->
     wiki = req.params.wiki
     title = req.params.title
     
-    Pair.related wiki, title, (err,result) ->
+    Pair.related wiki, title, (err, result) ->
       debug "Getting related info===="
       if err
         return res.send
           error: 'An error has occurred'
-      return res.send
-        date: '20140101xxxxxx'
+      return res.send result
 
 
-
+  app.get '/:wiki/:title/repimage', (req, res) ->
+    Attrs.repimage req.params.wiki, req.params.title, (err, result) ->
+      res.send
+        repimage: result

@@ -1222,3 +1222,19 @@ $(function(){
 
   })();
 });
+
+function getrelated(){
+    $.ajax({
+        type: "GET",
+        async: true,
+        url: root + "/" + name + "/" + title + "/related",
+        success: function(res){
+            for(var i=0;i<res.length;i++){
+                $('#links').append($('<span>').text(res[i]));
+            }
+        },
+        error: function(){
+            alert('ERROR getrelated');
+        }
+    });
+}

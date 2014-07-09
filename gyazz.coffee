@@ -21,7 +21,7 @@ app.set 'view engine', 'ejs'
 
 ## load controllers, models, socket.io ##
 components =
-  models:      [ 'pair', 'page' ]
+  models:      [ 'pair', 'page', 'attr' ]
   controllers: [ 'main' ]
   sockets:     [ ]
 

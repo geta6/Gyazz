@@ -16,7 +16,7 @@
   <script language="JavaScript" src='/javascripts/md5.js'></script>
   <script language="JavaScript" src='/javascripts/location.js'></script>
 
-  <!-- script src="/javascripts/jquery.js"></script -->
+  <!-- script src="/javascripts/jquery-1.10.1.min.js"></script> -->
   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
   <!-- <script language="JavaScript" src='/javascripts/jQuery.kill_referrer.js'></script> -->
   <script language="JavaScript" src='/javascripts/jquery.tipTip.js'></script>
@@ -37,6 +37,7 @@
     $('#rawdata').hide();
     setup();
     getdata({suggest: true}); // 1回目はsuggestオプションを付けてgetdata
+    getrelated();
   });
   </script>
 </head>
@@ -77,7 +78,8 @@ Search: <input type="text" id="query" autocomplete="off" onkeyup="search(event)"
 <input autocomplete='off' type='text' id='newtext' style='visibility:hidden;'>
 <p>
 
-<div class="links">
+<div class="links" id='links'></div>
+<p>
 
 </body>
 </html>
