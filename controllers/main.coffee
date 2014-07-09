@@ -9,7 +9,6 @@ Page = mongoose.model 'Page'
 Pair = mongoose.model 'Pair'
 Attr = mongoose.model 'Attr'
 
-
 module.exports = (app) ->
   app.get '/', (req, res) ->
     return res.render 'index',
@@ -23,7 +22,6 @@ module.exports = (app) ->
     return res.render 'page',
       title: req.params.title
       wiki:  req.params.wiki
-
 
   #  / getdata() で呼ばれてJSONを返す
   app.get '/:wiki/:title/json', (req, res) ->
@@ -52,7 +50,6 @@ module.exports = (app) ->
         return res.send
           error: 'An error has occurred'
       return res.send result
-
 
   app.get '/:wiki/:title/repimage', (req, res) ->
     Attrs.repimage req.params.wiki, req.params.title, (err, result) ->

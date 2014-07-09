@@ -18,6 +18,7 @@ module.exports = (app) ->
 
   attrSchema.statics.repimage = (wiki, title, callback) ->
     debug "Attrs.repimage"
+<<<<<<< HEAD
     @find
       wiki:wiki
       title:title
@@ -26,3 +27,10 @@ module.exports = (app) ->
       callback false, results[0]?['attr']['repimage']
 
   mongoose.model 'Attr', attrSchema
+=======
+    Attrs.find {wiki:wiki, title:title}, (err, results) ->
+      debug results
+      callback false, results[0]['attr']['repimage']
+
+  Attrs = mongoose.model 'Attrs', attrSchema
+>>>>>>> master
