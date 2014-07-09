@@ -2,9 +2,8 @@
 # リンク情報
 #
 
-debug = require('debug')('gyazz:pair')
-_ = require 'underscore'
-
+debug    = require('debug')('gyazz:pair')
+_        = require 'underscore'
 mongoose = require 'mongoose'
 
 module.exports = (app) ->

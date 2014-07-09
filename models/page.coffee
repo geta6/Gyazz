@@ -2,10 +2,8 @@
 # Gyazzページのデータ
 #
  
-debug = require('debug')('gyazz:page')
+debug    = require('debug')('gyazz:page')
 mongoose = require 'mongoose'
-
-require('./pair')
 
 
 module.exports = (app) ->
