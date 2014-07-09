@@ -12,7 +12,7 @@ app = express()
 app.use express['static'] path.resolve('public')
 
 # views/*.ejs を利用
-app.set 'view engine', 'ejs'; # こちらは必要ぽい
+app.set 'view engine', 'ejs'
 
 pair = (require path.resolve 'models','pair')(app)
 page = (require path.resolve 'models','page')(app)
@@ -20,7 +20,7 @@ main = (require path.resolve 'controllers','main')(app)
 
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/gyazz', (err) ->
-  if (err)
+  if err
     debug "mongoose connect failed"
     debug err
     process.exit 1

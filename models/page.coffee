@@ -19,16 +19,30 @@ module.exports = (app) ->
   }
 
   # Pageクラス(?)のクラスメソッド(?)みたいなものの定義。
-  pageSchema.statics.latest = (param,callback) ->
-    Pages.find param, {}, {sort:{timestamp: -1},limit:1}, (err, results) ->  # 最新のをひとつだけ取得
+  pageSchema.statics.latest = (wiki,title,callback) ->
+    Pages.find {wiki:wiki, title:title}, {}, {sort:{timestamp: -1},limit:1}, (err, results) ->  # 最新のをひとつだけ取得
       callback err, results[0]
 
-  # 関連ページをリストするインスタンスメソッドみたいなもの
-  # page.related(callback) とする?
-  #
-  pageSchema.methods.related = (callback) ->
-    Pairs = mongoose.model 'Pairs'
-    console.log Pairs.related this # 関連ページとウェイトを得る
-    #                      ここで関連ページリストを得る?
+#  pageSchema.statics.related = (param,callback) ->
+#    Pairs = mongoose.model 'Pairs'
+#    debug Pairs.related this # 関連ページとウェイトを得る
+#    debug "vvvvvvvvvvvvvvvvvvvvvvvvvv"
+#    callback 0
+#    debug "^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+#
+#      
+#  # 関連ページをリストするインスタンスメソッドみたいなもの
+#  # page.related(callback) とする?
+#  #
+#  pageSchema.methods.related = (callback) ->
+#    debug "pageSchema.meghods.related-------------------"
+#    debug callback
+#    Pairs = mongoose.model 'Pairs'
+#    debug Pairs.related this # 関連ページとウェイトを得る
+#    debug "vvvvvvvvvvvvvvvvvvvvvvvvvv"
+#    callback 0
+#    debug "^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+#    #                      ここで関連ページリストを得る?
 
   Pages = mongoose.model 'Pages', pageSchema
+
