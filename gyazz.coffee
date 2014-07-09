@@ -6,6 +6,9 @@ express = require 'express'
 path = require 'path'
 debug = require('debug')('gyazz:app')
 
+process.env.PORT ||= 3000
+
+
 module.exports = app = express()
 
 # public以下のファイルはWikiデータとみなさないようにする
@@ -27,6 +30,5 @@ mongoose.connect 'mongodb://localhost/gyazz', (err) ->
     return
   debug "connect MongoDB"
 
-  app.listen 3000
-  console.log 'Listening on port 3000...'
-
+  app.listen process.env.PORT
+  console.log "Listening on port #{process.env.PORT}..."
