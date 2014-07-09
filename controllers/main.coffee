@@ -5,9 +5,9 @@
 debug    = require('debug')('gyazz:main')
 mongoose = require 'mongoose'
 
-Page = mongoose.model 'Page'
-Pair = mongoose.model 'Pair'
-Attr = mongoose.model 'Attr'
+Pages = mongoose.model 'Page'
+Pairs = mongoose.model 'Pair'
+Attrs = mongoose.model 'Attr'
 
 module.exports = (app) ->
   app.get '/', (req, res) ->
@@ -30,7 +30,7 @@ module.exports = (app) ->
     title = req.params.title
     
     debug JSON.stringify req.query # { suggest, version }
-    Page.latest wiki, title, (err, page) ->
+    Pages.latest wiki, title, (err, page) ->
       if err
         return res.send
           error: 'An error has occurred'
@@ -44,7 +44,7 @@ module.exports = (app) ->
     wiki = req.params.wiki
     title = req.params.title
     
-    Pair.related wiki, title, (err, result) ->
+    Pairs.related wiki, title, (err, result) ->
       debug "Getting related info===="
       if err
         return res.send

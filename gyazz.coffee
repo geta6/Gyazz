@@ -18,14 +18,6 @@ module.exports = app = express()
 app.use express.static path.resolve 'public'
 app.set 'view engine', 'ejs'
 
-<<<<<<< HEAD
-=======
-pair = (require path.resolve 'models','pair')(app)
-page = (require path.resolve 'models','page')(app)
-attr = (require path.resolve 'models','attr')(app)
-main = (require path.resolve 'controllers','main')(app)
->>>>>>> master
-
 ## load controllers, models, socket.io ##
 components =
   models:      [ 'pair', 'page', 'attr' ]
