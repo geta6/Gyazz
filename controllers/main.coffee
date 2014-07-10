@@ -15,9 +15,7 @@ module.exports = (app) ->
       title: 'Express'
 
   app.get '/:wiki/:title', (req, res) ->
-    wiki = req.params.wiki
-    title = req.params.title
-    debug "Getting /wiki/title: wiki = #{wiki}, title=#{title}"
+    debug "Getting /wiki/title: wiki = #{req.params.wiki}, title=#{req.params.title}"
 
     return res.render 'page',
       title: req.params.title
@@ -26,32 +24,29 @@ module.exports = (app) ->
   #  / getdata() で呼ばれてJSONを返す
   app.get '/:wiki/:title/json', (req, res) ->
     debug 'Getting wiki/title/json'
-    wiki = req.params.wiki
-    title = req.params.title
-    
     debug JSON.stringify req.query # { suggest, version }
-    Pages.latest wiki, title, (err, page) ->
+    Pages.latest req.params.wiki, req.params.title, (err, page) ->
       if err
         return res.send
           error: 'An error has occurred'
-      return res.send
+      res.send
         date: '20140101010101'
         age: page?.timestamp
         data: page?.text.split(/\n/) or []
 
   app.get '/:wiki/:title/related', (req, res) ->
     debug 'Getting wiki/title/related'
-    wiki = req.params.wiki
-    title = req.params.title
-    
-    Pairs.related wiki, title, (err, result) ->
+    Pairs.related req.params.wiki, req.params.title, (err, result) ->
       debug "Getting related info===="
       if err
         return res.send
           error: 'An error has occurred'
-      return res.send result
+      res.send result
 
-  app.get '/:wiki/:title/repimage', (req, res) ->
-    Attrs.repimage req.params.wiki, req.params.title, (err, result) ->
-      res.send
-        repimage: result
+  app.get '/:wiki/:title/attr', (req, res) ->
+    Attrs.attr req.params.wiki, req.params.title, (err, result) ->
+      debug "Getting related info===="
+      if err
+        return res.send
+          error: 'An error has occurred'
+      res.send result

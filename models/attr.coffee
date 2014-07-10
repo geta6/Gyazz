@@ -11,19 +11,19 @@ module.exports = (app) ->
   attrSchema = new mongoose.Schema {
     wiki: String
     title: String
-    repimage: String
+    attr:
+      repimage: String
   }, {
     collection: "Attrs"
   }
 
-  attrSchema.statics.repimage = (wiki, title, callback) ->
-    debug "Attrs.repimage"
+  attrSchema.statics.attr = (wiki, title, callback) ->
+    debug "Attrs.attr"
     @find
       wiki:wiki
       title:title
     .exec (err, results) ->
-      debug results
-      callback false, results[0]?['attr']['repimage']
+      callback false, results[0]?.attr
 
   mongoose.model 'Attr', attrSchema
 
