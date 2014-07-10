@@ -21,7 +21,7 @@ module.exports = (app) ->
       title: req.params.title
       wiki:  req.params.wiki
 
-  #  / getdata() で呼ばれてJSONを返す
+  #  ページ内容
   app.get '/:wiki/:title/json', (req, res) ->
     debug 'Getting wiki/title/json'
     debug JSON.stringify req.query # { suggest, version }
@@ -34,6 +34,7 @@ module.exports = (app) ->
         age: page?.timestamp
         data: page?.text.split(/\n/) or []
 
+  # 関連ページの配列
   app.get '/:wiki/:title/related', (req, res) ->
     debug 'Getting wiki/title/related'
     Pairs.related req.params.wiki, req.params.title, (err, result) ->
@@ -43,6 +44,7 @@ module.exports = (app) ->
           error: 'An error has occurred'
       res.send result
 
+  # repimageなどのページ属性
   app.get '/:wiki/:title/attr', (req, res) ->
     Attrs.attr req.params.wiki, req.params.title, (err, result) ->
       debug "Getting related info===="
