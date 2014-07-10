@@ -8,13 +8,10 @@ mongoose = require 'mongoose'
 
 module.exports = (app) ->
 
-  attrSchema = new mongoose.Schema {
+  attrSchema = new mongoose.Schema
     wiki: String
     title: String
     repimage: String
-  }, {
-    collection: "Attrs"
-  }
 
   attrSchema.statics.repimage = (wiki, title, callback) ->
     debug "Attrs.repimage"

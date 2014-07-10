@@ -8,13 +8,10 @@ mongoose = require 'mongoose'
 
 module.exports = (app) ->
 
-  pairSchema = new mongoose.Schema {
+  pairSchema = new mongoose.Schema
     wiki: String
     title1: String
     title2: String
-  }, {
-    collection: "Pairs" # Mongooseは勝手に小文字の複数形にするので大文字を使うときはこういう指定が必要
-  }
 
   # pageに関連するページの配列を得る
   pairSchema.statics.related = (wiki, title, callback) ->
