@@ -39,15 +39,11 @@ html
     div(class='title')
       span(class='wordtitle')
         img(id='historyimage',src="/#{wiki}/#{title}/modify.png",height=18,width=80)
-        | #{title}
-        //<% writable = true; %>
-        //<% if(writable){ %>
-        //  <a href='/<%= wiki %>/<%= title %>/__edit/0' id='title'>
-        //  <%= title %> sanitize必要 
-        //  </a>
-        //<% } else { %>
-        //  <%= title %> sanitize必要 
-        //<% } %>
+        - var writable = true;
+        if writable
+          a(href="/#{wiki}/#{title}/__edit/0",id='title') #{title}
+        else
+          | #{title}
     
       form(action="/__search/#{wiki}",method="get",style="float:right;font-size:12pt;")
         input(height='20',name='q',type='text',value="#{query}")
