@@ -34,16 +34,6 @@ module.exports = (app) ->
         age: page?.timestamp
         data: page?.text.split(/\n/) or []
 
-  # 関連ページの配列
-  app.get '/:wiki/:title/related', (req, res) ->
-    debug 'Getting wiki/title/related'
-    Pairs.related req.params.wiki, req.params.title, (err, result) ->
-      debug "Getting related info===="
-      if err
-        return res.send
-          error: 'An error has occurred'
-      res.send result
-
   # repimageなどのページ属性
   app.get '/:wiki/:title/attr', (req, res) ->
     Attrs.attr req.params.wiki, req.params.title, (err, result) ->
@@ -53,8 +43,18 @@ module.exports = (app) ->
           error: 'An error has occurred'
       res.send result
 
+  # # 関連ページの配列
+  #app.get '/:wiki/:title/related', (req, res) ->
+  #  debug 'Getting wiki/title/related'
+  #  Pairs.related req.params.wiki, req.params.title, (err, result) ->
+  #    debug "Getting related info===="
+  #    if err
+  #      return res.send
+  #        error: 'An error has occurred'
+  #    res.send result
+
   # 関連ページの配列 repimageも含める
-  app.get '/:wiki/:title/related2', (req, res) ->
+  app.get '/:wiki/:title/related', (req, res) ->
     debug 'Getting wiki/title/related2'
     Pairs.related req.params.wiki, req.params.title, (err, titles) ->
       debug "Getting related info===="

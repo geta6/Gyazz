@@ -1228,9 +1228,62 @@ function getrelated(){
         type: "GET",
         async: true,
         url: root + "/" + name + "/" + title + "/related",
-        success: function(res){
-            for(var i=0;i<res.length;i++){
-                $('#links').append($('<span>').text(res[i]));
+        success: function(pages){
+            for(var i=0;i<pages.length;i++){
+                title = pages[i].title;
+                repimage = pages[i].repimage;
+                imageurl = "http://Gyazo.com/" + repimage + ".png";
+                url = "/" + name + "/" + title;
+                if(repimage){
+                    var img = $('<img>').
+                      attr('src',imageurl).
+                      attr('title',title).
+                      css('max-height','64').
+                      css('border','none').
+                      css('width','64');
+                    var center = $('<center>').
+                      append(img);
+                    var div = $('<div>').
+                      css('height','64').
+                      css('width','64').
+                      css('margin','2').
+                      css('float','left').
+                      append(center);
+                    var a = $("<a>").
+                      attr('href',url).
+                      attr('target','_blank').
+                      append(div);
+                    $('#links').
+                      append(a);
+                }
+                else {
+                    var md5 = MD5_hexhash(title);
+                    var r = Math.floor(parseInt(md5.substr(0,2),16) * 0.5 + 16).toString(16);
+                    var g = Math.floor(parseInt(md5.substr(2,2),16) * 0.5 + 16).toString(16);
+                    var b = Math.floor(parseInt(md5.substr(4,2),16) * 0.5 + 16).toString(16);
+                    var div1 = $('<div>').
+                      css('font-size','9pt').
+                      css('margin','3').
+                      css('color','white').
+                      css('overflow','hidden').
+                      css('word-wrap','break-word').
+                      text(title);
+                    var div2 = $('<div>').
+                      css('height','64').
+                      css('width','64').
+                      css('margin','2').
+                      css('float','left').
+                      css('background-color','#'+r+g+b).
+                      css('overflow','hidden').
+                      css('word-wrap','break-word').
+                      append(div1);
+                    var a = $("<a>").
+                      attr('href',url).
+                      attr('target','_blank').
+                      attr('class','links').
+                      append(div2);
+                    $('#links').append(a);
+                }
             }
         },
         error: function(){
