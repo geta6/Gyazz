@@ -32,5 +32,4 @@ module.exports = (app) ->
         
         callback e, _.keys(related)
 
-
   mongoose.model 'Pair', pairSchema
