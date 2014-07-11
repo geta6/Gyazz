@@ -15,7 +15,7 @@ module.exports = (app) ->
       title: 'Express'
 
   app.get '/:wiki/:title', (req, res) ->
-    debug "Getting /wiki/title: wiki = #{req.params.wiki}, title=#{req.params.title}"
+    debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
 
     return res.render 'page',
       title: req.params.title
