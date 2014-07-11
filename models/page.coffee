@@ -14,7 +14,6 @@ module.exports = (app) ->
     text: String
     timestamp: Date
 
-
   # Pageクラス(?)のクラスメソッド(?)みたいなものの定義。
   pageSchema.statics.latest = (wiki, title, callback) ->
     @find

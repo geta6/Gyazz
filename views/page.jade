@@ -16,7 +16,6 @@ html
     script(src='/javascripts/md5.js')
     script(src='/javascripts/location.js')
     script(src="/javascripts/jquery-1.10.1.min.js")
-    /////script(src="http://code.jquery.com/jquery-1.10.1.min.js")
     script(src='/javascripts/jQuery.kill_referrer.js')
     script(src='/javascripts/jquery.tipTip.js')
 
@@ -36,12 +35,12 @@ html
         getrelated();
       });
   body
-    div(class='title')
-      span(class='wordtitle')
-        img(id='historyimage',src="/#{wiki}/#{title}/modify.png",height=18,width=80)
+    div.title
+      span.wordtitle
+        img#historyimage(src="/#{wiki}/#{title}/modify.png",height=18,width=80)
         - var writable = true;
         if writable
-          a(href="/#{wiki}/#{title}/__edit/0",id='title') #{title}
+          a#title(href="/#{wiki}/#{title}/__edit/0") #{title}
         else
           | #{title}
     
@@ -49,17 +48,18 @@ html
         input(height='20',name='q',type='text',value="#{query}")
         input(type='submit',value='リスト/検索')
     
-      span(class='language',id='datestr')
+      span#datestr.language
 
-    #rawdata rawdata: @page.text.gsub
+    div#rawdata rawdata: @page.text.gsub
 
     p
     div.
       Search: <input type="text" id="query" autocomplete="off" onkeyup="search(event)"
       style="font-size:10pt;border:none;padding:1px;margin:0;background-color:#f0f0ff;">
     
-    #contents
+    div#contents
+
     input(autocomplete='off',type='text',id='newtext',style='visibility:hidden;')
     p
-    #links(class="links")
+    div#links.links
     p
