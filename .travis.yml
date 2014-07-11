@@ -3,3 +3,11 @@ node_js:
   - 0.10
 services:
   - mongodb
+notifications:
+  slack:
+    secure: DSlwA6dvkTeKgn8iugYoWrJRdec/TXxy6NxpIn7/jyfZGn4fzUPoLkyMhGrUEDqK0fZh/g3q+KnlzraPMknWa0vnbjsKvNAriJkIHRY7BBXdR0xc4pe5goLvImRGh4haxdvXpqbv2YpDMvYxHLiPJCX/V6cSBUsEg5hhKs3by10=
+deploy:
+  provider: heroku
+  api_key:
+    secure: Vdzv6hvityNbDRNvyIvfH1p9FWa8n9GgWcjB7kiMUTIZilUhjT247BnqGvi/IqDXIX3xK8+MwMhDW9TRBmjE0/CneHq9hii2EAN4QPHhRdKWSB477bEfl7s8k2iFOg1rLw1vOJg2dGu3wTvol5ysDeGuoFiHIirsQsMXPDFP1qA=
+  app: node-gyazz
