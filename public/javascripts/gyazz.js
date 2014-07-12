@@ -44,6 +44,14 @@ var KC = {
 
 var authbuf = [];
 
+$(document).ready(function(){
+    $('#rawdata').hide();
+    setup();
+    getdata({suggest: true}); // 1回目はsuggestオプションを付けてgetdata
+    getrelated();
+});
+
+
 // keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
 $(document).keypress(function(event){
     var kc = event.which;

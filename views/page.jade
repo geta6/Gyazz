@@ -24,21 +24,12 @@ html
       var name = "#{wiki}"; // escape_jsvar
       var title = "#{title}"; // escape_jsvar
       var root = "http://localhost:3000";
-    
       var do_auth = false;
       var writable = true;
-    
-      $(document).ready(function(){ // この場所にないと駄目?
-        $('#rawdata').hide();
-        setup();
-        getdata({suggest: true}); // 1回目はsuggestオプションを付けてgetdata
-        getrelated();
-      });
   body
     div.title
       span.wordtitle
         img#historyimage(src="/#{wiki}/#{title}/modify.png",height=18,width=80)
-        - var writable = true;
         if writable
           a#title(href="/#{wiki}/#{title}/__edit/0") #{title}
         else
@@ -50,16 +41,20 @@ html
     
       span#datestr.language
 
-    div#rawdata rawdata: @page.text.gsub
+    #rawdata rawdata: @page.text.gsub
 
     p
+
     div.
       Search: <input type="text" id="query" autocomplete="off" onkeyup="search(event)"
       style="font-size:10pt;border:none;padding:1px;margin:0;background-color:#f0f0ff;">
     
-    div#contents
+    #contents
 
     input(autocomplete='off',type='text',id='newtext',style='visibility:hidden;')
+
     p
-    div#links.links
+
+    #links.links
+
     p
