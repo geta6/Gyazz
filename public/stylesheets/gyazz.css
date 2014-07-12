@@ -398,3 +398,22 @@ div.listedit8:before {
   margin:0;
   background-color:#ddd;
 }
+
+div.icontext {
+  font-size:9pt;
+  margin:3;
+  color:white;
+  overflow:hidden;
+  word-wrap:break-word
+}
+
+div.icon {
+  height:64;
+  width:64;
+  margin:2;
+  float:left;
+  /*
+  overflow:hidden;
+  word-wrap:break-word;
+  */
+}
