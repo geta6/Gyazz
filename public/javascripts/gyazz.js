@@ -73,7 +73,9 @@ $(document).keypress(function(event){
     }
 });
 
-function hex2(v){
+function hex2(v){ // 2桁の16進数
+    v = Math.floor(v);
+    if(v >= 256) v = 255;
     return ("0" + v.toString(16)).slice(-2);
 }
 
@@ -99,14 +101,8 @@ function bgcol(t){
         var t2 = table[i+1][0];
         if(t >= t1 && t <= t2){
             r = ((t - t1) * table[i+1][1] + (t2 - t) * table[i][1]) / (t2 - t1);
-            r = Math.floor(r);
-            if(r >= 256) r = 255;
             g = ((t - t1) * table[i+1][2] + (t2 - t) * table[i][2]) / (t2 - t1);
-            g = Math.floor(g);
-            if(g >= 256) g = 255;
             b = ((t - t1) * table[i+1][3] + (t2 - t) * table[i][3]) / (t2 - t1);
-            b = Math.floor(b);
-            if(b >= 256) b = 255;
             return "#" + hex2(r) + hex2(g) + hex2(b);
         }
     }
@@ -1250,9 +1246,9 @@ function getrelated(){
                 }
                 else {
                     var md5 = MD5_hexhash(title);
-                    var r = Math.floor(parseInt(md5.substr(0,2),16) * 0.5 + 16).toString(16);
-                    var g = Math.floor(parseInt(md5.substr(2,2),16) * 0.5 + 16).toString(16);
-                    var b = Math.floor(parseInt(md5.substr(4,2),16) * 0.5 + 16).toString(16);
+                    var r = hex2(parseInt(md5.substr(0,2),16) * 0.5 + 16);
+                    var g = hex2(parseInt(md5.substr(2,2),16) * 0.5 + 16);
+                    var b = hex2(parseInt(md5.substr(4,2),16) * 0.5 + 16);
                     var div1 = $('<div>').addClass('icontext').text(title);
                     var div2 = $('<div>').addClass('icon').css('background-color','#'+r+g+b).append(div1);
                     $('#links').append($("<a>").attr('href',url).attr('target','_blank').attr('class','links').append(div2));
