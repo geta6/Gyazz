@@ -73,7 +73,7 @@ $(document).keypress(function(event){
     }
 });
 
-function hex2(v){ // 2桁の16進数
+function hex2(v){ // 0 => 00, 10 => 0a, 255 => ff, 300 => ff
     v = Math.floor(v);
     if(v >= 256) v = 255;
     return ("0" + v.toString(16)).slice(-2);
@@ -1185,48 +1185,49 @@ function follow_scroll(){
 
 // 右下の通知Box
 $(function(){
-  window.notifyBox = new (function(target){
+    window.notifyBox = new (function(target){
 
-    var img = $("<img>").attr("src", "/progress.png").hide();
-    var textBox = $("<span>").css({margin: "5px"});
-
-    var box = $("<div>").addClass("notifyBox").css({
-      position: "fixed",
-      right: "10px",
-      bottom: "10px",
-      "background-color": "#EEE"
-    }).append(textBox).append(img);
-
-    $("html").append(box);
-
-    var self = this;
-
-    this.print = function(str, opts){
-      if(!opts) opts = {};
-      textBox.text(str);
-      if(opts.progress) img.show();
-      else img.hide();
-      return self;
-    };
-
-    this.show = function(timeout){
-      box.show();
-      if(typeof timeout === 'number' && timeout > 0){
-        setTimeout(function(){
-          box.fadeOut(800);
-        }, timeout);
-      }
-      return self;
-    };
-
-    this.hide = function(){
-      box.hide();
-      return self;
-    };
-
-  })();
+	var img = $("<img>").attr("src", "/progress.png").hide();
+	var textBox = $("<span>").css({margin: "5px"});
+	
+	var box = $("<div>").addClass("notifyBox").css({
+	    position: "fixed",
+	    right: "10px",
+	    bottom: "10px",
+	    "background-color": "#EEE"
+	}).append(textBox).append(img);
+	
+	$("html").append(box);
+	
+	var self = this;
+	
+	this.print = function(str, opts){
+	    if(!opts) opts = {};
+	    textBox.text(str);
+	    if(opts.progress) img.show();
+	    else img.hide();
+	    return self;
+	};
+	
+	this.show = function(timeout){
+	    box.show();
+	    if(typeof timeout === 'number' && timeout > 0){
+		setTimeout(function(){
+		    box.fadeOut(800);
+		}, timeout);
+	    }
+	    return self;
+	};
+	
+	this.hide = function(){
+	    box.hide();
+	    return self;
+	};
+	
+    })();
 });
 
+// リンク先アイコン表示
 function getrelated(){
     $.ajax({
         type: "GET",
@@ -1239,7 +1240,14 @@ function getrelated(){
                 imageurl = "http://Gyazo.com/" + repimage + ".png";
                 url = "/" + name + "/" + title;
                 if(repimage){
-                    var img = $('<img>').attr('src',imageurl).attr('title',title).css('max-height','64').css('border','none').css('width','64');
+                    var img = $('<img>').attr({
+			src: imageurl,
+			title: title
+		    }).css({
+			'max-height':64,
+			border:'none',
+			width:64
+		    });
                     var center = $('<center>').append(img);
                     var div = $('<div>').addClass('icon').append(center);
                     $('#links').append($("<a>").attr('href',url).attr('target','_blank').append(div));
@@ -1256,7 +1264,7 @@ function getrelated(){
             }
         },
         error: function(){
-            alert('ERROR getrelated');
+            notifyBox.print("getrelated() fail").show(1000);
         }
     });
 }
