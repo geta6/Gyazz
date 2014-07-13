@@ -1,7 +1,15 @@
 #
 # PNGを自力で生成する (masui 2014/07/13 14:26:29)
+#
+# こういう感じのRGB配列をPNGにする
+# data = [
+#   [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
+#   [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
+#   [[0, 0, 0], [100, 100, 100], [200, 200, 200]]
+# ]
+#
 # クラス定義のやり方がよくわからない
-# バイナリ操作もよくわからない
+# バイナリ操作(Bufferの使い方)もよくわからない
 # プライベート関数(chunk)の呼び方もよくわからない
 #
 # もしかして: npmに既存だったりして?
@@ -31,7 +39,7 @@ class PNG
     buf.writeUInt8 0, 10
     buf.writeUInt8 0, 11
     buf.writeUInt8 0, 12
-    buf2 = chunk.call @, "IHDR", buf
+    buf2 = chunk "IHDR", buf
 
     imagebuf = new Buffer height * (width * 3 +1)
     pos = 0
@@ -40,8 +48,8 @@ class PNG
       d.map (c) -> imagebuf.writeUInt8 c, pos++
     zlib.deflate imagebuf, (err, res) ->
       return if err
-      buf3 = chunk.call @, "IDAT", new Buffer res, 'ascii'
-      buf4 = chunk.call @, "IEND", new Buffer ""
+      buf3 = chunk "IDAT", new Buffer res, 'ascii'
+      buf4 = chunk "IEND", new Buffer ""
       buf = new Buffer 33+buf3.length+buf4.length
       buf1.copy buf, 0
       buf2.copy buf, 8

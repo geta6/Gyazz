@@ -43,17 +43,7 @@ module.exports = (app) ->
           error: 'An error has occurred'
       res.send result
 
-  # # 関連ページの配列
-  #app.get '/:wiki/:title/related', (req, res) ->
-  #  debug 'Getting wiki/title/related'
-  #  Pairs.related req.params.wiki, req.params.title, (err, result) ->
-  #    debug "Getting related info===="
-  #    if err
-  #      return res.send
-  #        error: 'An error has occurred'
-  #    res.send result
-
-  # 関連ページの配列 repimageも含める
+  # 関連ページの配列 repimageも一緒に返す
   app.get '/:wiki/:title/related', (req, res) ->
     debug 'Getting wiki/title/related2'
     Pairs.related req.params.wiki, req.params.title, (err, titles) ->
@@ -84,3 +74,15 @@ module.exports = (app) ->
                 repimage: repimage[title2]
             debug result.length
             res.send result
+
+  # アクセス履歴のPNGを返す
+  app.get '/:name/*/modify.png', (req, res) ->
+    debug "modify: wiki = #{req.params.wiki}, title=#{req.params.title}"
+
+  # # ページ変更視覚化
+  # app.get '/:name/*/modify.png' do
+  #   name = params[:name]
+  #   title = params[:splat].join('/')
+  #   content_type 'image/png'
+  #   Gyazz::Page.new(name,title).modify_png
+  # end
