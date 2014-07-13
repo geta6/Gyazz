@@ -6,9 +6,10 @@ debug    = require('debug')('gyazz:main')
 mongoose = require 'mongoose'
 PNG      = require '../lib/png'
 
-Pages = mongoose.model 'Page'
-Pairs = mongoose.model 'Pair'
-Attrs = mongoose.model 'Attr'
+Pages  = mongoose.model 'Page'
+Pairs  = mongoose.model 'Pair'
+Attrs  = mongoose.model 'Attr'
+Access = mongoose.model 'Access'
 
 module.exports = (app) ->
   app.get '/', (req, res) ->
@@ -77,10 +78,10 @@ module.exports = (app) ->
             res.send result
 
   # アクセス履歴のPNGを返す
-  app.get '/:name/*/modify.png', (req, res) ->
+  app.get '/:name/:title/modify.png', (req, res) ->
     #
     # 変更履歴とアクセス履歴からPNGを生成する
-    # 
+    #
     debug "modify: wiki = #{req.params.wiki}, title=#{req.params.title}"
 
     Pages.access req.params.wiki, req.params.title, (err, data) ->

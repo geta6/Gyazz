@@ -5,6 +5,7 @@
 debug    = require('debug')('gyazz:page')
 mongoose = require 'mongoose'
 
+Access = mongoose.model 'Access'
 
 module.exports = (app) ->
   
@@ -26,6 +27,12 @@ module.exports = (app) ->
       callback err, results[0]  # 最新のをひとつだけ取得
 
   pageSchema.statics.access = (wiki, title, callback) ->
+    Access.find
+      wiki:  wiki
+      title: title
+    .exec (err, results) ->
+      results.map (result) ->
+        debug result
     data = [ # ダミー
       [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
       [[0, 0, 0], [100, 100, 100], [200, 200, 200]],

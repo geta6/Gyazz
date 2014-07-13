@@ -21,7 +21,7 @@ app.locals.pretty = true       # jade出力を整形する
 
 ## load controllers, models, socket.io ##
 components =
-  models:      [ 'pair', 'page', 'attr' ]
+  models:      [ 'access', 'pair', 'page', 'attr' ]
   controllers: [ 'main' ]
   lib:         [ 'png' ]
   sockets:     [ ]
