@@ -78,7 +78,7 @@ module.exports = (app) ->
             res.send result
 
   # アクセス履歴のPNGを返す
-  app.get '/:name/:title/modify.png', (req, res) ->
+  app.get '/:wiki/:title/modify.png', (req, res) ->
     #
     # 変更履歴とアクセス履歴からPNGを生成する
     #

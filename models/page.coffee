@@ -27,12 +27,14 @@ module.exports = (app) ->
       callback err, results[0]  # 最新のをひとつだけ取得
 
   pageSchema.statics.access = (wiki, title, callback) ->
+    debug "page.access(#{wiki},#{title})"
     Access.find
       wiki:  wiki
       title: title
     .exec (err, results) ->
+      debug "----results.len=#{results.length}----"
       results.map (result) ->
-        debug result
+        debug result.timestamp
     data = [ # ダミー
       [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
       [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
