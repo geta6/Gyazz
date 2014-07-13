@@ -78,13 +78,13 @@ module.exports = (app) ->
 
   # アクセス履歴のPNGを返す
   app.get '/:name/*/modify.png', (req, res) ->
+    #
+    # 変更履歴とアクセス履歴からPNGを生成する
+    # 
     debug "modify: wiki = #{req.params.wiki}, title=#{req.params.title}"
-    data = [
-      [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
-      [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
-      [[0, 0, 0], [100, 100, 100], [200, 200, 200]]
-    ]
-    png = new PNG
-    png.png data, (pngres) ->
-      res.set('Content-Type', 'image/png')
-      res.send pngres
+
+    Pages.access req.params.wiki, req.params.title, (err, data) ->
+      png = new PNG
+      png.png data, (pngres) ->
+        res.set('Content-Type', 'image/png')
+        res.send pngres
