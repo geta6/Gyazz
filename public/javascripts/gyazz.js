@@ -44,7 +44,8 @@ var KC = {
 
 var authbuf = [];
 
-$(document).ready(function(){
+// $(document).ready(function(){
+$(function(){
     $('#rawdata').hide();
     setup();
     getdata({suggest: true}); // 1回目はsuggestオプションを付けてgetdata

@@ -23,6 +23,7 @@ app.locals.pretty = true       # jade出力を整形する
 components =
   models:      [ 'pair', 'page', 'attr' ]
   controllers: [ 'main' ]
+  lib:         [ 'png' ]
   sockets:     [ ]
 
 for type, items of components
