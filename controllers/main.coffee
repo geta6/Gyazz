@@ -4,6 +4,7 @@
 
 debug    = require('debug')('gyazz:main')
 mongoose = require 'mongoose'
+PNG      = require '../lib/png'
 
 Pages = mongoose.model 'Page'
 Pairs = mongoose.model 'Pair'
@@ -78,11 +79,12 @@ module.exports = (app) ->
   # アクセス履歴のPNGを返す
   app.get '/:name/*/modify.png', (req, res) ->
     debug "modify: wiki = #{req.params.wiki}, title=#{req.params.title}"
-
-  # # ページ変更視覚化
-  # app.get '/:name/*/modify.png' do
-  #   name = params[:name]
-  #   title = params[:splat].join('/')
-  #   content_type 'image/png'
-  #   Gyazz::Page.new(name,title).modify_png
-  # end
+    data = [
+      [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
+      [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
+      [[0, 0, 0], [100, 100, 100], [200, 200, 200]]
+    ]
+    png = new PNG
+    png.png data, (pngres) ->
+      res.set('Content-Type', 'image/png')
+      res.send pngres
