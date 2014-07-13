@@ -4,6 +4,8 @@
 # バイナリ操作もよくわからない
 # プライベート関数(chunk)の呼び方もよくわからない
 #
+# もしかして: npmに既存だったりして?
+#
 crc  = require 'crc'
 zlib = require 'zlib'
 
