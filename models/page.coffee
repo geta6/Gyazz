@@ -18,7 +18,7 @@ module.exports = (app) ->
     text: String
     timestamp: Date
 
-  # Pageクラス(?)のクラスメソッド(?)みたいなものの定義。
+  # Pages.latest()
   pageSchema.statics.latest = (wiki, title, callback) ->
     @find
       wiki: wiki
@@ -29,7 +29,27 @@ module.exports = (app) ->
     .exec (err, results) ->
       callback err, results[0]  # 最新のをひとつだけ取得
 
-  log = (history) ->
+  # Pages.modify_png()
+  pageSchema.statics.modify_png = (wiki, title, callback) ->
+    debug "page.access(#{wiki},#{title})"
+    origthis = this # ??????
+    Access.find
+      wiki:  wiki
+      title: title
+    .exec (err, results) ->
+      access_history = results.map (result) ->
+        result.timestamp
+      access_log = accumulate_log access_history
+      origthis.find
+        wiki: wiki
+        title:title
+      .exec (err, results) ->
+        modify_history = results.map (result) ->
+          result.timestamp
+        modify_log = accumulate_log modify_history
+        visualize(access_log,modify_log,callback)
+
+  accumulate_log = (history) ->
     now = new Date
     v = []
     history.map (t) ->
@@ -44,26 +64,7 @@ module.exports = (app) ->
       Math.floor Math.log(v[i]+1.2) * 3
       # Math.floor Math.log(v[i]+0.9) * 3
     
-  pageSchema.statics.access = (wiki, title, callback) ->
-    debug "page.access(#{wiki},#{title})"
-    origthis = this # ??????
-    Access.find
-      wiki:  wiki
-      title: title
-    .exec (err, results) ->
-      access_history = results.map (result) ->
-        result.timestamp
-      alog = log access_history
-      origthis.find
-        wiki: wiki
-        title:title
-      .exec (err, results) ->
-        modify_history = results.map (result) ->
-          result.timestamp
-        mlog = log modify_history
-        visualize(alog,mlog,callback)
-
-  visualize = (alog,mlog,callback) ->
+  visualize = (access_log, modify_log, callback) ->
     data = []
     bgcolor = [255,255,255] # 新しいものを黄色くするコードがまだ入ってない
     [0...MAXH].map (y) ->
@@ -71,15 +72,15 @@ module.exports = (app) ->
       [0...MAX].map (x) ->
         data[y][x] = bgcolor
     [0...MAX].map (i) ->
-      d = alog[i]
+      d = access_log[i]
       d = MAXH if d >= MAXH
-      #c = 8 - (alog[i]/10)
+      #c = 8 - (access_log[i]/10)
       #c = 0 if c < 0
       [0...d].map (y) ->
         # data[MAXH-y-1][MAX-i-1] = [c*20, c*20, c*20]
         data[MAXH-y-1][MAX-i-1] = [128,128,128]
     [0...MAX].map (i) ->
-      d = mlog[i] / 2
+      d = modify_log[i] / 2
       d = MAXH/2 if d >= MAXH/2
       [0...d].map (y) ->
         data[MAXH-y-1][MAX-i-1] = [0,0,0]
