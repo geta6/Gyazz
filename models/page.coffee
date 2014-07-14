@@ -32,15 +32,14 @@ module.exports = (app) ->
   # Pages.access() アクセス/変更情報を得る
   pageSchema.statics.access = (wiki, title, callback) ->
     debug "page.access(#{wiki},#{title})"
-    origthis = this # ??????
     Access.find
       wiki:  wiki
       title: title
-    .exec (err, results) ->
+    .exec (err, results) => # this を継承させる
       access_history = results.map (result) ->
         result.timestamp
       access_log = accumulate_log access_history
-      origthis.find
+      this.find
         wiki: wiki
         title:title
       .exec (err, results) ->
