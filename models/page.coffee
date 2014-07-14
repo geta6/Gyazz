@@ -1,5 +1,5 @@
 #
-# Gyazzページのデータ
+# Gyazzページのデータ, アクセス情報
 #
  
 debug    = require('debug')('gyazz:page')
@@ -18,7 +18,7 @@ module.exports = (app) ->
     text: String
     timestamp: Date
 
-  # Pages.latest()
+  # Pages.latest() 最新ページを得る
   pageSchema.statics.latest = (wiki, title, callback) ->
     @find
       wiki: wiki
@@ -27,9 +27,9 @@ module.exports = (app) ->
       timestamp: -1
     .limit 1
     .exec (err, results) ->
-      callback err, results[0]  # 最新のをひとつだけ取得
+      callback err, results[0]
 
-  # Pages.access()
+  # Pages.access() アクセス/変更情報を得る
   pageSchema.statics.access = (wiki, title, callback) ->
     debug "page.access(#{wiki},#{title})"
     origthis = this # ??????
