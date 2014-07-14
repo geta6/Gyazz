@@ -73,15 +73,14 @@ module.exports = (app) ->
     [0...MAX].map (i) ->
       d = alog[i]
       d = MAXH if d >= MAXH
-      c = 8 - (alog[i]/10)
-      c = 0 if c < 0
+      #c = 8 - (alog[i]/10)
+      #c = 0 if c < 0
       [0...d].map (y) ->
+        # data[MAXH-y-1][MAX-i-1] = [c*20, c*20, c*20]
         data[MAXH-y-1][MAX-i-1] = [128,128,128]
     [0...MAX].map (i) ->
-      d = mlog[i]
-      d = MAXH if d >= MAXH
-      c = 8 - (mlog[i]/10)
-      c = 0 if c < 0
+      d = mlog[i] / 2
+      d = MAXH/2 if d >= MAXH/2
       [0...d].map (y) ->
         data[MAXH-y-1][MAX-i-1] = [0,0,0]
     callback false, data
