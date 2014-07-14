@@ -25,7 +25,7 @@ class PNG
     data.copy buf, 8
     buf.writeUInt32BE parseInt(crc.crc32(type+data),16), data.length+8
     buf
-    
+
   png: (data, callback, depth=8, color_type=2) ->
     height = data.length
     width = data[0].length
@@ -42,10 +42,12 @@ class PNG
     buf2 = chunk "IHDR", buf
 
     imagebuf = new Buffer height * (width * 3 +1)
+    
     pos = 0
     data.map (line) ->
       d = [0].concat line... # http://stackoverflow.com/questions/4631525/
       d.map (c) -> imagebuf.writeUInt8 c, pos++
+      
     zlib.deflate imagebuf, (err, res) ->
       return if err
       buf3 = chunk "IDAT", new Buffer res, 'ascii'
