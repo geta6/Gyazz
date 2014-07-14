@@ -29,8 +29,8 @@ module.exports = (app) ->
     .exec (err, results) ->
       callback err, results[0]  # 最新のをひとつだけ取得
 
-  # Pages.modify_png()
-  pageSchema.statics.modify_png = (wiki, title, callback) ->
+  # Pages.access()
+  pageSchema.statics.access = (wiki, title, callback) ->
     debug "page.access(#{wiki},#{title})"
     origthis = this # ??????
     Access.find

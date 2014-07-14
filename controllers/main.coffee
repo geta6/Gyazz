@@ -84,7 +84,7 @@ module.exports = (app) ->
     #
     debug "modify: wiki = #{req.params.wiki}, title=#{req.params.title}"
 
-    Pages.modify_png req.params.wiki, req.params.title, (err, data) ->
+    Pages.access req.params.wiki, req.params.title, (err, data) ->
       png = new PNG
       png.png data, (pngres) ->
         res.set('Content-Type', 'image/png')
