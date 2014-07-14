@@ -42,11 +42,11 @@ module.exports = (app) ->
     [0..MAX].map (i) ->
       v[i] = 0 unless v[i]
       Math.floor Math.log(v[i]+1.2) * 3
-      #Math.floor Math.log(v[i]+0.9) * 3
+      # Math.floor Math.log(v[i]+0.9) * 3
     
   pageSchema.statics.access = (wiki, title, callback) ->
     debug "page.access(#{wiki},#{title})"
-    origthis = this
+    origthis = this # ??????
     Access.find
       wiki:  wiki
       title: title
@@ -65,7 +65,7 @@ module.exports = (app) ->
 
   visualize = (alog,mlog,callback) ->
     data = []
-    bgcolor = [255,255,255]
+    bgcolor = [255,255,255] # 新しいものを黄色くするコードがまだ入ってない
     [0...MAXH].map (y) ->
       data[y] = []
       [0...MAX].map (x) ->
@@ -86,25 +86,7 @@ module.exports = (app) ->
         data[MAXH-y-1][MAX-i-1] = [0,0,0]
     callback false, data
       
-
-#    data = [ # ダミー
-#      [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
-#      [[0, 0, 0], [100, 100, 100], [200, 200, 200]],
-#      [[0, 0, 0], [100, 100, 100], [200, 200, 200]]
-#    ]
-#    callback false, data
-    
 #  # 関連ページをリストするインスタンスメソッドみたいなもの
-#  # page.related(callback) とする?
-#  #
 #  pageSchema.methods.related = (callback) ->
-#    debug "pageSchema.meghods.related-------------------"
-#    debug callback
-#    Pairs = mongoose.model 'Pairs'
-#    debug Pairs.related this # 関連ページとウェイトを得る
-#    debug "vvvvvvvvvvvvvvvvvvvvvvvvvv"
-#    callback 0
-#    debug "^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-#    #                      ここで関連ページリストを得る?
 
   mongoose.model 'Page', pageSchema
