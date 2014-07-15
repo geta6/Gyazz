@@ -70,6 +70,8 @@ module.exports = (app) ->
       this.find
         wiki: wiki
         title:title
+      .sort # 更新順にソート
+        timestamp: -1
       .exec (err, results) ->
         modify_history = results.map (result) ->
           result.timestamp
@@ -96,7 +98,13 @@ module.exports = (app) ->
     
   visualize = (access_log, modify_log, callback) ->
     data = []
-    bgcolor = [255,255,255] # 新しいものを黄色くするコードがまだ入ってない
+
+    # 新しく更新したものは背景を黄色くする
+    hotcolors = [[255,255,0],[255,255,40],[255,255,80],[255,255,120],[255,255,160],[255,255,200]]
+    bgcolor = [255,255,255]
+    [0..5].reverse().map (i) ->
+      bgcolor = hotcolors[i] if modify_log[i] > 0
+    
     [0...MAXH].map (y) ->
       data[y] = []
       [0...MAX].map (x) ->
