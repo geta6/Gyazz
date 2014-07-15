@@ -44,14 +44,12 @@ var KC = {
 
 var authbuf = [];
 
-// $(document).ready(function(){
 $(function(){
     $('#rawdata').hide();
     setup();
     getdata({suggest: true}); // 1回目はsuggestオプションを付けてgetdata
     getrelated();
 });
-
 
 // keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
 $(document).keypress(function(event){
@@ -74,7 +72,7 @@ $(document).keypress(function(event){
     }
 });
 
-function hex2(v){ // 0 => 00, 10 => 0a, 255 => ff, 300 => ff
+function hex2(v){
     v = Math.floor(v);
     if(v >= 256) v = 255;
     return ("0" + v.toString(16)).slice(-2);
@@ -102,8 +100,14 @@ function bgcol(t){
         var t2 = table[i+1][0];
         if(t >= t1 && t <= t2){
             r = ((t - t1) * table[i+1][1] + (t2 - t) * table[i][1]) / (t2 - t1);
+            r = Math.floor(r);
+            if(r >= 256) r = 255;
             g = ((t - t1) * table[i+1][2] + (t2 - t) * table[i][2]) / (t2 - t1);
+            g = Math.floor(g);
+            if(g >= 256) g = 255;
             b = ((t - t1) * table[i+1][3] + (t2 - t) * table[i][3]) / (t2 - t1);
+            b = Math.floor(b);
+            if(b >= 256) b = 255;
             return "#" + hex2(r) + hex2(g) + hex2(b);
         }
     }
@@ -366,12 +370,12 @@ $(document).keydown(function(event){
     }
     if(ck && kc == KC.left){ // 古いバージョンゲット
         version += 1;
-        getdata();
+        getdata({version:version});
     }
     else if(ck && kc == KC.right){
         if(version >= 0){
             version -= 1;
-            getdata();
+            getdata({version:version});
         }
     }
     else if(kc >= 0x30 && kc <= 0x7e && editline < 0 && !cd && !ck){
@@ -1014,25 +1018,20 @@ function writedata(force){
 function getdata(opts){ // 20050815123456.utf のようなテキストを読み出し
     if(opts === null || typeof opts !== 'object') opts = {};
     if(typeof opts.version !== 'number' || 0 > opts.version) opts.version = 0;
-  //alert('getdata(' + name + '/' + title + ')');
-  //alert(root + "/" + name + "/" + title + "/json");
     $.ajax({
         type: "GET",
-        async: true,
+        async: false,
         url: root + "/" + name + "/" + title + "/json",
         data: opts,
-        success: function(resstr){
-            //res = JSON.parse(resstr);
-            res = resstr; // JSONが返る?
+        success: function(res){
             datestr = res['date'];
             dt = res['age'];
             data = res['data'].concat();
             data_old = res['data'].concat();
-            //orig_md5 = MD5_hexhash(utf16to8(data.join("\n").replace(/\n+$/,'')+"\n"));
+            orig_md5 = MD5_hexhash(utf16to8(data.join("\n").replace(/\n+$/,'')+"\n"));
             search();
         },
         error: function(){
-          alert('ERROR getdata');
         }
     });
 }
@@ -1187,7 +1186,7 @@ function follow_scroll(){
 // 右下の通知Box
 $(function(){
     window.notifyBox = new (function(target){
-
+	
 	var img = $("<img>").attr("src", "/progress.png").hide();
 	var textBox = $("<span>").css({margin: "5px"});
 	
@@ -1227,6 +1226,7 @@ $(function(){
 	
     })();
 });
+
 
 // リンク先アイコン表示
 function getrelated(){

@@ -26,8 +26,8 @@ module.exports = (app) ->
   #  ページ内容
   app.get '/:wiki/:title/json', (req, res) ->
     debug 'Getting wiki/title/json'
-    debug JSON.stringify req.query # { suggest, version }
-    Pages.latest req.params.wiki, req.params.title, (err, page) ->
+    debug JSON.stringify req.query # { suggest, version, age }
+    Pages.json req.params.wiki, req.params.title, req.query, (err, page) ->
       if err
         return res.send
           error: 'An error has occurred'

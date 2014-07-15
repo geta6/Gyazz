@@ -15,16 +15,31 @@ module.exports = (app) ->
     text: String
     timestamp: Date
 
-  # Pages.latest() 最新ページを得る
-  pageSchema.statics.latest = (wiki, title, callback) ->
+  # # Pages.latest() 最新ページを得る
+  # pageSchema.statics.latest = (wiki, title, callback) ->
+  #   @find
+  #     wiki: wiki
+  #     title:title
+  #   .sort
+  #     timestamp: -1
+  #   .limit 1
+  #   .exec (err, results) ->
+  #     callback err, results[0]
+
+  # Pages.json() 必要なページを取得する
+  pageSchema.statics.json = (wiki, title, param, callback) ->
     @find
       wiki: wiki
       title:title
     .sort
       timestamp: -1
-    .limit 1
     .exec (err, results) ->
-      callback err, results[0]
+      if param.version
+        callback err, results[param.version]
+        return
+      else
+        callback err, results[0]
+
 
   # インデクス作成が必要
   # % mongo gyazz
