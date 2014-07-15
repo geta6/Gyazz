@@ -1,0 +1,39 @@
+//doctype html
+html
+  head
+    - pagetitle = (q == '' ? 'ページリスト' : "「#{q}」検索結果")
+    meta(charset='utf-8')
+    title #{wiki} #{pagetitle}
+    link(rel="stylesheet",href="/stylesheets/gyazz.css",type="text/css")
+    link(rel="apple-touch-icon",href="/gyazz.png")
+    link(rel="shortcut icon",href="/favicon.ico")
+    link(rel="alternate",type="application/rss+xml",title="#{title} RSS Feed",href="#{wiki}/rss.xml")
+    meta(name="robots",content="page.wiki[searchable] ? index,follow : noindex,nofollow")
+
+    // script(src='/javascripts/utf.js')
+    script(src="/javascripts/jquery.js")
+    script(src='/javascripts/jquery.lazyload.min.js')
+
+    link(rel="stylesheet",href="/stylesheets/gyazz.css",type="text/css")
+
+    script.
+      $(function() {
+        $('.lazyload').lazyload();
+      });
+  </script>
+  body
+    div.title
+      span.wordtitle #{wiki} #{pagetitle} (#{pages.length})
+      form(action="/__search/#{wiki}",method="get",style="float:right;font-size:12pt;")
+        input(height='20',name='q',type='text', value='#{q}')
+        input(type='submit',value='検索')
+    p
+    div
+      div(style="float:left;")
+        - for(var i=0;i<pages.length;i++){
+          - title = pages[i];
+          - url = "/"+wiki+"/"+title;
+          div.listedit0__xxx
+            img.lazyload(src="data:image/gif;base64,R0lGODdhMgAMAPAAAMzMzAAAACH/C1hNUCBEYXRhWE1QAz94cAAsAAAAADIADAAAAheEj6nL7Q+jnLTai7PevPsPhuJIlmZSAAA7",data-original="/#{wiki}/#{title}/modify.png",width="50",height="12",id='#{i}')
+            a.tag(href="#{url}") #{title}
+        - }

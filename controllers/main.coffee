@@ -90,9 +90,12 @@ module.exports = (app) ->
         res.set('Content-Type', 'image/png')
         res.send pngres
 
+  # ページリスト
   app.get '/:wiki', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}"
 
-    return res.render 'search',
-      wiki:  req.params.wiki
-      q:     ''
+    list = Pages.mlist req.params.wiki, (err, list) ->
+      res.render 'search',
+        wiki:  req.params.wiki
+        q:     ''
+        pages: list
