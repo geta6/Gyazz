@@ -5,12 +5,9 @@
 debug    = require('debug')('gyazz:page')
 mongoose = require 'mongoose'
 
-Access = mongoose.model 'Access'
-
 module.exports = (app) ->
   
-  MAX = 25
-  MAXH = 12
+  Access = mongoose.model 'Access'
   
   pageSchema = new mongoose.Schema
     wiki: String
@@ -29,7 +26,38 @@ module.exports = (app) ->
     .exec (err, results) ->
       callback err, results[0]
 
-  # Pages.access() アクセス/変更情報を得る
+  # インデクス作成が必要
+  # % mongo gyazz
+  # db.pages.ensureIndex({ timestamp: 1 })
+  # db.access.ensureIndex({ timestamp: 1 })
+
+  # Pages.mlist() 更新順にページタイトルのリストを取得
+  pageSchema.statics.mlist = (wiki, callback) ->
+    timesort this, wiki, callback
+
+  # Pages.alist() アクセス順にページタイトルのリストを取得
+  pageSchema.statics.alist = (wiki, callback) ->
+    timesort Access, wiki, callback
+    
+  timesort = (db, wiki, callback) ->
+    db.find
+      wiki: wiki
+    .sort
+      timestamp: -1
+    .exec (err, results) ->
+      if err
+        console.log err
+        return
+      list = []
+      titles = {}
+      results.map (result) ->
+        title = result.title
+        unless titles[title]
+          titles[title] = true
+          list.push title
+      callback err, list
+
+  # Pages.access() すべてのアクセス/変更時刻の配列を得る
   pageSchema.statics.access = (wiki, title, callback) ->
     debug "page.access(#{wiki},#{title})"
     Access.find
@@ -46,8 +74,11 @@ module.exports = (app) ->
         modify_history = results.map (result) ->
           result.timestamp
         modify_log = accumulate_log modify_history
-        visualize(access_log,modify_log,callback)
+        visualize access_log, modify_log, callback
 
+  MAX = 25
+  MAXH = 12
+  
   accumulate_log = (history) ->
     now = new Date
     v = []

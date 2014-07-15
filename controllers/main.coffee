@@ -89,3 +89,10 @@ module.exports = (app) ->
       png.png data, (pngres) ->
         res.set('Content-Type', 'image/png')
         res.send pngres
+
+  app.get '/:wiki', (req, res) ->
+    debug "Get: wiki = #{req.params.wiki}"
+
+    return res.render 'search',
+      wiki:  req.params.wiki
+      q:     ''
