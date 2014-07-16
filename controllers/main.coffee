@@ -10,6 +10,7 @@ Pages  = mongoose.model 'Page'
 Pairs  = mongoose.model 'Pair'
 Attrs  = mongoose.model 'Attr'
 Access = mongoose.model 'Access'
+Lines  = mongoose.model 'Line'
 
 module.exports = (app) ->
   app.get '/', (req, res) ->
@@ -31,10 +32,14 @@ module.exports = (app) ->
       if err
         return res.send
           error: 'An error has occurred'
-      res.send
-        date: '20140101010101'
-        age: page?.timestamp
-        data: page?.text.split(/\n/) or []
+      data =  page?.text.split(/\n/) or []
+      # 行ごとの古さを計算する
+      Lines.timestamps req.params.wiki, req.params.title, data, (err, timestamps) ->
+        # データ返信
+        res.send
+          date: page?.timestamp
+          age: timestamps
+          data: data
 
   # repimageなどのページ属性
   app.get '/:wiki/:title/attr', (req, res) ->

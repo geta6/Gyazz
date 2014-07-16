@@ -231,7 +231,7 @@ $(document).keydown(function(event){
     var dst;
     var tmp = [];
     var current_line_data;
-    
+
     if(searchmode) return true;
     
     not_saved = true;
@@ -607,6 +607,7 @@ function display(delay){
         }
         
         // 各行のバックグラウンド色設定
+	//alert(dt[i]);
         $("#listbg"+i).css('background-color',(version >= 0 || showold) ? bgcol(dt[i]) : 'transparent');
         if(version >= 0){ // ツールチップに行の作成時刻を表示
             $("#list"+i).addClass('hover');
@@ -1020,7 +1021,7 @@ function getdata(opts){ // 20050815123456.utf のようなテキストを読み�
     if(typeof opts.version !== 'number' || 0 > opts.version) opts.version = 0;
     $.ajax({
         type: "GET",
-        async: false,
+        async: true,
         url: root + "/" + name + "/" + title + "/json",
         data: opts,
         success: function(res){
@@ -1236,7 +1237,7 @@ function getrelated(){
         url: root + "/" + name + "/" + title + "/related",
         success: function(pages){
             for(var i=0;i<pages.length;i++){
-                title = pages[i].title;
+                var title = pages[i].title;
                 repimage = pages[i].repimage;
                 imageurl = "http://Gyazo.com/" + repimage + ".png";
                 url = "/" + name + "/" + title;

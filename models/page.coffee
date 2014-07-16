@@ -35,6 +35,10 @@ module.exports = (app) ->
       timestamp: -1
     .exec (err, results) ->
       if param.version
+        debug "wiki = #{wiki}"
+        debug "title = #{title}"
+        debug "version = #{param.version}"
+        debug results[param.version]
         callback err, results[param.version]
         return
       else
