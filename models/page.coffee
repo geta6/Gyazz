@@ -15,17 +15,6 @@ module.exports = (app) ->
     text: String
     timestamp: Date
 
-  # # Pages.latest() 最新ページを得る
-  # pageSchema.statics.latest = (wiki, title, callback) ->
-  #   @find
-  #     wiki: wiki
-  #     title:title
-  #   .sort
-  #     timestamp: -1
-  #   .limit 1
-  #   .exec (err, results) ->
-  #     callback err, results[0]
-
   # Pages.json() 必要なページを取得する
   pageSchema.statics.json = (wiki, title, param, callback) ->
     @find
@@ -35,15 +24,20 @@ module.exports = (app) ->
       timestamp: -1
     .exec (err, results) ->
       if param.version
-        debug "wiki = #{wiki}"
-        debug "title = #{title}"
-        debug "version = #{param.version}"
-        debug results[param.version]
         callback err, results[param.version]
         return
-      else
-        callback err, results[0]
-
+      if param.age
+        days = Math.ceil(Math.exp(param.age * Math.log(1.5))) # 何日前のデータか
+        time = new Date(results[0].timestamp - days * 24 * 60 * 60 * 1000)
+        # この下はもう少しうまく書けるのでは...
+        rr = null
+        results.map (result) ->
+          if !rr && result.timestamp < time
+            rr = result
+        if rr
+          callback err, rr
+        return
+      callback err, results[0]
 
   # インデクス作成が必要
   # % mongo gyazz

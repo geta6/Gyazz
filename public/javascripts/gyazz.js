@@ -481,12 +481,19 @@ function setup(){ // 初期化
             }
             $.ajax({
                 type: "GET",
-                async: false,
+                async: true,
                 url: root + "/" + name + "/" + title + "/json",
                 data: {
                     age: age
                 },
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+		    alert("ERROR!");
+		    //$("#XMLHttpRequest").html("XMLHttpRequest : " + XMLHttpRequest.status);
+		    //$("#textStatus").html("textStatus : " + textStatus);
+		    //$("#errorThrown").html("errorThrown : " + errorThrown.message);
+		},
                 success: function(res){
+		    //alert("success age = " + age);
                     cache.history[age] = res;
                     show_history(res);
                 }

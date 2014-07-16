@@ -24,13 +24,14 @@ module.exports = (app) ->
       callback false, results[0]?.timestamp
 
   lineSchema.statics.timestamps = (wiki, title, data, callback) ->
-    debug "Lines.timestamps"
+    debug "Lines.timestamps wiki=#{wiki}, title=#{title}"
     @find
       wiki:wiki
       title:title
     .exec (err, results) ->
       timestamp = {}
       results.map (result) ->
+        debug "timestamp = #{result.timestamp}"
         timestamp[result.line] = result.timestamp
       timestamps = []
       now = new Date
