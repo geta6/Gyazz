@@ -3,6 +3,7 @@
 #
  
 debug    = require('debug')('gyazz:page')
+_        = require 'underscore'
 mongoose = require 'mongoose'
 
 module.exports = (app) ->
@@ -29,13 +30,8 @@ module.exports = (app) ->
       if param.age
         days = Math.ceil(Math.exp(param.age * Math.log(1.5))) # 何日前のデータか
         time = new Date(results[0].timestamp - days * 24 * 60 * 60 * 1000)
-        # この下はもう少しうまく書けるのでは...
-        rr = null
-        results.map (result) ->
-          if !rr && result.timestamp < time
-            rr = result
-        if rr
-          callback err, rr
+        oldpage = _.find(results, (result) -> result.timestamp < time)
+        callback err, oldpage if oldpage
         return
       callback err, results[0]
 
