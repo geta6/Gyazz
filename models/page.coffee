@@ -29,10 +29,11 @@ module.exports = (app) ->
         return
       if param.age # 履歴画像上ドラッグで古いデータを取得
         days = Math.ceil(Math.exp(param.age * Math.log(1.5)))              # だいたい何日前のデータか計算
-        time = new Date(results[0].timestamp - days * 24 * 60 * 60 * 1000) # その日付を取得
-        oldpage = _.find(results, (result) -> result.timestamp < time)     # それより古いデータを取得
-        oldpage = results[results.length - 1] unless oldpage               # なければ最古のものを取得
-        callback err, oldpage if oldpage
+        if results.length > 0
+          time = new Date(results[0].timestamp - days * 24 * 60 * 60 * 1000) # その日付を取得
+          oldpage = _.find(results, (result) -> result.timestamp < time)     # それより古いデータを取得
+          oldpage = results[results.length - 1] unless oldpage               # なければ最古のものを取得
+          callback err, oldpage if oldpage
         return
       callback err, results[0] # 最新バージョンを取得
 
