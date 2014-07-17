@@ -17,6 +17,35 @@ module.exports = (app) ->
     return res.render 'index',
       title: 'Express'
 
+# ## ページの代表画像があればリダイレクトする *******
+# get '/:name/*/icon' do
+#   name = params[:name]
+#   title = params[:splat].join('/')
+#   page = Gyazz::Page.new(name,title)
+#   image = page['repimage']
+#   halt 404, "image not found" if image.to_s.empty?
+#   redirect case image
+#            when /^https?:\/\/.+\.(png|jpe?g|gif)$/i
+#              image
+#            else
+#              "http://gyazo.com/#{image}.png"
+#            end
+
+  app.get '/:wiki/:title/icon', (req, res) ->
+    Attrs.attr req.params.wiki, req.params.title, (err, result) ->
+      debug "Getting attr===="
+      if err
+        return res.send
+          error: 'icon: An error has occurred'
+      image = result.repimage
+      if image
+        if image.match /^https?:\/\/.+\.(png|jpe?g|gif)$/i
+          res.redirect image
+        else
+          res.redirect "http://gyazo.com/#{image}.png"
+      else
+        res.send 404, "image not found"
+
   app.get '/:wiki/:title', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
 

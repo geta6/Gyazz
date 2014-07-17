@@ -31,7 +31,6 @@ module.exports = (app) ->
     .exec (err, results) ->
       timestamp = {}
       results.map (result) ->
-        debug "timestamp = #{result.timestamp}"
         timestamp[result.line] = result.timestamp
       timestamps = []
       now = new Date
