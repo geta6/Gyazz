@@ -33,7 +33,6 @@ module.exports = (app) ->
         return res.send
           error: 'An error has occurred'
       data =  page?.text.split(/\n/) or []
-      console.log "====== #{data.length}"
       # 行ごとの古さを計算する
       Lines.timestamps req.params.wiki, req.params.title, data, (err, timestamps) ->
         # データ返信
@@ -83,11 +82,8 @@ module.exports = (app) ->
             debug result.length
             res.send result
 
-  # アクセス履歴のPNGを返す
+  # ページ変更履歴とアクセス履歴からPNGを生成する
   app.get '/:wiki/:title/modify.png', (req, res) ->
-    #
-    # 変更履歴とアクセス履歴からPNGを生成する
-    #
     debug "modify: wiki = #{req.params.wiki}, title=#{req.params.title}"
 
     Pages.access req.params.wiki, req.params.title, (err, data) ->
