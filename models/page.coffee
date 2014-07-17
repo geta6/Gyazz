@@ -16,7 +16,7 @@ module.exports = (app) ->
     text: String
     timestamp: Date
 
-  # Pages.json() 必要なページを取得する
+  # Pages.json() 指定されたページを取得
   pageSchema.statics.json = (wiki, title, param, callback) ->
     @find
       wiki: wiki
@@ -24,16 +24,17 @@ module.exports = (app) ->
     .sort
       timestamp: -1
     .exec (err, results) ->
-      if param.version
+      if param.version # Nバージョン前のデータを取得
         callback err, results[param.version]
         return
-      if param.age
-        days = Math.ceil(Math.exp(param.age * Math.log(1.5))) # 何日前のデータか
-        time = new Date(results[0].timestamp - days * 24 * 60 * 60 * 1000)
-        oldpage = _.find(results, (result) -> result.timestamp < time)
+      if param.age # 履歴画像上ドラッグで古いデータを取得
+        days = Math.ceil(Math.exp(param.age * Math.log(1.5)))              # だいたい何日前のデータか計算
+        time = new Date(results[0].timestamp - days * 24 * 60 * 60 * 1000) # その日付を取得
+        oldpage = _.find(results, (result) -> result.timestamp < time)     # それより古いデータを取得
+        oldpage = results[results.length - 1] unless oldpage               # なければ最古のものを取得
         callback err, oldpage if oldpage
         return
-      callback err, results[0]
+      callback err, results[0] # 最新バージョンを取得
 
   # インデクス作成が必要
   # % mongo gyazz

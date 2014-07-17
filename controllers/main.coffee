@@ -33,6 +33,7 @@ module.exports = (app) ->
         return res.send
           error: 'An error has occurred'
       data =  page?.text.split(/\n/) or []
+      console.log "====== #{data.length}"
       # 行ごとの古さを計算する
       Lines.timestamps req.params.wiki, req.params.title, data, (err, timestamps) ->
         # データ返信

@@ -471,6 +471,7 @@ function setup(){ // 初期化
                 datestr = res['date'];
                 dt = res['age'];
                 data = res['data'];
+		// $('#debug').text(data.length);
                 // orig_md5 = MD5_hexhash(utf16to8(data.join("\n").replace(/\n+$/,'')+"\n"));
                 search();
             };
@@ -481,7 +482,7 @@ function setup(){ // 初期化
             }
             $.ajax({
                 type: "GET",
-                async: true,
+                async: false, // こうしないと履歴表示が大変なことになるのだが...
                 url: root + "/" + name + "/" + title + "/json",
                 data: {
                     age: age
