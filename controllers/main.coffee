@@ -31,9 +31,17 @@ module.exports = (app) ->
 #              "http://gyazo.com/#{image}.png"
 #            end
 
+  # 普通にページアクセス
+  app.get '/:wiki/:title', (req, res) ->
+    debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
+    return res.render 'page',
+      title: req.params.title
+      wiki:  req.params.wiki
+
+  # 代表アイコン画像
   app.get '/:wiki/:title/icon', (req, res) ->
+    debug "Getting #{req.params.wiki}/#{req.params.title}/icon"
     Attrs.attr req.params.wiki, req.params.title, (err, result) ->
-      debug "Getting attr===="
       if err
         return res.send
           error: 'icon: An error has occurred'
@@ -46,14 +54,7 @@ module.exports = (app) ->
       else
         res.send 404, "image not found"
 
-  app.get '/:wiki/:title', (req, res) ->
-    debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
-
-    return res.render 'page',
-      title: req.params.title
-      wiki:  req.params.wiki
-
-  #  ページ内容
+  #  ページ内容取得
   app.get '/:wiki/:title/json', (req, res) ->
     debug "Getting #{req.params.wiki}/#{req.params.title}/json"
     debug JSON.stringify req.query # { suggest, version, age }
