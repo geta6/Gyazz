@@ -8,9 +8,11 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-simple-mocha'
   grunt.loadNpmTasks 'grunt-notify'
+  grunt.loadNpmTasks 'grunt-contrib-coffee'
 
   grunt.registerTask 'test',    [ 'coffeelint', 'simplemocha' ]
   grunt.registerTask 'default', [ 'test', 'watch' ]
+  grunt.registerTask 'compile', [ 'coffee' ]
 
   grunt.initConfig
 
@@ -43,6 +45,14 @@ module.exports = (grunt) ->
         ignoreLeaks: no
       dist:
         src: [ 'tests/test_*.coffee' ]
+
+    coffee:
+      compile:
+        files:
+          'public/javascripts/transpose.js': 'public/javascripts/transpose.coffee'
+          'public/javascripts/align.js': 'public/javascripts/align.coffee'
+      options:
+        bare: yes
 
     watch:
       options:
