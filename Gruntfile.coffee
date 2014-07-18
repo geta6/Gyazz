@@ -62,6 +62,7 @@ module.exports = (grunt) ->
           'public/javascripts/transpose.js': 'public/javascripts/transpose.coffee'
           'public/javascripts/align.js': 'public/javascripts/align.coffee'
           'public/javascripts/related.js': 'public/javascripts/related.coffee'
+          'public/javascripts/tag.js': 'public/javascripts/tag.coffee'
       options:
         bare: yes
 
