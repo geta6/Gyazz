@@ -2,7 +2,6 @@ aligncolumns = () -> # 同じパタンの連続を検出して桁を揃える
   similarlines(align, () -> true)
 
 align = (begin, lines, dummy) -> # begin番目からlines個の行を桁揃え
-  alert "align #{begin}, #{lines}"
   pos = []
   width = []
   maxwidth = []

@@ -497,7 +497,7 @@ function setup(){ // 初期化
                     cache.history[age] = res;
                     show_history(res);
                 }
-            });
+	    });
         }
     );
 
@@ -882,47 +882,3 @@ function follow_scroll(){
     
     $("body").stop().animate({'scrollTop': currentLinePos - windowHeight/2}, 200);
 };
-
-// 右下の通知Box
-$(function(){
-    window.notifyBox = new (function(target){
-	
-	var img = $("<img>").attr("src", "/progress.png").hide();
-	var textBox = $("<span>").css({margin: "5px"});
-	
-	var box = $("<div>").addClass("notifyBox").css({
-	    position: "fixed",
-	    right: "10px",
-	    bottom: "10px",
-	    "background-color": "#EEE"
-	}).append(textBox).append(img);
-	
-	$("html").append(box);
-	
-	var self = this;
-	
-	this.print = function(str, opts){
-	    if(!opts) opts = {};
-	    textBox.text(str);
-	    if(opts.progress) img.show();
-	    else img.hide();
-	    return self;
-	};
-	
-	this.show = function(timeout){
-	    box.show();
-	    if(typeof timeout === 'number' && timeout > 0){
-		setTimeout(function(){
-		    box.fadeOut(800);
-		}, timeout);
-	    }
-	    return self;
-	};
-	
-	this.hide = function(){
-	    box.hide();
-	    return self;
-	};
-	
-    })();
-});
