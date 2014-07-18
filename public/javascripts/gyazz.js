@@ -883,7 +883,6 @@ function follow_scroll(){
     $("body").stop().animate({'scrollTop': currentLinePos - windowHeight/2}, 200);
 };
 
-
 // 右下の通知Box
 $(function(){
     window.notifyBox = new (function(target){

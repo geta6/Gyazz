@@ -140,6 +140,6 @@ tag = (s,line) ->
     while a = elements[i].match /^(.*)<<<(\d+)>>>(.*)$/
       elements[i] = a[1] + matched[a[2]] + a[3]
   [0...elements.length].map (i) ->
-    elements[i] = "<span id='e#{line}'_'#{i}'>#{elements[i]}</span>" # 各要素にidをつける jQuery風にすべき***
+    elements[i] = "<span id='e#{line}_#{i}'>#{elements[i]}</span>" # 各要素にidをつける jQuery風にすべき***
 
   elements.join ' '

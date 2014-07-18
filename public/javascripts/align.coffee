@@ -2,6 +2,7 @@ aligncolumns = () -> # 同じパタンの連続を検出して桁を揃える
   similarlines(align, () -> true)
 
 align = (begin, lines, dummy) -> # begin番目からlines個の行を桁揃え
+  alert "align #{begin}, #{lines}"
   pos = []
   width = []
   maxwidth = []
@@ -9,6 +10,7 @@ align = (begin, lines, dummy) -> # begin番目からlines個の行を桁揃え
     pos[line] = []
     width[line] = []
     [0..spaces[begin]].map (i) ->
+      # 要素のidはtag()でつけられている
       id = "#e" + line + "_" + (i + indent(line))
       pos[line][i] = $(id).offset().left
     [0..spaces[begin]].map (i) ->
