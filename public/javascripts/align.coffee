@@ -26,4 +26,3 @@ align = (begin, lines, dummy) -> # begin番目からlines個の行を桁揃え
       id = "#e" + line + "_" + (i + indent(line))
       $(id).css('position','absolute').css('left',colpos)
     colpos += maxwidth[i]
-

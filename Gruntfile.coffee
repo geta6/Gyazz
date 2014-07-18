@@ -48,11 +48,24 @@ module.exports = (grunt) ->
 
     coffee:
       compile:
+        # files: [
+        #   src: 'public/javascripts/*.coffee'
+        #   #dest: 'public/javascripts/'
+        #   expand: true
+        #   ext: '.js'
+        #  ]
+        #  
+        # #src: ['public/javascripts/*.coffee']
+        # # dest: 'Resources/'
+        # # ext: '.js'
+        # #
         files:
           'public/javascripts/transpose.js': 'public/javascripts/transpose.coffee'
           'public/javascripts/align.js': 'public/javascripts/align.coffee'
+          'public/javascripts/related.js': 'public/javascripts/related.coffee'
       options:
         bare: yes
+
 
     watch:
       options:
