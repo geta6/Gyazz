@@ -33,8 +33,8 @@ transpose = () ->
 do_transpose = (beginline, lines, indent) ->  # begin番目からlines個の行の行と桁を入れ換え
   cols = spaces[beginline] + 1
   newlines = []
-  indentstr =  ([0...indent].map (x) -> " ").join('') # indentの長さの空白文字列を作りたいだけなのだが...
-  [0...cols].map (i) -> newlines[i] = indentstr
+  [0...cols].map (i) ->
+    newlines[i] = indentstr()
   
   [0...lines].map (y) ->
     matched2 = []

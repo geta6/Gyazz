@@ -59,6 +59,7 @@ $(document).keypress(function(event){
         // IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
         if(editline >= 0){
             addblankline(editline+1,indent(editline));
+	    search(); // 要るのか?
             zoomlevel = 0;
             calcdoi();
             display();
@@ -112,19 +113,19 @@ function bgcol(t){
     }
 }
 
-function addblankline(line,indent){
-    var i;
-    editline = line;
-    eline = line;
-    deleteblankdata();
-    for(i=data.length-1;i>=editline;i--){
-        data[i+1] = data[i];
-    }
-    var s = '';
-    for(i=0;i<indent;i++) s += ' ';
-    data[editline] = s;
-    search();
-}
+//function addblankline(line,indent){
+//    var i;
+//    editline = line;
+//    eline = line;
+//    deleteblankdata();
+//    for(i=data.length-1;i>=editline;i--){
+//        data[i+1] = data[i];
+//    }
+//    var s = '';
+//    for(i=0;i<indent;i++) s += ' ';
+//    data[editline] = s;
+//    search();
+//}
 
 $(document).mouseup(function(event){
     if(editTimeout) clearTimeout(editTimeout);
@@ -385,14 +386,14 @@ $(document).keydown(function(event){
     if(not_saved) $("input#newtext").css('background-color','#f0f0d0');
 });
 
-function deleteblankdata(){ // 空白行を削除
-    for(i=0;i<data.length;i++){
-        if(typeof data[i] === "string" && data[i].match(/^ *$/)){
-            data.splice(i,1);
-        }
-    }
-    calcdoi();
-}
+//function deleteblankdata(){ // 空白行を削除
+//    for(i=0;i<data.length;i++){
+//        if(typeof data[i] === "string" && data[i].match(/^ *$/)){
+//            data.splice(i,1);
+//        }
+//    }
+//    calcdoi();
+//}
 
 // 認証文字列をサーバに送る
 function tell_auth(){
@@ -422,6 +423,7 @@ function linefunc(n){
         }
         if(event.shiftKey){
             addblankline(n,indent(n));  // 上に行を追加
+	    search();
         }
     };
 }
