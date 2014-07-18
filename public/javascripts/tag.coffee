@@ -21,7 +21,7 @@ tag = (s,line) ->
   while m = s.match /^(.*)\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\](.*)$/ # [[....]]
     [x, pre, inner, x, post] = m
     switch
-      when t = inner.match /^(http[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://example.com/ http://example.com/abc.jpg]]
+      when t = inner.match /^(http[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://.../ http://.../abc.jpg]]
         matched.push "<a href='#{t[1]}' target='_blank'><img src='#{t[2]}.#{t[3]} border='none'></a>"
       when t = inner.match /^(http.+)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://example.com/abc.jpg]
         matched.push "<a href='#{t[1]}.#{t[2]}' target='_blank'><img src='#{t[1]}.#{t[2]}' border='none'></a>"
@@ -35,8 +35,9 @@ tag = (s,line) ->
         else
           link_to = "#{root}/#{name}/#{t[1]}"
           img_url = "#{link_to}/icon"
-        matched.push "<a href='#{link_to}' class='link' target='_blank'><img src='#{img_url}' class='icon' height='24' border='0' alt='#{link_to}' title='#{link_to}' /></a>"
-      when t = inner.match /^(.+)\.(png|icon|jpe?g|gif)[\*x×]([1-9][0-9]*)(|\.[0-9]+)$/ # (URL|ページ名).(icon|png)x個数 でアイコンをたくさん表示 ???? 上と共通では?
+        matched.push "<a href='#{link_to}' class='link' target='_blank'>" +
+          "<img src='#{img_url}' class='icon' height='24' border='0' alt='#{link_to}' title='#{link_to}' /></a>"
+      when t = inner.match /^(.+)\.(png|icon|jpe?g|gif)[\*x×]([1-9][0-9]*)(|\.[0-9]+)$/ # (URL|ページ名).(icon|png)x個
         link_to = null
         img_url = null
         switch
@@ -55,7 +56,8 @@ tag = (s,line) ->
           icons += "<img src='#{img_url}' class='icon' height='24' border='0' alt='#{t[1]}' title='#{t[1]}' />"
         if t[4].length > 0
           odd = Number("0"+t[4])
-          icons += "<img src='#{img_url}' class='icon' height='24' width='#{24*odd}' border='0' alt='#{link_to}' title='#{link_to}' />"
+          icons += "<img src='#{img_url}' class='icon' height='24' width='#{24*odd}' border='0'
+            alt='#{link_to}' title='#{link_to}' />"
         icons += '</a>'
         matched.push icons
       when t = inner.match /^((http[s]?|javascript):[^ ]+) (.*)$/ # [[http://example.com/ example]]
@@ -89,8 +91,10 @@ tag = (s,line) ->
         o = parseloc(inner)
         s = """
           <div id='map' style='width:300px;height:300px'></div>
-          <div id='line1' style='position:absolute;width:300px;height:4px;background-color:rgba(200,200,200,0.3);'></div>
-          <div id='line2' style='position:absolute;width:4px;height:300px;background-color:rgba(200,200,200,0.3);'></div>
+          <div id='line1' style='position:absolute;width:300px;height:4px;
+            background-color:rgba(200,200,200,0.3);'></div>
+          <div id='line2' style='position:absolute;width:4px;height:300px;
+            background-color:rgba(200,200,200,0.3);'></div>
           <script type='text/javascript'>
           var mapOptions = {
             center: new google.maps.LatLng(#{o.lat},#{o.lng}),
@@ -108,23 +112,27 @@ tag = (s,line) ->
             linediv2.style.left = mapdiv.offsetLeft+150-2;
           });
           google.maps.event.addListener(map, 'mouseup', function() {
-          var latlng = map.getCenter();
-          var o = {};
-          o.lng = latlng.lng();
-          o.lat = latlng.lat();
-          o.zoom = map.getZoom();
-          for(var i=0;i<data.length;i++){
-            data[i] = data[i].replace(/\\[\\[([EW]\\d+\\.\\d+[\\d\\.]*[NS]\\d+\\.\\d+[\\d\\.]*|[NS]\\d+\\.\\d+[\\d\\.]+[EW]\\d+\\.\\d+[\\d\\.]*)(Z\\d+)?\\]\\]/,'[['+locstr(o)+']]');
-          }
-          writedata();
-        });
+            var latlng = map.getCenter();
+            var o = {};
+            o.lng = latlng.lng();
+            o.lat = latlng.lat();
+            o.zoom = map.getZoom();
+            ew = '[EW]\\d+\\.\\d+[\\d\\.]*';
+            ns = '[NS]\\d+\\.\\d+[\\d\\.]*';
+            s = "\\[\\[("+ew+ns+"|"+ns+ew+")(Z\\d+)?\\]\\]";
+            r = new RegExp(s);
+            for(var i=0;i<data.length;i++){
+              data[i] = data[i].replace(r,'[[#{locstr(o)}]]');
+            }
+            writedata();
+          });
         """
         matched.push s
 
       else
         matched.push "<a href='#{root}/#{name}/#{inner}' class='tag' target='_blank'>#{inner}</a>"
 
-    s = pre + '<<<' + (matched.length-1) + '>>>' + post;
+    s = pre + '<<<' + (matched.length-1) + '>>>' + post
 
   elements = s.split ' '
   spaces[line] = elements.length - indent(line) - 1
