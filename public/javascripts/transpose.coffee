@@ -22,7 +22,6 @@ similarlines = (process, condition) -> # 同じパタンの連続行の処理
   if lastspaces > 1 && data.length-beginline > 1 #  同じパタンの連続を検出
     if condition beginline, data.length
       process beginline, data.length-beginline, indent(beginline)
-      # return
 
 transpose_condition = (beginline,limit) ->
   window.editline >= beginline && window.editline < limit
@@ -35,7 +34,7 @@ do_transpose = (beginline, lines, indent) ->  # begin番目からlines個の行�
   # alert "#{beginline}, #{lines}, #{indent}"
   cols = spaces[beginline] + 1
   newlines = []
-  indentstr =  ([0...indent].map () -> " ").join('') # indentの長さの空白文字列を作りたいだけなのだが...
+  indentstr =  ([0...indent].map (x) -> " ").join('') # indentの長さの空白文字列を作りたいだけなのだが...
   [0...cols].map (i) -> newlines[i] = indentstr
   
   [0...lines].map (y) ->
@@ -54,7 +53,7 @@ do_transpose = (beginline, lines, indent) ->  # begin番目からlines個の行�
       s = pre + '<<2<' + (matched2.length-1) + '>2>>' + post
     elements = s.split ' '
     
-  	#var newElements = elements.takeWhile(e => e == regex).map(e => )
+    # var newElements = elements.takeWhile(e => e == regex).map(e => )
 
     [0...elements.length].map (i) -> # 行桁入れ換え
       while a = elements[i].match /^(.*)<<3<(\d+)>3>>(.*)$/

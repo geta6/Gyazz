@@ -17,7 +17,7 @@ align = (begin, lines, dummy) -> # begin番目からlines個の行を桁揃え
   [0...spaces[begin]].map (i) -> # 桁ごとに最大幅を計算 範囲 あってる????
     max = 0
     [begin...begin+lines].map (line) ->
-       max = width[line][i] if width[line][i] > max
+      max = width[line][i] if width[line][i] > max
     maxwidth[i] = max
   
   colpos = pos[begin][0]

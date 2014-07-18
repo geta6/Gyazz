@@ -24,8 +24,8 @@ module.exports = (grunt) ->
           value: 2
         newlines_after_classes:
           level: 'error'
-        no_empty_param_list:
-          level: 'error'
+        #no_empty_param_list:
+        #  level: 'error'
         no_unnecessary_fat_arrows:
           level: 'ignore'
       dist:
