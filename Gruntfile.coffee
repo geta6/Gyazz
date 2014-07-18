@@ -54,7 +54,6 @@ module.exports = (grunt) ->
         #   expand: true
         #   ext: '.js'
         #  ]
-        #  
         # #src: ['public/javascripts/*.coffee']
         # # dest: 'Resources/'
         # # ext: '.js'
