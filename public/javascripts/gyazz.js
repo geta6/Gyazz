@@ -113,20 +113,6 @@ function bgcol(t){
     }
 }
 
-//function addblankline(line,indent){
-//    var i;
-//    editline = line;
-//    eline = line;
-//    deleteblankdata();
-//    for(i=data.length-1;i>=editline;i--){
-//        data[i+1] = data[i];
-//    }
-//    var s = '';
-//    for(i=0;i<indent;i++) s += ' ';
-//    data[editline] = s;
-//    search();
-//}
-
 $(document).mouseup(function(event){
     if(editTimeout) clearTimeout(editTimeout);
     eline = -1;
@@ -169,10 +155,10 @@ $(document).mousedown(function(event){
     return true;
 });
 
-function indent(line){ // 先頭の空白文字の数
-    if(typeof data[line] !== "string") return 0;
-    return data[line].match(/^( *)/)[1].length;
-}
+//function indent(line){ // 先頭の空白文字の数
+//    if(typeof data[line] !== "string") return 0;
+//    return data[line].match(/^( *)/)[1].length;
+//}
 
 function movelines(line){ // 移動すべき行数
     var i;
@@ -385,15 +371,6 @@ $(document).keydown(function(event){
     
     if(not_saved) $("input#newtext").css('background-color','#f0f0d0');
 });
-
-//function deleteblankdata(){ // 空白行を削除
-//    for(i=0;i<data.length;i++){
-//        if(typeof data[i] === "string" && data[i].match(/^ *$/)){
-//            data.splice(i,1);
-//        }
-//    }
-//    calcdoi();
-//}
 
 // 認証文字列をサーバに送る
 function tell_auth(){
@@ -737,15 +714,6 @@ function getdata(opts){ // 20050815123456.utf のようなテキストを読み�
         error: function(){
         }
     });
-}
-
-function maxindent(){
-    var maxind = 0;
-    for(var i=0;i<data.length;i++){
-        var ind = indent(i);
-        if(ind > maxind) maxind = ind;
-    }
-    return maxind;
 }
 
 function calcdoi(){
