@@ -31,7 +31,6 @@ transpose = () ->
   similarlines do_transpose, transpose_condition
 
 do_transpose = (beginline, lines, indent) ->  # begin番目からlines個の行の行と桁を入れ換え
-  # alert "#{beginline}, #{lines}, #{indent}"
   cols = spaces[beginline] + 1
   newlines = []
   indentstr =  ([0...indent].map (x) -> " ").join('') # indentの長さの空白文字列を作りたいだけなのだが...
@@ -53,8 +52,6 @@ do_transpose = (beginline, lines, indent) ->  # begin番目からlines個の行�
       s = pre + '<<2<' + (matched2.length-1) + '>2>>' + post
     elements = s.split ' '
     
-    # var newElements = elements.takeWhile(e => e == regex).map(e => )
-
     [0...elements.length].map (i) -> # 行桁入れ換え
       while a = elements[i].match /^(.*)<<3<(\d+)>3>>(.*)$/
         elements[i] = a[1] + "[[[" + matched3[a[2]] + "]]]" + a[3]
@@ -68,8 +65,7 @@ do_transpose = (beginline, lines, indent) ->  # begin番目からlines個の行�
   data.splice beginline, lines
   [0...newlines.length].map (i) ->
     data.splice beginline+i, 0, newlines[i]
-  # alert data
   
-  # writedata()
+  writedata()
   window.editline = -1
   display true
