@@ -11,10 +11,10 @@
 
 gb = new GyazzBuffer();
 // var data = []; GyazzBuffer内のものを使う
+// var editline = -1;
 
 var version = -1;
 
-var editline = -1;
 var eline = -1;
 
 var dt = [];          // 背景色
@@ -59,8 +59,8 @@ $(document).keypress(function(event){
     if(kc == KC.enter){
         // 1行追加 
         // IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
-        if(editline >= 0){
-            addblankline(editline+1,indent(editline));
+        if(gb.editline >= 0){
+            addblankline(gb.editline+1,indent(gb.editline));
 	    search(); // 要るのか?
             zoomlevel = 0;
             calcdoi();
@@ -127,7 +127,7 @@ $(document).mousemove(function(event){
 });
 
 function longmousedown(){
-    editline = eline;
+    gb.editline = eline;
     calcdoi();
     display(true);
 }                 
@@ -146,7 +146,7 @@ $(document).mousedown(function(event){
     
     if(eline == -1){ // 行以外をクリック
 	    writedata();
-        editline = eline;
+        gb.editline = eline;
         calcdoi();
         display(true);
     }
@@ -173,9 +173,9 @@ function destline_up(){
     var ind;
     // インデントが自分と同じか自分より深い行を捜す。
     // ひとつもなければ -1 を返す。
-    var ind_editline = indent(editline);
+    var ind_editline = indent(gb.editline);
     var foundline = -1;
-    for(var i=editline-1;i>=0;i--){
+    for(var i=gb.editline-1;i>=0;i--){
         ind = indent(i);
         if(ind > ind_editline){
             foundline = i;
@@ -190,8 +190,8 @@ function destline_down(){
     var ind;
     // インデントが自分と同じ行を捜す。
     // ひとつもなければ -1 を返す。
-    var ind_editline = indent(editline);
-    for(var i=editline+1;i<gb.data.length;i++){
+    var ind_editline = indent(gb.editline);
+    for(var i=gb.editline+1;i<gb.data.length;i++){
         ind = indent(i);
         if(ind == ind_editline) return i;
         if(ind < ind_editline) return -1;
@@ -201,7 +201,7 @@ function destline_down(){
 
 $(document).keyup(function(event){
     var input = $("input#newtext");
-    gb.data[editline] = input.val();
+    gb.data[gb.editline] = input.val();
 });
 
 var not_saved = false;
@@ -224,7 +224,7 @@ $(document).keydown(function(event){
     
     not_saved = true;
 
-    if(ck && kc == 0x53 && editline >= 0){
+    if(ck && kc == 0x53 && gb.editline >= 0){
         transpose();
     }
     else if(kc == KC.enter){
@@ -232,15 +232,15 @@ $(document).keydown(function(event){
         writedata();
     }
     else if(kc == KC.down && sk){ // Shift+↓ = 下にブロック移動
-        if(editline >= 0 && editline < gb.data.length-1){
-            m = gb.movelines(editline);
+        if(gb.editline >= 0 && gb.editline < gb.data.length-1){
+            m = gb.movelines(gb.editline);
             dst = destline_down();
             if(dst >= 0){
                 m2 = gb.movelines(dst);
-                for(i=0;i<m;i++)  tmp[i] = gb.data[editline+i];
-                for(i=0;i<m2;i++) gb.data[editline+i] = gb.data[dst+i];
-                for(i=0;i<m;i++)  gb.data[editline+m2+i] = tmp[i];
-                editline = editline + m2;
+                for(i=0;i<m;i++)  tmp[i] = gb.data[gb.editline+i];
+                for(i=0;i<m2;i++) gb.data[gb.editline+i] = gb.data[dst+i];
+                for(i=0;i<m;i++)  gb.data[gb.editline+m2+i] = tmp[i];
+                gb.editline = gb.editline + m2;
                 deleteblankdata();
                 writedata();
             }
@@ -248,8 +248,8 @@ $(document).keydown(function(event){
     }
     else if(kc == KC.k && ck){ // Ctrl+K カーソルより右側を削除する
         var input_tag = $("input#newtext");
-        if(input_tag.val().match(/^\s*$/) && editline < gb.data.length-1){ // 行が完全に削除された時
-            gb.data[editline] = ""; // 現在の行を削除
+        if(input_tag.val().match(/^\s*$/) && gb.editline < gb.data.length-1){ // 行が完全に削除された時
+            gb.data[gb.editline] = ""; // 現在の行を削除
             deleteblankdata();
             writedata();
             setTimeout(function(){
@@ -269,21 +269,21 @@ $(document).keydown(function(event){
             }
         }, 10);
     }
-    else if(kc == KC.down && ck && editline >= 0 && editline < gb.data.length-1){ // Ctrl+↓ = 下の行と入れ替え
-        current_line_data = gb.data[editline];
-        gb.data[editline] = gb.data[editline+1];
-        gb.data[editline+1] = current_line_data;
+    else if(kc == KC.down && ck && gb.editline >= 0 && gb.editline < gb.data.length-1){ // Ctrl+↓ = 下の行と入れ替え
+        current_line_data = gb.data[gb.editline];
+        gb.data[gb.editline] = gb.data[gb.editline+1];
+        gb.data[gb.editline+1] = current_line_data;
         setTimeout(function(){
-            editline += 1;
+            gb.editline += 1;
             deleteblankdata();
             writedata();
         }, 1);
     }
     else if((kc == KC.down && !sk) || (kc == KC.n && !sk && ck)){ // ↓ = カーソル移動
-        if(editline >= 0 && editline < gb.data.length-1){
-            for(i=editline+1;i<gb.data.length;i++){
+        if(gb.editline >= 0 && gb.editline < gb.data.length-1){
+            for(i=gb.editline+1;i<gb.data.length;i++){
                 if(doi[i] >= -zoomlevel){
-                    editline = i;
+                    gb.editline = i;
                     deleteblankdata();
                     writedata();
                     break;
@@ -292,35 +292,35 @@ $(document).keydown(function(event){
         }
     }
     else if(kc == KC.up && sk){ // 上にブロック移動
-        if(editline > 0){
-            m = gb.movelines(editline);
+        if(gb.editline > 0){
+            m = gb.movelines(gb.editline);
             dst = destline_up();
             if(dst >= 0){
-                m2 = editline-dst;
+                m2 = gb.editline-dst;
                 for(i=0;i<m2;i++) tmp[i] = gb.data[dst+i];
-                for(i=0;i<m;i++)  gb.data[dst+i] = gb.data[editline+i];
+                for(i=0;i<m;i++)  gb.data[dst+i] = gb.data[gb.editline+i];
                 for(i=0;i<m2;i++) gb.data[dst+m+i] = tmp[i];
-                editline = dst;
+                gb.editline = dst;
                 deleteblankdata();
                 writedata();
             }
         }
     }
-    else if(kc == KC.up && ck && editline > 0){ // Ctrl+↑= 上の行と入れ替え
-        current_line_data = gb.data[editline];
-        gb.data[editline] = gb.data[editline-1];
-        gb.data[editline-1] = current_line_data;
+    else if(kc == KC.up && ck && gb.editline > 0){ // Ctrl+↑= 上の行と入れ替え
+        current_line_data = gb.data[gb.editline];
+        gb.data[gb.editline] = gb.data[gb.editline-1];
+        gb.data[gb.editline-1] = current_line_data;
         setTimeout(function(){
-            editline -= 1;
+            gb.editline -= 1;
             deleteblankdata();
             writedata();
         }, 1);
     }
     else if((kc == KC.up && !sk) || (kc == KC.p && !sk && ck)){ // 上にカーソル移動
-        if(editline > 0){
-            for(i=editline-1;i>=0;i--){
+        if(gb.editline > 0){
+            for(i=gb.editline-1;i>=0;i--){
                 if(doi[i] >= -zoomlevel){
-                    editline = i;
+                    gb.editline = i;
                     deleteblankdata();
                     writedata();
                     break;
@@ -329,27 +329,27 @@ $(document).keydown(function(event){
         }
     }
     if(kc == KC.tab && !sk || kc == KC.right && sk){ // indent
-        if(editline >= 0 && editline < gb.data.length){
-            gb.data[editline] = ' ' + gb.data[editline];
+        if(gb.editline >= 0 && gb.editline < gb.data.length){
+            gb.data[gb.editline] = ' ' + gb.data[gb.editline];
             writedata();
         }
     }
     if(kc == KC.tab && sk || kc == KC.left && sk){ // undent
-        if(editline >= 0 && editline < gb.data.length){
-            var s = gb.data[editline];
+        if(gb.editline >= 0 && gb.editline < gb.data.length){
+            var s = gb.data[gb.editline];
             if(s.substring(0,1) == ' '){
-                gb.data[editline] = s.substring(1,s.length);
+                gb.data[gb.editline] = s.substring(1,s.length);
             }
             writedata();
         }
     }
-    if(kc == KC.left && !sk && !ck && editline < 0){ // zoom out
+    if(kc == KC.left && !sk && !ck && gb.editline < 0){ // zoom out
         if(-zoomlevel < maxindent()){
             zoomlevel -= 1;
             display();
         }
     }
-    if(kc == KC.right && !sk && !ck && editline < 0){ // zoom in
+    if(kc == KC.right && !sk && !ck && gb.editline < 0){ // zoom in
         //if(zoomlevel < maxindent()){
         if(zoomlevel < 0){
             zoomlevel += 1;
@@ -366,7 +366,7 @@ $(document).keydown(function(event){
             getdata({version:version});
         }
     }
-    else if(kc >= 0x30 && kc <= 0x7e && editline < 0 && !cd && !ck){
+    else if(kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck){
         $('#querydiv').css('visibility','visible').css('display','block');
         $('#query').focus();
     }
@@ -506,7 +506,7 @@ function display(delay){
     }
     
     var input = $("input#newtext");
-    if(editline == -1){
+    if(gb.editline == -1){
         deleteblankdata();
         input.css('display','none');
     }
@@ -525,7 +525,7 @@ function display(delay){
         var t = $("#list"+i);
         var p = $("#listbg"+i);
         if(doi[i] >= -zoomlevel){
-            if(i == editline){ // 編集行
+            if(i == gb.editline){ // 編集行
                 t.css('display','inline').css('visibility','hidden');
                 p.css('display','block').css('visibility','hidden');
                 input.css('position','absolute');
@@ -541,7 +541,7 @@ function display(delay){
             else {
                 var lastchar = '';
                 if(i > 0 && typeof gb.data[i-1] === "string") lastchar = gb.data[i-1][gb.data[i-1].length-1];
-                if(editline == -1 && lastchar == '\\'){ // 継続行
+                if(gb.editline == -1 && lastchar == '\\'){ // 継続行
                     if(contline < 0) contline = i-1;
                     s = '';
                     for(var j=contline;j<=i;j++){
@@ -619,7 +619,7 @@ function display(delay){
         $('#listbg'+i).css('display','none');
     }
     
-    input.css('display',(editline == -1 ? 'none' : 'block'));
+    input.css('display',(gb.editline == -1 ? 'none' : 'block'));
     
     for(i=0;i<gb.data.length;i++){
         posy[i] = $('#list'+i).position().top;
@@ -748,33 +748,33 @@ function search(event)
 }
 
 function addimageline(line,indent,id){
-    editline = line;
+    gb.editline = line;
     eline = line;
     deleteblankdata();
-    for(var i=gb.data.length-1;i>=editline;i--){
+    for(var i=gb.data.length-1;i>=gb.editline;i--){
         gb.data[i+1] = gb.data[i];
     }
     var s = '';
     for(var i=0;i<indent;i++) s += ' ';
     s += '[[http://gyazo.com/' + id + '.png]]';
-    gb.data[editline] = s;
+    gb.data[gb.editline] = s;
     search();
 }
 
 function addimage(id)
 {
-    var old = editline;
+    var old = gb.editline;
     if(gb.data[0] == '(empty)'){
         gb.data[0] = '[[http://gyazo.com/' + id + '.png]]';
     }
     else {
-        editline = gb.data.length-1;
-        addimageline(editline+1,indent(editline),id);
+        gb.editline = gb.data.length-1;
+        addimageline(gb.editline+1,indent(gb.editline),id);
     }
     writegb.data();
-    editline = -1;
+    gb.editline = -1;
     display();
-    editline = old;
+    gb.editline = old;
 }
 
 // 最新のページに更新
@@ -791,15 +791,15 @@ function sendfiles(files){
     for (_i = 0, _len = files.length; _i < _len; _i++) {
         file = files[_i];
         sendfile(file, function(filename) {
-            editline = gb.data.length;
+            gb.editline = gb.data.length;
             if(filename.match(/\.(jpg|jpeg|png|gif)$/i)){
-                gb.data[editline] = '[[[' + root + "/upload/" + filename + ']]]';
+                gb.data[gb.editline] = '[[[' + root + "/upload/" + filename + ']]]';
             }
             else {
-                gb.data[editline] = '[[' + root + "/upload/" + filename + ' ' + file.name + ']]';
+                gb.data[gb.editline] = '[[' + root + "/upload/" + filename + ' ' + file.name + ']]';
             }
             writedata();
-            editline = -1;
+            gb.editline = -1;
             display(true);
         });
     }
@@ -840,7 +840,7 @@ function sendfile(file, callback){
 function follow_scroll(){
     
     // 編集中かどうかチェック
-    if(editline < 0) return;
+    if(gb.editline < 0) return;
     if(showold) return;
     
     var currentLinePos = $("input#newtext").offset().top;
