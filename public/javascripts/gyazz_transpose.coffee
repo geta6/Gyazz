@@ -8,7 +8,7 @@ similarlines = (process, condition) -> # 同じパタンの連続行の処理
   beginline = 0
   lastspaces = -1
   lastindent = -1
-  [0...data.length].map (i) ->
+  [0...gb.data.length].map (i) ->
     if spaces[i] > 0 && spaces[i] == lastspaces && indent(i) == lastindent # cont
     else
       if lastspaces > 1 && i-beginline > 1  # 同じパタンの連続を検出
@@ -19,9 +19,9 @@ similarlines = (process, condition) -> # 同じパタンの連続行の処理
     lastspaces = spaces[i]
     lastindent = indent(i)
 
-  if lastspaces > 1 && data.length-beginline > 1 #  同じパタンの連続を検出
-    if condition beginline, data.length
-      process beginline, data.length-beginline, indent(beginline)
+  if lastspaces > 1 && gb.data.length-beginline > 1 #  同じパタンの連続を検出
+    if condition beginline, gb.data.length
+      process beginline, gb.data.length-beginline, indent(beginline)
 
 transpose_condition = (beginline,limit) ->
   window.editline >= beginline && window.editline < limit
@@ -39,7 +39,7 @@ do_transpose = (beginline, lines, indent) ->  # begin番目からlines個の行�
   [0...lines].map (y) ->
     matched2 = []
     matched3 = []
-    s = data[beginline+y]
+    s = gb.data[beginline+y]
     s = s.replace /^\s*/, ''
     s = s.replace /</g, '&lt'
     while m = s.match /^(.*)\[\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\]\](.*)$/ # [[[....]]]
@@ -62,9 +62,9 @@ do_transpose = (beginline, lines, indent) ->  # begin番目からlines個の行�
       newlines[i] += elements[i]
       
   # data[] の beginlineからlines行をnewlines[]で置き換える
-  data.splice beginline, lines
+  gb.data.splice beginline, lines
   [0...newlines.length].map (i) ->
-    data.splice beginline+i, 0, newlines[i]
+    gb.data.splice beginline+i, 0, newlines[i]
   
   writedata()
   window.editline = -1

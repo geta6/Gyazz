@@ -9,12 +9,14 @@
 //  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
 //  var do_auth = true;
 
+gb = new GyazzBuffer();
+
 var version = -1;
 
 var editline = -1;
 var eline = -1;
 
-var data = [];
+// var data = [];
 var dt = [];          // 背景色
 var doi = [];
 var zoomlevel = 0;
@@ -163,7 +165,7 @@ $(document).mousedown(function(event){
 function movelines(line){ // 移動すべき行数
     var i;
     var ind = indent(line);
-    for(i=line+1;i<data.length && indent(i) > ind;i++);
+    for(i=line+1;i<gb.data.length && indent(i) > ind;i++);
     return i-line;
 }
 
@@ -189,7 +191,7 @@ function destline_down(){
     // インデントが自分と同じ行を捜す。
     // ひとつもなければ -1 を返す。
     var ind_editline = indent(editline);
-    for(var i=editline+1;i<data.length;i++){
+    for(var i=editline+1;i<gb.data.length;i++){
         ind = indent(i);
         if(ind == ind_editline) return i;
         if(ind < ind_editline) return -1;
@@ -199,7 +201,7 @@ function destline_down(){
 
 $(document).keyup(function(event){
     var input = $("input#newtext");
-    data[editline] = input.val();
+    gb.data[editline] = input.val();
 });
 
 var not_saved = false;
@@ -230,14 +232,14 @@ $(document).keydown(function(event){
         writedata();
     }
     else if(kc == KC.down && sk){ // Shift+↓ = 下にブロック移動
-        if(editline >= 0 && editline < data.length-1){
+        if(editline >= 0 && editline < gb.data.length-1){
             m = movelines(editline);
             dst = destline_down();
             if(dst >= 0){
                 m2 = movelines(dst);
-                for(i=0;i<m;i++)  tmp[i] = data[editline+i];
-                for(i=0;i<m2;i++) data[editline+i] = data[dst+i];
-                for(i=0;i<m;i++)  data[editline+m2+i] = tmp[i];
+                for(i=0;i<m;i++)  tmp[i] = gb.data[editline+i];
+                for(i=0;i<m2;i++) gb.data[editline+i] = gb.data[dst+i];
+                for(i=0;i<m;i++)  gb.data[editline+m2+i] = tmp[i];
                 editline = editline + m2;
                 deleteblankdata();
                 writedata();
@@ -246,8 +248,8 @@ $(document).keydown(function(event){
     }
     else if(kc == KC.k && ck){ // Ctrl+K カーソルより右側を削除する
         var input_tag = $("input#newtext");
-        if(input_tag.val().match(/^\s*$/) && editline < data.length-1){ // 行が完全に削除された時
-            data[editline] = ""; // 現在の行を削除
+        if(input_tag.val().match(/^\s*$/) && editline < gb.data.length-1){ // 行が完全に削除された時
+            gb.data[editline] = ""; // 現在の行を削除
             deleteblankdata();
             writedata();
             setTimeout(function(){
@@ -267,10 +269,10 @@ $(document).keydown(function(event){
             }
         }, 10);
     }
-    else if(kc == KC.down && ck && editline >= 0 && editline < data.length-1){ // Ctrl+↓ = 下の行と入れ替え
-        current_line_data = data[editline];
-        data[editline] = data[editline+1];
-        data[editline+1] = current_line_data;
+    else if(kc == KC.down && ck && editline >= 0 && editline < gb.data.length-1){ // Ctrl+↓ = 下の行と入れ替え
+        current_line_data = gb.data[editline];
+        gb.data[editline] = gb.data[editline+1];
+        gb.data[editline+1] = current_line_data;
         setTimeout(function(){
             editline += 1;
             deleteblankdata();
@@ -278,8 +280,8 @@ $(document).keydown(function(event){
         }, 1);
     }
     else if((kc == KC.down && !sk) || (kc == KC.n && !sk && ck)){ // ↓ = カーソル移動
-        if(editline >= 0 && editline < data.length-1){
-            for(i=editline+1;i<data.length;i++){
+        if(editline >= 0 && editline < gb.data.length-1){
+            for(i=editline+1;i<gb.data.length;i++){
                 if(doi[i] >= -zoomlevel){
                     editline = i;
                     deleteblankdata();
@@ -295,9 +297,9 @@ $(document).keydown(function(event){
             dst = destline_up();
             if(dst >= 0){
                 m2 = editline-dst;
-                for(i=0;i<m2;i++) tmp[i] = data[dst+i];
-                for(i=0;i<m;i++)  data[dst+i] = data[editline+i];
-                for(i=0;i<m2;i++) data[dst+m+i] = tmp[i];
+                for(i=0;i<m2;i++) tmp[i] = gb.data[dst+i];
+                for(i=0;i<m;i++)  gb.data[dst+i] = gb.data[editline+i];
+                for(i=0;i<m2;i++) gb.data[dst+m+i] = tmp[i];
                 editline = dst;
                 deleteblankdata();
                 writedata();
@@ -305,9 +307,9 @@ $(document).keydown(function(event){
         }
     }
     else if(kc == KC.up && ck && editline > 0){ // Ctrl+↑= 上の行と入れ替え
-        current_line_data = data[editline];
-        data[editline] = data[editline-1];
-        data[editline-1] = current_line_data;
+        current_line_data = gb.data[editline];
+        gb.data[editline] = gb.data[editline-1];
+        gb.data[editline-1] = current_line_data;
         setTimeout(function(){
             editline -= 1;
             deleteblankdata();
@@ -327,16 +329,16 @@ $(document).keydown(function(event){
         }
     }
     if(kc == KC.tab && !sk || kc == KC.right && sk){ // indent
-        if(editline >= 0 && editline < data.length){
-            data[editline] = ' ' + data[editline];
+        if(editline >= 0 && editline < gb.data.length){
+            gb.data[editline] = ' ' + gb.data[editline];
             writedata();
         }
     }
     if(kc == KC.tab && sk || kc == KC.left && sk){ // undent
-        if(editline >= 0 && editline < data.length){
-            var s = data[editline];
+        if(editline >= 0 && editline < gb.data.length){
+            var s = gb.data[editline];
             if(s.substring(0,1) == ' '){
-                data[editline] = s.substring(1,s.length);
+                gb.data[editline] = s.substring(1,s.length);
             }
             writedata();
         }
@@ -395,7 +397,7 @@ function linefunc(n){
             eline = n;
         }
         if(do_auth){
-            authbuf.push(data[n]);
+            authbuf.push(gb.data[n]);
             tell_auth();
         }
         if(event.shiftKey){
@@ -448,7 +450,7 @@ function setup(){ // 初期化
             var show_history = function(res){
                 datestr = res['date'];
                 dt = res['age'];
-                data = res['data'];
+                gb.data = res['data'];
 		// $('#debug').text(data.length);
                 // orig_md5 = MD5_hexhash(utf16to8(data.join("\n").replace(/\n+$/,'')+"\n"));
                 search();
@@ -510,11 +512,11 @@ function display(delay){
     }
     
     var contline = -1;
-    if(data.length == 0){
-        data = ["(empty)"];
+    if(gb.data.length == 0){
+        gb.data = ["(empty)"];
         doi[0] = maxindent();
     }
-    for(i=0;i<data.length;i++){
+    for(i=0;i<gb.data.length;i++){
         var x;
         var ind;
         ind = indent(i);
@@ -531,19 +533,19 @@ function display(delay){
                 input.css('left',xmargin+25);
                 input.css('top',p.position().top);
                 input.blur();
-                input.val(data[i]); // Firefoxの場合日本語入力中にこれが効かないことがあるような... blurしておけば大丈夫ぽい
+                input.val(gb.data[i]); // Firefoxの場合日本語入力中にこれが効かないことがあるような... blurしておけば大丈夫ぽい
                 input.focus();
                 input.mousedown(linefunc(i));
                 setTimeout(function(){ $("input#newtext").focus(); }, 100); // 何故か少し待ってからfocus()を呼ばないとフォーカスされない...
             }
             else {
                 var lastchar = '';
-                if(i > 0 && typeof data[i-1] === "string") lastchar = data[i-1][data[i-1].length-1];
+                if(i > 0 && typeof gb.data[i-1] === "string") lastchar = gb.data[i-1][gb.data[i-1].length-1];
                 if(editline == -1 && lastchar == '\\'){ // 継続行
                     if(contline < 0) contline = i-1;
                     s = '';
                     for(var j=contline;j<=i;j++){
-                        s += data[j].replace(/\\$/,'__newline__');
+                        s += gb.data[j].replace(/\\$/,'__newline__');
                     }
                     $("#list"+contline).css('display','inline').css('visibility','visible').html(tag(s,contline).replace(/__newline__/g,''));
                     $("#listbg"+contline).css('display','inline').css('visibility','visible');
@@ -555,8 +557,8 @@ function display(delay){
                 else { // 通常行
                     contline = -1;
                     var m;
-                    if(typeof data[i] === "string" &&
-                       ( m = data[i].match(/\[\[(https:\/\/gist\.github\.com.*\?.*)\]\]/i) )){ // gistエンベッド
+                    if(typeof gb.data[i] === "string" &&
+                       ( m = gb.data[i].match(/\[\[(https:\/\/gist\.github\.com.*\?.*)\]\]/i) )){ // gistエンベッド
                         // https://gist.github.com/1748966 のやり方
                         var gisturl = m[1];
                         var gistFrame = document.createElement("iframe");
@@ -581,7 +583,7 @@ function display(delay){
                         gistFrameDoc.close(); 
                     }
                     else {
-                        t.css('display','inline').css('visibility','visible').css('line-height','').html(tag(data[i],i));
+                        t.css('display','inline').css('visibility','visible').css('line-height','').html(tag(gb.data[i],i));
                         p.attr('class','listedit'+ind).css('display','block').css('visibility','visible').css('line-height','');
                     }
                 }
@@ -612,14 +614,14 @@ function display(delay){
         }
     }
     
-    for(i=data.length;i<1000;i++){
+    for(i=gb.data.length;i<1000;i++){
         $('#list'+i).css('display','none');
         $('#listbg'+i).css('display','none');
     }
     
     input.css('display',(editline == -1 ? 'none' : 'block'));
     
-    for(i=0;i<data.length;i++){
+    for(i=0;i<gb.data.length;i++){
         posy[i] = $('#list'+i).position().top;
         //posy[i] = $("#e" + i + "_0").offset().top;
     }
@@ -643,12 +645,12 @@ function writedata(force){
     not_saved = false;
     if(!writable) return;
 
-    var datastr = data.join("\n").replace(/\n+$/,'')+"\n";
-    if(!force && (JSON.stringify(data) == JSON.stringify(data_old))){
+    var datastr = gb.data.join("\n").replace(/\n+$/,'')+"\n";
+    if(!force && (JSON.stringify(gb.data) == JSON.stringify(data_old))){
         search();
         return;
     }
-    data_old = data.concat();
+    data_old = gb.data.concat();
 
     cache.history = {}; // 履歴cacheをリセット
 
@@ -706,9 +708,9 @@ function getdata(opts){ // 20050815123456.utf のようなテキストを読み�
         success: function(res){
             datestr = res['date'];
             dt = res['age'];
-            data = res['data'].concat();
+            gb.data = res['data'].concat();
             data_old = res['data'].concat();
-            orig_md5 = MD5_hexhash(utf16to8(data.join("\n").replace(/\n+$/,'')+"\n"));
+            orig_md5 = MD5_hexhash(utf16to8(gb.data.join("\n").replace(/\n+$/,'')+"\n"));
             search();
         },
         error: function(){
@@ -723,8 +725,8 @@ function calcdoi(){
     if(q && q.value != '') re = pbs.regexp(q.value,false);
     
     var maxind = maxindent();
-    for(var i=0;i<data.length;i++){
-        if(re ? re.exec(data[i]) : true){
+    for(var i=0;i<gb.data.length;i++){
+        if(re ? re.exec(gb.data[i]) : true){
             doi[i] = maxind - indent(i);
         }
         else {
@@ -749,27 +751,27 @@ function addimageline(line,indent,id){
     editline = line;
     eline = line;
     deleteblankdata();
-    for(var i=data.length-1;i>=editline;i--){
-        data[i+1] = data[i];
+    for(var i=gb.data.length-1;i>=editline;i--){
+        gb.data[i+1] = gb.data[i];
     }
     var s = '';
     for(var i=0;i<indent;i++) s += ' ';
     s += '[[http://gyazo.com/' + id + '.png]]';
-    data[editline] = s;
+    gb.data[editline] = s;
     search();
 }
 
 function addimage(id)
 {
     var old = editline;
-    if(data[0] == '(empty)'){
-        data[0] = '[[http://gyazo.com/' + id + '.png]]';
+    if(gb.data[0] == '(empty)'){
+        gb.data[0] = '[[http://gyazo.com/' + id + '.png]]';
     }
     else {
-        editline = data.length-1;
+        editline = gb.data.length-1;
         addimageline(editline+1,indent(editline),id);
     }
-    writedata();
+    writegb.data();
     editline = -1;
     display();
     editline = old;
@@ -789,12 +791,12 @@ function sendfiles(files){
     for (_i = 0, _len = files.length; _i < _len; _i++) {
         file = files[_i];
         sendfile(file, function(filename) {
-            editline = data.length;
+            editline = gb.data.length;
             if(filename.match(/\.(jpg|jpeg|png|gif)$/i)){
-                data[editline] = '[[[' + root + "/upload/" + filename + ']]]';
+                gb.data[editline] = '[[[' + root + "/upload/" + filename + ']]]';
             }
             else {
-                data[editline] = '[[' + root + "/upload/" + filename + ' ' + file.name + ']]';
+                gb.data[editline] = '[[' + root + "/upload/" + filename + ' ' + file.name + ']]';
             }
             writedata();
             editline = -1;

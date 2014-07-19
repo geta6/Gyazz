@@ -1,6 +1,9 @@
 run:
 	DEBUG=* npm start
 
+compile:
+	grunt compile
+
 push:
 	git push
 

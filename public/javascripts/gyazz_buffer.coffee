@@ -1,4 +1,4 @@
-_ = require 'underscore'
+_ = require 'underscore' if typeof module != "undefined" && module.exports
 
 class GyazzBuffer
   
@@ -95,23 +95,23 @@ class GyazzBuffer
         # writedata()
 
 if false
- b = new GyazzBuffer()
- b.init [
-   "a"
-   " bcd"
-   " efg"
-   "b"
-   "c"
-   " d e f"
-   "  g h i"
-   "  j k l"
-   ]
+  b = new GyazzBuffer()
+  b.init [
+    "a"
+    " bcd"
+    " efg"
+    "b"
+    "c"
+    " d e f"
+    "  g h i"
+    "  j k l"
+    ]
  
- console.log b.data
- b.editline = 3
- console.log b.block_up()
- console.log "-----"
- console.log b.data
+  console.log b.data
+  b.editline = 3
+  console.log b.block_up()
+  console.log "-----"
+  console.log b.data
 # console.log "-----"
 # console.log b.block_down
 # console.log "-----"
