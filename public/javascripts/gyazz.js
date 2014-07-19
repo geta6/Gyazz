@@ -10,13 +10,13 @@
 //  var do_auth = true;
 
 gb = new GyazzBuffer();
+// var data = []; GyazzBuffer内のものを使う
 
 var version = -1;
 
 var editline = -1;
 var eline = -1;
 
-// var data = [];
 var dt = [];          // 背景色
 var doi = [];
 var zoomlevel = 0;
@@ -162,12 +162,12 @@ $(document).mousedown(function(event){
 //    return data[line].match(/^( *)/)[1].length;
 //}
 
-function movelines(line){ // 移動すべき行数
-    var i;
-    var ind = indent(line);
-    for(i=line+1;i<gb.data.length && indent(i) > ind;i++);
-    return i-line;
-}
+//function movelines(line){ // 移動すべき行数
+//    var i;
+//    var ind = indent(line);
+//    for(i=line+1;i<gb.data.length && indent(i) > ind;i++);
+//    return i-line;
+//}
 
 function destline_up(){
     var ind;
@@ -233,10 +233,10 @@ $(document).keydown(function(event){
     }
     else if(kc == KC.down && sk){ // Shift+↓ = 下にブロック移動
         if(editline >= 0 && editline < gb.data.length-1){
-            m = movelines(editline);
+            m = gb.movelines(editline);
             dst = destline_down();
             if(dst >= 0){
-                m2 = movelines(dst);
+                m2 = gb.movelines(dst);
                 for(i=0;i<m;i++)  tmp[i] = gb.data[editline+i];
                 for(i=0;i<m2;i++) gb.data[editline+i] = gb.data[dst+i];
                 for(i=0;i<m;i++)  gb.data[editline+m2+i] = tmp[i];
@@ -293,7 +293,7 @@ $(document).keydown(function(event){
     }
     else if(kc == KC.up && sk){ // 上にブロック移動
         if(editline > 0){
-            m = movelines(editline);
+            m = gb.movelines(editline);
             dst = destline_up();
             if(dst >= 0){
                 m2 = editline-dst;
