@@ -10,7 +10,7 @@ class GyazzBuffer
   _indent = (line) ->
     line.match(/^( *)/)[1].length
 
-  data: []               # バッファデータ
+  data: []               # テキストデータ
   editline: -1           # 現在選択してる行の番号
   
   init: (arg) ->
@@ -65,7 +65,34 @@ class GyazzBuffer
         return true
     foundline
 
+  # editlineのブロックを下に移動
+  block_down: ->
+    if this.editline >= 0 && this.editline < this.data.length - 1
+      m = this.movelines this.editline
+      dst = this.destline_down this.editline
+      if dst >= 0
+        m2 = this.movelines dst
+        tmp = []
+        [0...m].map  (i) => tmp[i] = this.data[this.editline+i]
+        [0...m2].map (i) => this.data[this.editline+i] = this.data[dst+i]
+        [0...m].map  (i) => this.data[this.editline+m2+i] = tmp[i]
+        this.editline += m2
+        # deleteblankdata();
 
+  # editlineのブロックを上に移動
+  block_up: ->
+    if this.editline > 0 && this.editline < this.data.length
+      m = this.movelines this.editline
+      dst = this.destline_up this.editline
+      if dst >= 0
+        m2 = this.editline - dst
+        tmp = []
+        [0...m2].map (i) => tmp[i] = this.data[dst+i]
+        [0...m].map (i)  => this.data[dst+i] = this.data[this.editline+i]
+        [0...m2].map (i) => this.data[dst+m+i] = tmp[i]
+        this.editline = dst
+        # deleteblankdata()
+        # writedata()
 
 if true
  b = new GyazzBuffer()
@@ -79,25 +106,25 @@ if true
    "  g h i"
    "  j k l"
    ]
-
+ 
  console.log b.data
- console.log b.destline_down(0)
+ b.editline = 3
+ console.log b.block_up()
  console.log "-----"
- console.log b.destline_down(1)
- console.log "-----"
- console.log b.destline_down(2)
- console.log "-----"
- console.log b.destline_down(3)
- console.log "-----"
- console.log b.destline_down(4)
- console.log "-----"
- console.log b.destline_down(5)
- console.log "-----"
- console.log b.destline_down(6)
- console.log "-----"
- console.log b.destline_down(7)
- console.log "-----"
-
-
-
+ console.log b.data
+# console.log "-----"
+# console.log b.block_down
+# console.log "-----"
+# console.log b.block_down
+# console.log "-----"
+# console.log b.block_down
+# console.log "-----"
+# console.log b.block_down
+# console.log "-----"
+# console.log b.block_down
+# console.log "-----"
+# console.log b.block_down
+# console.log "-----"
+# console.log b.block_down
+# console.log "-----"
 
