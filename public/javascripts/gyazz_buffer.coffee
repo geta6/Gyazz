@@ -1,9 +1,13 @@
 _ = require 'underscore'
 
 class GyazzBuffer
-  _indentstr = (level) ->  # levelの長さの空白文字列
+  
+  # levelの長さの空白文字列
+  _indentstr = (level) ->
     ([0...level].map (x) -> " ").join('')
-  _indent = (line) -> # 文字列のインデントを計算
+    
+  # 文字列のインデントを計算
+  _indent = (line) ->
     line.match(/^( *)/)[1].length
 
   data: []               # バッファデータ
@@ -29,9 +33,41 @@ class GyazzBuffer
       _indent(this.data[i]) <= ind
     (last ||= this.data.length) - n
 
+  # インデントが自分と同じか自分より深い行を捜す。
+  # ひとつもなければ -1 を返す。
+  # 引数にeditlineを指定するように仕様が変わっている
+  destline_up: (n) ->
+    ind_editline = _indent this.data[n]
+    foundline = -1
+    if n > 0
+      _.find [n-1..0], (i) =>
+        ind = _indent this.data[i]
+        foundline = i if ind > ind_editline
+        if ind == ind_editline
+          foundline = i
+          return true
+        if ind < ind_editline
+          return true
+    foundline
+
+  # インデントが自分と同じ行を捜す。
+  # ひとつもなければ -1 を返す。
+  destline_down: (n) ->
+    ind_editline = _indent this.data[n]
+    foundline = -1
+    _.find [n+1...this.data.length], (i) =>
+      ind = _indent this.data[i]
+      if ind == ind_editline
+        foundline = i
+        return true
+      if ind < ind_editline
+        foundline = -1
+        return true
+    foundline
 
 
-if false
+
+if true
  b = new GyazzBuffer()
  b.init [
    "a"
@@ -43,16 +79,24 @@ if false
    "  g h i"
    "  j k l"
    ]
- 
- console.log b.movelines(0)
- console.log b.movelines(1)
- console.log b.movelines(2)
- console.log b.movelines(3)
- console.log b.movelines(4)
- console.log b.movelines(5)
- console.log b.movelines(6)
- console.log b.movelines(7)
 
+ console.log b.data
+ console.log b.destline_down(0)
+ console.log "-----"
+ console.log b.destline_down(1)
+ console.log "-----"
+ console.log b.destline_down(2)
+ console.log "-----"
+ console.log b.destline_down(3)
+ console.log "-----"
+ console.log b.destline_down(4)
+ console.log "-----"
+ console.log b.destline_down(5)
+ console.log "-----"
+ console.log b.destline_down(6)
+ console.log "-----"
+ console.log b.destline_down(7)
+ console.log "-----"
 
 
 
