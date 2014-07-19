@@ -17,20 +17,6 @@ module.exports = (app) ->
     return res.render 'index',
       title: 'Express'
 
-# ## ページの代表画像があればリダイレクトする *******
-# get '/:name/*/icon' do
-#   name = params[:name]
-#   title = params[:splat].join('/')
-#   page = Gyazz::Page.new(name,title)
-#   image = page['repimage']
-#   halt 404, "image not found" if image.to_s.empty?
-#   redirect case image
-#            when /^https?:\/\/.+\.(png|jpe?g|gif)$/i
-#              image
-#            else
-#              "http://gyazo.com/#{image}.png"
-#            end
-
   # 普通にページアクセス
   app.get '/:wiki/:title', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
@@ -122,6 +108,19 @@ module.exports = (app) ->
         res.set('Content-Type', 'image/png')
         res.send pngres
 
+  # データ書込み
+  app.post '/__write', (req, res) ->
+    debug "__write: "
+    newpage = new Pages
+    newpage.wiki = req.body.name
+    newpage.title = req.body.title
+    newpage.text = req.body.data
+    newpage.timestamp = new Date
+    newpage.save (err) ->
+      if err
+        debug "Write error"
+      res.send "noconflict"
+    
   # ページリスト
   app.get '/:wiki', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}"
