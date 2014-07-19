@@ -20,9 +20,17 @@ module.exports = (app) ->
   # 普通にページアクセス
   app.get '/:wiki/:title', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
-    return res.render 'page',
-      title: req.params.title
-      wiki:  req.params.wiki
+    # アクセス記録
+    page = new Access
+    page.wiki = req.params.wiki
+    page.title = req.params.title
+    page.timestamp = new Date
+    page.save (err) ->
+      if err
+        debug "Access write error"
+      return res.render 'page',
+        title: req.params.title
+        wiki:  req.params.wiki
 
   # 代表アイコン画像
   app.get '/:wiki/:title/icon', (req, res) ->

@@ -65,6 +65,7 @@ module.exports = (grunt) ->
           'public/javascripts/gyazz_tag.js': 'public/javascripts/gyazz_tag.coffee'
           'public/javascripts/gyazz_notification.js': 'public/javascripts/gyazz_notification.coffee'
           'public/javascripts/gyazz_edit.js': 'public/javascripts/gyazz_edit.coffee'
+          'public/javascripts/gyazz_buffer.js': 'public/javascripts/gyazz_buffer.coffee'
       options:
         bare: yes
 

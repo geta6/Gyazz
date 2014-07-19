@@ -94,7 +94,7 @@ class GyazzBuffer
         # deleteblankdata()
         # writedata()
 
-if true
+if false
  b = new GyazzBuffer()
  b.init [
    "a"

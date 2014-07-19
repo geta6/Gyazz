@@ -96,7 +96,7 @@ module.exports = (app) ->
     now = new Date
     v = []
     history.map (t) ->
-      d = (now - t) / 1000 / (60 * 60 * 24)
+      d = Math.floor (now - t) / 1000 / (60 * 60 * 24)
       d = 1 if d == 0
       ind = Math.floor (Math.log(d) / Math.log(1.5))
       ind = MAX-1 if ind >= MAX
