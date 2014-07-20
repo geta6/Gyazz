@@ -1,4 +1,4 @@
-require 'underscore' if typeof module != "undefined" && module.exports
+_ = require 'underscore' if typeof module != "undefined" && module.exports
 
 class GyazzBuffer
   

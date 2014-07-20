@@ -74,41 +74,6 @@ $(document).keypress(function(event){
     }
 });
 
-function bgcol(t){
-    var i, r, g, b;
-    // データの古さに応じて行の色を変える
-    var table = [
-        [0,                                  256,256,256],
-        [10,                                 240,240,240],
-        [10*10,                              220,220,220],
-        [10*10*10,                           200,200,200],
-        [10*10*10*10,                        180,180,180],
-        [10*10*10*10*10,                     160,160,160],
-        [10*10*10*10*10*10,                  140,140,140],
-        [10*10*10*10*10*10*10,               120,120,120],
-        [10*10*10*10*10*10*10*10,            100,100,100],
-        [10*10*10*10*10*10*10*10*10,          80, 80, 80],
-        [10*10*10*10*10*10*10*10*10*10,       60, 60, 60],
-        [10*10*10*10*10*10*10*10*10*10*10,    40, 40, 40]
-    ];
-    for(i=0;i<table.length-1;i++){
-        var t1 = table[i][0];
-        var t2 = table[i+1][0];
-        if(t >= t1 && t <= t2){
-            r = ((t - t1) * table[i+1][1] + (t2 - t) * table[i][1]) / (t2 - t1);
-            r = Math.floor(r);
-            if(r >= 256) r = 255;
-            g = ((t - t1) * table[i+1][2] + (t2 - t) * table[i][2]) / (t2 - t1);
-            g = Math.floor(g);
-            if(g >= 256) g = 255;
-            b = ((t - t1) * table[i+1][3] + (t2 - t) * table[i][3]) / (t2 - t1);
-            b = Math.floor(b);
-            if(b >= 256) b = 255;
-            return "#" + hex2(r) + hex2(g) + hex2(b);
-        }
-    }
-}
-
 $(document).mouseup(function(event){
     if(editTimeout) clearTimeout(editTimeout);
     eline = -1;
@@ -524,6 +489,7 @@ function display(delay){
         
         // 各行のバックグラウンド色設定
 	//alert(dt[i]);
+	//alert(bgcol(dt[i]));
         $("#listbg"+i).css('background-color',(version >= 0 || showold) ? bgcol(dt[i]) : 'transparent');
         if(version >= 0){ // ツールチップに行の作成時刻を表示
             $("#list"+i).addClass('hover');
