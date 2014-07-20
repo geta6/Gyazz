@@ -18,7 +18,7 @@ class GyazzBuffer
   data: []               # テキストデータ
   editline: -1           # 現在選択してる行の番号
   init: (arg) ->
-    this.data = if typeof arg == 'string' then arg.split /\n/ else arg
+    @data = if typeof arg == 'string' then arg.split /\n/ else arg
     
   # 空白行を削除
   deleteblankdata: ->
@@ -34,25 +34,25 @@ class GyazzBuffer
     Math.max (@data.map (line) -> _indent line)...
 
   #maxindent: ->
-  #  indents = this.data.map (line) -> _indent line
+  #  indents = @data.map (line) -> _indent line
   #  _.reduce indents, ((x, y) -> Math.max(x, y)), 0
 
   # n行目からブロック移動しようとするときのブロック行数
   movelines: (n) ->
-    ind = this.line_indent n
-    last = _.find [n+1...this.data.length], (i) =>
-      this.line_indent(i) <= ind
-    (last ||= this.data.length) - n
+    ind = @line_indent n
+    last = _.find [n+1...@data.length], (i) =>
+      @line_indent(i) <= ind
+    (last ||= @data.length) - n
 
   # インデントが自分と同じか自分より深い行を捜す。
   # ひとつもなければ -1 を返す。
   # 引数にeditlineを指定するように仕様が変わっている
   destline_up: (n) ->
-    ind_editline = this.line_indent n
+    ind_editline = @line_indent n
     foundline = -1
     if n > 0
       _.find [n-1..0], (i) =>
-        ind = this.line_indent i
+        ind = @line_indent i
         foundline = i if ind > ind_editline
         if ind == ind_editline
           foundline = i
@@ -64,10 +64,10 @@ class GyazzBuffer
   # インデントが自分と同じ行を捜す。
   # ひとつもなければ -1 を返す。
   destline_down: (n) ->
-    ind_editline = this.line_indent n
+    ind_editline = @line_indent n
     foundline = -1
-    _.find [n+1...this.data.length], (i) =>
-      ind = this.line_indent i
+    _.find [n+1...@data.length], (i) =>
+      ind = @line_indent i
       if ind == ind_editline
         foundline = i
         return true
@@ -84,12 +84,12 @@ class GyazzBuffer
 
   # カーソルを下に移動
   cursor_down: ->
-    if this.editline >= 0 && this.editline < this.data.length-1
-      dest = _.find [this.editline+1...this.data.length], (i) ->
+    if @editline >= 0 && @editline < @data.length-1
+      dest = _.find [@editline+1...@data.length], (i) ->
         doi[i] >= -zoomlevel
       if dest
         setTimeout =>
-          this.editline = dest
+          @editline = dest
           deleteblankdata()
           writedata()
           display()
@@ -97,12 +97,12 @@ class GyazzBuffer
 
   # カーソルを上に移動
   cursor_up: ->
-    if this.editline > 0
-      dest = _.find [this.editline-1..0], (i) ->
+    if @editline > 0
+      dest = _.find [@editline-1..0], (i) ->
         doi[i] >= -zoomlevel
       if dest != undefined
         setTimeout =>
-          this.editline = dest
+          @editline = dest
           deleteblankdata()
           writedata()
           display()
@@ -110,14 +110,11 @@ class GyazzBuffer
 
   # カーソルの行を下に移動
   line_down: ->
-    if this.editline >= 0 && this.editline < this.data.length-1
-      l = this.editline
-      [this.data[l], this.data[l+1]] = [this.data[l+1], this.data[l]]
-      #current_line_data = this.data[this.editline]
-      #this.data[this.editline] = this.data[this.editline+1]
-      #this.data[this.editline+1] = current_line_data
+    if @editline >= 0 && @editline < @data.length-1
+      l = @editline
+      [@data[l], @data[l+1]] = [@data[l+1], @data[l]]
       setTimeout =>
-        this.editline += 1
+        @editline += 1
         deleteblankdata()
         writedata() #####
         display()
@@ -125,14 +122,11 @@ class GyazzBuffer
   
   # カーソルの行を上に移動
   line_up: ->
-    if this.editline > 0
-      l = this.editline
-      [this.data[l], this.data[l-1]] = [this.data[l-1], this.data[l]]
-      #current_line_data = this.data[this.editline]
-      #this.data[this.editline] = this.data[this.editline-1]
-      #this.data[this.editline-1] = current_line_data
+    if @editline > 0
+      l = @editline
+      [@data[l], @data[l-1]] = [@data[l-1], @data[l]]
       setTimeout =>
-        this.editline -= 1
+        @editline -= 1
         deleteblankdata()
         writedata() #####
         display()
@@ -140,32 +134,32 @@ class GyazzBuffer
   
   # editlineのブロックを下に移動
   block_down: ->
-    if this.editline >= 0 && this.editline < this.data.length - 1
-      m = this.movelines this.editline
-      dst = this.destline_down this.editline
+    if @editline >= 0 && @editline < @data.length - 1
+      m = @movelines @editline
+      dst = @destline_down @editline
       if dst >= 0
-        m2 = this.movelines dst
+        m2 = @movelines dst
         tmp = []
-        [0...m].forEach  (i) => tmp[i] = this.data[this.editline+i]
-        [0...m2].forEach (i) => this.data[this.editline+i] = this.data[dst+i]
-        [0...m].forEach  (i) => this.data[this.editline+m2+i] = tmp[i]
-        this.editline += m2
+        [0...m].forEach  (i) => tmp[i] = @data[@editline+i]
+        [0...m2].forEach (i) => @data[@editline+i] = @data[dst+i]
+        [0...m].forEach  (i) => @data[@editline+m2+i] = tmp[i]
+        @editline += m2
         deleteblankdata()    ######## ここに必要?
         writedata()          ######## 通信モジュールに移動すべき
         display()
 
   # editlineのブロックを上に移動
   block_up: ->
-    if this.editline > 0 && this.editline < this.data.length
-      m = this.movelines this.editline
-      dst = this.destline_up this.editline
+    if @editline > 0 && @editline < @data.length
+      m = @movelines @editline
+      dst = @destline_up @editline
       if dst >= 0
-        m2 = this.editline - dst
+        m2 = @editline - dst
         tmp = []
-        [0...m2].forEach (i) => tmp[i] = this.data[dst+i]
-        [0...m].forEach (i)  => this.data[dst+i] = this.data[this.editline+i]
-        [0...m2].forEach (i) => this.data[dst+m+i] = tmp[i]
-        this.editline = dst
+        [0...m2].forEach (i) => tmp[i] = @data[dst+i]
+        [0...m].forEach (i)  => @data[dst+i] = @data[@editline+i]
+        [0...m2].forEach (i) => @data[dst+m+i] = tmp[i]
+        @editline = dst
         deleteblankdata() ########
         writedata()       ########
         display()
@@ -182,22 +176,22 @@ class GyazzBuffer
     beginline = 0
     lastspaces = -1
     lastindent = -1
-    [0...this.data.length].forEach (i) =>
-      if this.spaces[i] > 0 && this.spaces[i] == lastspaces && this.line_indent(i) == lastindent
+    [0...@data.length].forEach (i) =>
+      if @spaces[i] > 0 && @spaces[i] == lastspaces && @line_indent(i) == lastindent
         # 連続パタン続行中
       else
         if lastspaces > 1 && i-beginline > 1  # 同じパタンの連続を検出
-          if condition beginline, i, this.editline
-            process.call @, beginline, i-beginline, this.line_indent(beginline)
+          if condition beginline, i, @editline
+            process.call @, beginline, i-beginline, @line_indent(beginline)
         beginline = i
 
-      lastspaces = this.spaces[i]
-      lastindent = this.line_indent(i)
+      lastspaces = @spaces[i]
+      lastindent = @line_indent(i)
 
-    if lastspaces > 1 && this.data.length-beginline > 1 #  同じパタンの連続を検出
-      if condition beginline, this.data.length
+    if lastspaces > 1 && @data.length-beginline > 1 #  同じパタンの連続を検出
+      if condition beginline, @data.length
         #alert "condition met"
-        process.call @, beginline, this.data.length-beginline, this.line_indent(beginline)
+        process.call @, beginline, @data.length-beginline, @line_indent(beginline)
 
   #
   # 桁揃え
@@ -212,23 +206,23 @@ class GyazzBuffer
     [begin...begin+lines].forEach (line) => # 表示されている要素の位置を取得
       pos[line] = []
       width[line] = []
-      [0..this.spaces[begin]].forEach (i) =>
+      [0..@spaces[begin]].forEach (i) =>
         # 要素のidはtag()でつけられている
-        id = "#e" + line + "_" + (i + this.line_indent(line))
+        id = "#e" + line + "_" + (i + @line_indent(line))
         pos[line][i] = $(id).offset().left
-      [0..this.spaces[begin]].forEach (i) ->
+      [0..@spaces[begin]].forEach (i) ->
         width[line][i] = pos[line][i+1]-pos[line][i]
   
-    [0...this.spaces[begin]].forEach (i) -> # 桁ごとに最大幅を計算 範囲 あってる????
+    [0...@spaces[begin]].forEach (i) -> # 桁ごとに最大幅を計算 範囲 あってる????
       max = 0
       [begin...begin+lines].forEach (line) ->
         max = width[line][i] if width[line][i] > max
       maxwidth[i] = max
   
     colpos = pos[begin][0]
-    [0..this.spaces[begin]].forEach (i) => # 最大幅ずつずらして表示
+    [0..@spaces[begin]].forEach (i) => # 最大幅ずつずらして表示
       [begin...begin+lines].forEach (line) =>
-        id = "#e" + line + "_" + (i + this.line_indent(line))
+        id = "#e" + line + "_" + (i + @line_indent(line))
         $(id).css('position','absolute').css('left',colpos)
       colpos += maxwidth[i]
 
@@ -236,7 +230,7 @@ class GyazzBuffer
   # editline周辺の行の行と桁を入れ換える
   #
   transpose: () ->
-    return if this.editline < 0
+    return if @editline < 0
     _similarlines.call @, _do_transpose, _transpose_condition # thisを伝播させる
 
   _transpose_condition =  (beginline,limit,editline) ->
@@ -244,7 +238,7 @@ class GyazzBuffer
     
   # begin番目からlines個の行の行と桁を入れ換え
   _do_transpose = (beginline, lines, indent) ->
-    cols = this.spaces[beginline] + 1
+    cols = @spaces[beginline] + 1
     newlines = []
     [0...cols].forEach (i) ->
       newlines[i] = _indentstr indent
@@ -252,7 +246,7 @@ class GyazzBuffer
     [0...lines].forEach (y) =>
       matched2 = []
       matched3 = []
-      s = this.data[beginline+y]
+      s = @data[beginline+y]
       s = s.replace /^\s*/, ''
       s = s.replace /</g, '&lt'
       while m = s.match /^(.*)\[\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\]\](.*)$/ # [[[....]]]
@@ -275,11 +269,11 @@ class GyazzBuffer
         newlines[i] += elements[i]
       
     # data[] の beginlineからlines行をnewlines[]で置き換える
-    this.data.splice beginline, lines
+    @data.splice beginline, lines
     [0...newlines.length].forEach (i) =>
-      this.data.splice beginline+i, 0, newlines[i]
+      @data.splice beginline+i, 0, newlines[i]
   
     writedata()            ############
-    this.editline = -1
+    @editline = -1
     display true           ############
     # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない
