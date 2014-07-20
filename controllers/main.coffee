@@ -12,6 +12,8 @@ Attrs  = mongoose.model 'Attr'
 Access = mongoose.model 'Access'
 Lines  = mongoose.model 'Line'
 
+writetime = new Date
+
 module.exports = (app) ->
   app.get '/', (req, res) ->
     return res.render 'index',
@@ -119,15 +121,18 @@ module.exports = (app) ->
   # データ書込み
   app.post '/__write', (req, res) ->
     debug "__write: "
-    newpage = new Pages
-    newpage.wiki = req.body.name
-    newpage.title = req.body.title
-    newpage.text = req.body.data
-    newpage.timestamp = new Date
-    newpage.save (err) ->
-      if err
-        debug "Write error"
-      res.send "noconflict"
+    date = new Date
+    if date > writetime
+      writetime = date
+      newpage = new Pages
+      newpage.wiki = req.body.name
+      newpage.title = req.body.title
+      newpage.text = req.body.data
+      newpage.timestamp = date
+      newpage.save (err) ->
+        if err
+          debug "Write error"
+        res.send "noconflict"
     
   # ページリスト
   app.get '/:wiki', (req, res) ->

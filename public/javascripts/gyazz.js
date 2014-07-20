@@ -174,31 +174,17 @@ $(document).keydown(function(event){
             }
         }, 10);
     }
-    else if(kc == KC.down && ck && gb.editline >= 0 && gb.editline < gb.data.length-1){ // Ctrl+↓ = 下の行と入れ替え
-        current_line_data = gb.data[gb.editline];
-        gb.data[gb.editline] = gb.data[gb.editline+1];
-        gb.data[gb.editline+1] = current_line_data;
-        setTimeout(function(){
-            gb.editline += 1;
-            deleteblankdata();
-            writedata();
-        }, 1);
+    else if(kc == KC.down && ck){ // 行を下に移動
+	gb.line_down();
     }
-    else if((kc == KC.down && !sk) || (kc == KC.n && !sk && ck)){ // ↓ = カーソル移動
+    else if((kc == KC.down && !sk) || (kc == KC.n && !sk && ck)){ // 下にカーソル移動
 	gb.cursor_down();
-   }
+    }
     else if(kc == KC.up && sk){ // 上にブロック移動
         gb.block_up();
     }
-    else if(kc == KC.up && ck && gb.editline > 0){ // Ctrl+↑= 上の行と入れ替え
-        current_line_data = gb.data[gb.editline];
-        gb.data[gb.editline] = gb.data[gb.editline-1];
-        gb.data[gb.editline-1] = current_line_data;
-        setTimeout(function(){
-            gb.editline -= 1;
-            deleteblankdata();
-            writedata();
-        }, 1);
+    else if(kc == KC.up && ck && gb.editline > 0){ // 行を上に移動
+	gb.line_up();
     }
     else if((kc == KC.up && !sk) || (kc == KC.p && !sk && ck)){ // 上にカーソル移動
 	gb.cursor_up();
@@ -534,7 +520,7 @@ function writedata(force){
     notifyBox.print("saving..", {progress: true}).show();
     $.ajax({
         type: "POST",
-        async: false,
+        async: true,
         url: root + "/__write",
         data: {
             name: name,
@@ -560,7 +546,7 @@ function writedata(force){
             }
             else if(msg == 'noconflict'){
                 notifyBox.print("save success").show(1000);
-                getdata(); // これをしないとorig_md5がセットされない
+                //getdata(); // これをしないとorig_md5がセットされない
                 // orig_md5 = MD5_hexhash(utf16to8(datastr)); でいいのか?
             }
             else {

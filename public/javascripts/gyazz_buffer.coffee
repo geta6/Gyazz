@@ -84,10 +84,12 @@ class GyazzBuffer
       dest = _.find [this.editline+1...this.data.length], (i) ->
         doi[i] >= -zoomlevel
       if dest
-        this.editline = dest
-        deleteblankdata()
-        #writedata()
-        display()
+        setTimeout =>
+          this.editline = dest
+          deleteblankdata()
+          writedata()
+          display()
+        , 1
 
   # カーソルを上に移動
   cursor_up: ->
@@ -95,11 +97,39 @@ class GyazzBuffer
       dest = _.find [this.editline-1..0], (i) ->
         doi[i] >= -zoomlevel
       if dest
-        this.editline = dest
-        deleteblankdata()
-        #writedata()
-        display()
+        setTimeout =>
+          this.editline = dest
+          deleteblankdata()
+          writedata()
+          display()
+        , 1
 
+  # カーソルの行を下に移動
+  line_down: ->
+    if this.editline >= 0 && this.editline < this.data.length-1
+      current_line_data = this.data[this.editline]
+      this.data[this.editline] = this.data[this.editline+1]
+      this.data[this.editline+1] = current_line_data
+      setTimeout =>
+        this.editline += 1
+        deleteblankdata()
+        writedata() #####
+        display()
+      , 1
+  
+  # カーソルの行を上に移動
+  line_up: ->
+    if this.editline > 0
+      current_line_data = this.data[this.editline]
+      this.data[this.editline] = this.data[this.editline-1]
+      this.data[this.editline-1] = current_line_data
+      setTimeout =>
+        this.editline -= 1
+        deleteblankdata()
+        writedata() #####
+        display()
+      , 1
+  
   # editlineのブロックを下に移動
   block_down: ->
     if this.editline >= 0 && this.editline < this.data.length - 1
@@ -114,6 +144,7 @@ class GyazzBuffer
         this.editline += m2
         deleteblankdata()    ######## ここに必要?
         writedata()          ######## 通信モジュールに移動すべき
+        display()
 
   # editlineのブロックを上に移動
   block_up: ->
@@ -129,6 +160,7 @@ class GyazzBuffer
         this.editline = dst
         deleteblankdata() ########
         writedata()       ########
+        display()
 
   #########################################################################
   #
