@@ -185,17 +185,8 @@ $(document).keydown(function(event){
         }, 1);
     }
     else if((kc == KC.down && !sk) || (kc == KC.n && !sk && ck)){ // ↓ = カーソル移動
-        if(gb.editline >= 0 && gb.editline < gb.data.length-1){
-            for(i=gb.editline+1;i<gb.data.length;i++){
-                if(doi[i] >= -zoomlevel){
-                    gb.editline = i;
-                    deleteblankdata();
-                    writedata();
-                    break;
-                }
-            }
-        }
-    }
+	gb.cursor_down();
+   }
     else if(kc == KC.up && sk){ // 上にブロック移動
         gb.block_up();
     }
@@ -210,16 +201,7 @@ $(document).keydown(function(event){
         }, 1);
     }
     else if((kc == KC.up && !sk) || (kc == KC.p && !sk && ck)){ // 上にカーソル移動
-        if(gb.editline > 0){
-            for(i=gb.editline-1;i>=0;i--){
-                if(doi[i] >= -zoomlevel){
-                    gb.editline = i;
-                    deleteblankdata();
-                    writedata();
-                    break;
-                }
-            }
-        }
+	gb.cursor_up();
     }
     if(kc == KC.tab && !sk || kc == KC.right && sk){ // indent
         if(gb.editline >= 0 && gb.editline < gb.data.length){

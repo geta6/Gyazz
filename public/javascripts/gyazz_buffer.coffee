@@ -27,8 +27,11 @@ class GyazzBuffer
       
   # 最大のインデント値を取得
   maxindent: ->
-    indents = this.data.map (line) -> _indent line
-    _.reduce indents, ((x, y) -> Math.max(x, y)), 0
+    Math.max (this.data.map (line) -> _indent line)...
+
+  #maxindent: ->
+  #  indents = this.data.map (line) -> _indent line
+  #  _.reduce indents, ((x, y) -> Math.max(x, y)), 0
 
   # n行目からブロック移動しようとするときのブロック行数
   movelines: (n) ->
@@ -74,6 +77,28 @@ class GyazzBuffer
   #   行移動 / ブロック移動
   #
   #########################################################################
+
+  # カーソルを下に移動
+  cursor_down: ->
+    if this.editline >= 0 && this.editline < this.data.length-1
+      dest = _.find [this.editline+1...this.data.length], (i) ->
+        doi[i] >= -zoomlevel
+      if dest
+        this.editline = dest
+        deleteblankdata()
+        #writedata()
+        display()
+
+  # カーソルを上に移動
+  cursor_up: ->
+    if this.editline > 0
+      dest = _.find [this.editline-1..0], (i) ->
+        doi[i] >= -zoomlevel
+      if dest
+        this.editline = dest
+        deleteblankdata()
+        #writedata()
+        display()
 
   # editlineのブロックを下に移動
   block_down: ->
