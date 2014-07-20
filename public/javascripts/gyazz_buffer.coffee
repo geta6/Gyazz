@@ -147,9 +147,9 @@ class GyazzBuffer
       if dst >= 0
         m2 = this.movelines dst
         tmp = []
-        [0...m].map  (i) => tmp[i] = this.data[this.editline+i]
-        [0...m2].map (i) => this.data[this.editline+i] = this.data[dst+i]
-        [0...m].map  (i) => this.data[this.editline+m2+i] = tmp[i]
+        [0...m].forEach  (i) => tmp[i] = this.data[this.editline+i]
+        [0...m2].forEach (i) => this.data[this.editline+i] = this.data[dst+i]
+        [0...m].forEach  (i) => this.data[this.editline+m2+i] = tmp[i]
         this.editline += m2
         deleteblankdata()    ######## ここに必要?
         writedata()          ######## 通信モジュールに移動すべき
@@ -163,9 +163,9 @@ class GyazzBuffer
       if dst >= 0
         m2 = this.editline - dst
         tmp = []
-        [0...m2].map (i) => tmp[i] = this.data[dst+i]
-        [0...m].map (i)  => this.data[dst+i] = this.data[this.editline+i]
-        [0...m2].map (i) => this.data[dst+m+i] = tmp[i]
+        [0...m2].forEach (i) => tmp[i] = this.data[dst+i]
+        [0...m].forEach (i)  => this.data[dst+i] = this.data[this.editline+i]
+        [0...m2].forEach (i) => this.data[dst+m+i] = tmp[i]
         this.editline = dst
         deleteblankdata() ########
         writedata()       ########
@@ -183,7 +183,7 @@ class GyazzBuffer
     beginline = 0
     lastspaces = -1
     lastindent = -1
-    [0...this.data.length].map (i) =>
+    [0...this.data.length].forEach (i) =>
       if this.spaces[i] > 0 && this.spaces[i] == lastspaces && this.line_indent(i) == lastindent
         # 連続パタン続行中
       else
@@ -210,25 +210,25 @@ class GyazzBuffer
     pos = []
     width = []
     maxwidth = []
-    [begin...begin+lines].map (line) => # 表示されている要素の位置を取得
+    [begin...begin+lines].forEach (line) => # 表示されている要素の位置を取得
       pos[line] = []
       width[line] = []
-      [0..this.spaces[begin]].map (i) =>
+      [0..this.spaces[begin]].forEach (i) =>
         # 要素のidはtag()でつけられている
         id = "#e" + line + "_" + (i + this.line_indent(line))
         pos[line][i] = $(id).offset().left
-      [0..this.spaces[begin]].map (i) ->
+      [0..this.spaces[begin]].forEach (i) ->
         width[line][i] = pos[line][i+1]-pos[line][i]
   
-    [0...this.spaces[begin]].map (i) -> # 桁ごとに最大幅を計算 範囲 あってる????
+    [0...this.spaces[begin]].forEach (i) -> # 桁ごとに最大幅を計算 範囲 あってる????
       max = 0
-      [begin...begin+lines].map (line) ->
+      [begin...begin+lines].forEach (line) ->
         max = width[line][i] if width[line][i] > max
       maxwidth[i] = max
   
     colpos = pos[begin][0]
-    [0..this.spaces[begin]].map (i) => # 最大幅ずつずらして表示
-      [begin...begin+lines].map (line) =>
+    [0..this.spaces[begin]].forEach (i) => # 最大幅ずつずらして表示
+      [begin...begin+lines].forEach (line) =>
         id = "#e" + line + "_" + (i + this.line_indent(line))
         $(id).css('position','absolute').css('left',colpos)
       colpos += maxwidth[i]
@@ -247,10 +247,10 @@ class GyazzBuffer
   _do_transpose = (beginline, lines, indent) ->
     cols = this.spaces[beginline] + 1
     newlines = []
-    [0...cols].map (i) ->
+    [0...cols].forEach (i) ->
       newlines[i] = _indentstr indent
 
-    [0...lines].map (y) =>
+    [0...lines].forEach (y) =>
       matched2 = []
       matched3 = []
       s = this.data[beginline+y]
@@ -266,18 +266,18 @@ class GyazzBuffer
         s = pre + '<<2<' + (matched2.length-1) + '>2>>' + post
       elements = s.split ' '
     
-      [0...elements.length].map (i) -> # 行桁入れ換え
+      [0...elements.length].forEach (i) -> # 行桁入れ換え
         while a = elements[i].match /^(.*)<<3<(\d+)>3>>(.*)$/
           elements[i] = a[1] + "[[[" + matched3[a[2]] + "]]]" + a[3]
         while a = elements[i].match /^(.*)<<2<(\d+)>2>>(.*)$/
           elements[i] = a[1] + "[[" + matched2[a[2]] + "]]" + a[3]
-      [0...elements.length].map (i) ->
+      [0...elements.length].forEach (i) ->
         newlines[i] += " " if y != 0
         newlines[i] += elements[i]
       
     # data[] の beginlineからlines行をnewlines[]で置き換える
     this.data.splice beginline, lines
-    [0...newlines.length].map (i) =>
+    [0...newlines.length].forEach (i) =>
       this.data.splice beginline+i, 0, newlines[i]
   
     writedata()            ############
