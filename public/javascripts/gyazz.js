@@ -157,48 +157,6 @@ $(document).mousedown(function(event){
     return true;
 });
 
-//function indent(line){ // 先頭の空白文字の数
-//    if(typeof data[line] !== "string") return 0;
-//    return data[line].match(/^( *)/)[1].length;
-//}
-
-//function movelines(line){ // 移動すべき行数
-//    var i;
-//    var ind = indent(line);
-//    for(i=line+1;i<gb.data.length && indent(i) > ind;i++);
-//    return i-line;
-//}
-
-//function destline_up(){
-//    var ind;
-//    // インデントが自分と同じか自分より深い行を捜す。
-//    // ひとつもなければ -1 を返す。
-//    var ind_editline = indent(gb.editline);
-//    var foundline = -1;
-//    for(var i=gb.editline-1;i>=0;i--){
-//        ind = indent(i);
-//        if(ind > ind_editline){
-//            foundline = i;
-//        }
-//        if(ind == ind_editline) return i;
-//        if(ind < ind_editline) return foundline;
-//    }
-//    return foundline;
-//}
-//
-//function destline_down(){
-//    var ind;
-//    // インデントが自分と同じ行を捜す。
-//    // ひとつもなければ -1 を返す。
-//    var ind_editline = indent(gb.editline);
-//    for(var i=gb.editline+1;i<gb.data.length;i++){
-//        ind = indent(i);
-//        if(ind == ind_editline) return i;
-//        if(ind < ind_editline) return -1;
-//    }
-//    return -1;
-//}
-
 $(document).keyup(function(event){
     var input = $("input#newtext");
     gb.data[gb.editline] = input.val();
@@ -225,7 +183,7 @@ $(document).keydown(function(event){
     not_saved = true;
 
     if(ck && kc == 0x53 && gb.editline >= 0){
-        transpose();
+        gb.transpose();
     }
     else if(kc == KC.enter){
         $('#query').val('');
@@ -601,7 +559,8 @@ function display(delay){
         posy[i] = $('#list'+i).position().top;
         //posy[i] = $("#e" + i + "_0").offset().top;
     }
-    aligncolumns();
+    //aligncolumns();
+    gb.align();
     
     // リファラを消すプラグイン
     // http://logic.moo.jp/memo.php/archive/569

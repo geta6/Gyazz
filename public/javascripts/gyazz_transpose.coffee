@@ -9,14 +9,14 @@ similarlines = (process, condition) -> # 同じパタンの連続行の処理
   lastspaces = -1
   lastindent = -1
   [0...gb.data.length].map (i) ->
-    if spaces[i] > 0 && spaces[i] == lastspaces && indent(i) == lastindent # cont
+    if gb.spaces[i] > 0 && gb.spaces[i] == lastspaces && indent(i) == lastindent # cont
     else
       if lastspaces > 1 && i-beginline > 1  # 同じパタンの連続を検出
         if condition beginline, i
           process beginline, i-beginline, indent(beginline)
       beginline = i
 
-    lastspaces = spaces[i]
+    lastspaces = gb.spaces[i]
     lastindent = indent(i)
 
   if lastspaces > 1 && gb.data.length-beginline > 1 #  同じパタンの連続を検出

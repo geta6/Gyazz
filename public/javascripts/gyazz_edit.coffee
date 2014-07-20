@@ -12,7 +12,7 @@ indentstr = (level) ->  # levelの長さの空白文字列
 addblankline = (line, indent) ->
   editline = line
   eline = line
-  deleteblankgb.data()
+  deleteblankdata()
   [gb.data.length-1..editline].map (i) ->
     gb.data[i+1] = gb.data[i]
   gb.data[editline] = indentstr(indent)

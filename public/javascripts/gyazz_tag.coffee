@@ -135,7 +135,7 @@ tag = (s,line) ->
     s = pre + '<<<' + (matched.length-1) + '>>>' + post
 
   elements = s.split ' '
-  spaces[line] = elements.length - indent(line) - 1
+  gb.spaces[line] = elements.length - gb.line_indent(line) - 1
   [0...elements.length].map (i) ->
     while a = elements[i].match /^(.*)<<<(\d+)>>>(.*)$/
       elements[i] = a[1] + matched[a[2]] + a[3]
