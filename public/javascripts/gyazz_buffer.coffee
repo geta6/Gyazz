@@ -112,9 +112,11 @@ class GyazzBuffer
   # カーソルの行を下に移動
   line_down: ->
     if this.editline >= 0 && this.editline < this.data.length-1
-      current_line_data = this.data[this.editline]
-      this.data[this.editline] = this.data[this.editline+1]
-      this.data[this.editline+1] = current_line_data
+      l = this.editline
+      [this.data[l], this.data[l+1]] = [this.data[l+1], this.data[l]]
+      #current_line_data = this.data[this.editline]
+      #this.data[this.editline] = this.data[this.editline+1]
+      #this.data[this.editline+1] = current_line_data
       setTimeout =>
         this.editline += 1
         deleteblankdata()
@@ -125,9 +127,11 @@ class GyazzBuffer
   # カーソルの行を上に移動
   line_up: ->
     if this.editline > 0
-      current_line_data = this.data[this.editline]
-      this.data[this.editline] = this.data[this.editline-1]
-      this.data[this.editline-1] = current_line_data
+      l = this.editline
+      [this.data[l], this.data[l-1]] = [this.data[l-1], this.data[l]]
+      #current_line_data = this.data[this.editline]
+      #this.data[this.editline] = this.data[this.editline-1]
+      #this.data[this.editline-1] = current_line_data
       setTimeout =>
         this.editline -= 1
         deleteblankdata()
