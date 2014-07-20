@@ -10,12 +10,12 @@ indentstr = (level) ->  # levelの長さの空白文字列
   ([0...level].map (x) -> " ").join('')
 
 addblankline = (line, indent) ->
-  editline = line
+  gb.editline = line
   eline = line
   deleteblankdata()
-  [gb.data.length-1..editline].map (i) ->
+  [gb.data.length-1..gb.editline].map (i) ->
     gb.data[i+1] = gb.data[i]
-  gb.data[editline] = indentstr(indent)
+  gb.data[gb.editline] = indentstr(indent)
 
 deleteblankdata = () -> # 空白行を削除
   [0...gb.data.length].map (i) ->

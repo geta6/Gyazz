@@ -141,7 +141,8 @@ $(document).keydown(function(event){
     
     not_saved = true;
 
-    if(ck && kc == 0x53 && gb.editline >= 0){
+    if(ck && kc == 0x53 && gb.editline >= 0){ // Ctrl-Sでtranspose
+	event.preventDefault();
         gb.transpose();
     }
     else if(kc == KC.enter){

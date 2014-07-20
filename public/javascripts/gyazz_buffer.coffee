@@ -96,7 +96,7 @@ class GyazzBuffer
     if this.editline > 0
       dest = _.find [this.editline-1..0], (i) ->
         doi[i] >= -zoomlevel
-      if dest
+      if dest != undefined
         setTimeout =>
           this.editline = dest
           deleteblankdata()
@@ -274,7 +274,7 @@ class GyazzBuffer
     writedata()            ############
     this.editline = -1
     display true           ############
-
+    # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない
 
 
 
