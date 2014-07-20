@@ -52,7 +52,7 @@ tag = (s,line) ->
             img_url = "#{link_to}/icon"
         count = Number(t[3])
         icons = "<a href='#{link_to}' class='link' target='_blank'>"
-        [0...count].map (i) ->
+        [0...count].forEach (i) ->
           icons += "<img src='#{img_url}' class='icon' height='24' border='0' alt='#{t[1]}' title='#{t[1]}' />"
         if t[4].length > 0
           odd = Number("0"+t[4])
@@ -136,10 +136,10 @@ tag = (s,line) ->
 
   elements = s.split ' '
   gb.spaces[line] = elements.length - gb.line_indent(line) - 1
-  [0...elements.length].map (i) ->
+  [0...elements.length].forEach (i) ->
     while a = elements[i].match /^(.*)<<<(\d+)>>>(.*)$/
       elements[i] = a[1] + matched[a[2]] + a[3]
-  [0...elements.length].map (i) ->
+  [0...elements.length].forEach (i) ->
     elements[i] = "<span id='e#{line}_#{i}'>#{elements[i]}</span>" # 各要素にidをつける jQuery風にすべき***
 
   elements.join ' '

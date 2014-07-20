@@ -134,75 +134,76 @@ $(document).keydown (event) ->
     
   not_saved = true
 
-  if ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
-    event.preventDefault()
-    gb.transpose()
-  if kc == KC.enter
-    $('#query').val('')
-    writedata()
-  if kc == KC.down && sk # Shift+↓ = 下にブロック移動
-    gb.block_down()
-  else if kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
-    input_tag = $("input#newtext")
-    if input_tag.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
-      gb.data[gb.editline] = ""# 現在の行を削除
-      deleteblankdata()
-      writedata()
-      setTimeout ->
-        # カーソルを行頭に移動
-        input_tag = $("#newtext")
-        input_tag[0].selectionStart = 0
-        input_tag[0].selectionEnd = 0
-      , 10
-      return
-    setTimeout ->  # Mac用。ctrl+kでカーソルより後ろを削除するまで待つ
-      cursor_pos = input_tag[0].selectionStart
-      if input_tag.val().length > cursor_pos  # ctrl+kでカーソルより後ろが削除されていない場合
-        input_tag.val input_tag.val().substring(0, cursor_pos) # カーソルより後ろを削除
-        input_tag.selectionStart = cursor_pos
-        input_tag.selectionEnd = cursor_pos
-    , 10
-  if kc == KC.down && ck # 行を下に移動
-    gb.line_down()
-  if kc == KC.down && !sk || kc == KC.n && !sk && ck # 下にカーソル移動
-    gb.cursor_down()
-  if kc == KC.up && sk # 上にブロック移動
-    gb.block_up()
-  if kc == KC.up && ck && gb.editline > 0 # 行を上に移動
-    gb.line_up()
-  if (kc == KC.up && !sk) || (kc == KC.p && !sk && ck) # 上にカーソル移動
-    gb.cursor_up()
-  if kc == KC.tab && !sk || kc == KC.right && sk # indent
-    if gb.editline >= 0 && gb.editline < gb.data.length
-      gb.data[gb.editline] = ' ' + gb.data[gb.editline]
-      writedata()
-  if kc == KC.tab && sk || kc == KC.left && sk # undent
-    if gb.editline >= 0 && gb.editline < gb.data.length
-      s = gb.data[gb.editline]
-      if s.substring(0,1) == ' '
-        gb.data[gb.editline] = s.substring(1,s.length)
-      writedata()
-  if kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
-    if -zoomlevel < maxindent()
-      zoomlevel -= 1
-      display()
-  if kc == KC.right && !sk && !ck && gb.editline < 0 # zoom in
-    if zoomlevel < 0
-      zoomlevel += 1
-      display()
-  if ck && kc == KC.left # 古いバージョンゲット
-    version += 1
-    getdata
-      version:version
-  if ck && kc == KC.right
-    if version >= 0
-      version -= 1
-      getdata
-        version:version
-  if kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
-    $('#querydiv').css('visibility','visible').css('display','block')
-    $('#query').focus()
-    
+  switch
+   when ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
+     event.preventDefault()
+     gb.transpose()
+   when kc == KC.enter
+     $('#query').val('')
+     writedata()
+   when kc == KC.down && sk # Shift+↓ = 下にブロック移動
+     gb.block_down()
+   when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
+     input_tag = $("input#newtext")
+     if input_tag.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
+       gb.data[gb.editline] = ""# 現在の行を削除
+       deleteblankdata()
+       writedata()
+       setTimeout ->
+         # カーソルを行頭に移動
+         input_tag = $("#newtext")
+         input_tag[0].selectionStart = 0
+         input_tag[0].selectionEnd = 0
+       , 10
+       return
+     setTimeout ->  # Mac用。ctrl+kでカーソルより後ろを削除するまで待つ
+       cursor_pos = input_tag[0].selectionStart
+       if input_tag.val().length > cursor_pos  # ctrl+kでカーソルより後ろが削除されていない場合
+         input_tag.val input_tag.val().substring(0, cursor_pos) # カーソルより後ろを削除
+         input_tag.selectionStart = cursor_pos
+         input_tag.selectionEnd = cursor_pos
+     , 10
+   when kc == KC.down && ck # 行を下に移動
+     gb.line_down()
+   when kc == KC.down && !sk || kc == KC.n && !sk && ck # 下にカーソル移動
+     gb.cursor_down()
+   when kc == KC.up && sk # 上にブロック移動
+     gb.block_up()
+   when kc == KC.up && ck && gb.editline > 0 # 行を上に移動
+     gb.line_up()
+   when (kc == KC.up && !sk) || (kc == KC.p && !sk && ck) # 上にカーソル移動
+     gb.cursor_up()
+   when kc == KC.tab && !sk || kc == KC.right && sk # indent
+     if gb.editline >= 0 && gb.editline < gb.data.length
+       gb.data[gb.editline] = ' ' + gb.data[gb.editline]
+       writedata()
+   when kc == KC.tab && sk || kc == KC.left && sk # undent
+     if gb.editline >= 0 && gb.editline < gb.data.length
+       s = gb.data[gb.editline]
+       if s.substring(0,1) == ' '
+         gb.data[gb.editline] = s.substring(1,s.length)
+       writedata()
+   when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
+     if -zoomlevel < maxindent()
+       zoomlevel -= 1
+       display()
+   when kc == KC.right && !sk && !ck && gb.editline < 0 # zoom in
+     if zoomlevel < 0
+       zoomlevel += 1
+       display()
+   when ck && kc == KC.left # 古いバージョンゲット
+     version += 1
+     getdata
+       version:version
+   when ck && kc == KC.right
+     if version >= 0
+       version -= 1
+       getdata
+         version:version
+   when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
+     $('#querydiv').css('visibility','visible').css('display','block')
+     $('#query').focus()
+     
   if not_saved
     $("input#newtext").css('background-color','#f0f0d0')
 
@@ -445,21 +446,22 @@ writedata = (force) ->
       true
     success: (msg) ->
       $("input#newtext").css('background-color','#ddd')
-      if msg.match /^conflict/
-        # 再読み込み
-        notifyBox.print("write conflict").show(1000)
-        getdata() # ここで強制書き換えしてしまうのがマズい? (2011/6/17)
-      else if msg == 'protected'
-        # 再読み込み
-        notifyBox.print("このページは編集できません").show(3000)
-        getdata()
-      else if msg == 'noconflict'
-        notifyBox.print("save success").show(1000)
-        #getdata(); # これをしないとorig_md5がセットされない
-        # orig_md5 = MD5_hexhash(utf16to8(datastr)); でいいのか?
-      else
-        notifyBox.print("Can't find old data - something's wrong.").show(3000)
-        getdata()
+      switch
+        when msg.match /^conflict/
+          # 再読み込み
+          notifyBox.print("write conflict").show(1000)
+          getdata() # ここで強制書き換えしてしまうのがマズい? (2011/6/17)
+        when msg == 'protected'
+          # 再読み込み
+          notifyBox.print("このページは編集できません").show(3000)
+          getdata()
+        when msg == 'noconflict'
+          notifyBox.print("save success").show(1000)
+          #getdata(); # これをしないとorig_md5がセットされない
+          # orig_md5 = MD5_hexhash(utf16to8(datastr)); でいいのか?
+        else
+          notifyBox.print("Can't find old data - something's wrong.").show(3000)
+          getdata()
     error: ->
       notifyBox.print("write error").show(3000)
 
