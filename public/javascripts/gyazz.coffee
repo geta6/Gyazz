@@ -235,7 +235,7 @@ linefunc = (n) ->
 # 初期化
 #
 setup = -> # 初期化
-  [0...1000].map (i) ->
+  [0...1000].forEach (i) ->
     y = $('<div>').attr('id','listbg'+i)
     x = $('<span>').attr('id','list'+i).mousedown(linefunc(i))
     $('#contents').append(y.append(x))
@@ -313,7 +313,7 @@ display = (delay) ->
   if gb.data.length == 0
     gb.data = ["(empty)"]
     doi[0] = maxindent()
-  [0...gb.data.length].map (i) ->
+  [0...gb.data.length].forEach (i) ->
     ind = indent(i)
     xmargin = ind * 30
     
@@ -342,7 +342,7 @@ display = (delay) ->
           if contline < 0
             contline = i-1
           s = ''
-          [contline..i].map (j) ->
+          [contline..i].forEach (j) ->
             s += gb.data[j].replace(/\\$/,'__newline__')
           $("#list"+contline).css('display','inline').css('visibility','visible').html(tag(s,contline).replace(/__newline__/g,''))
           $("#listbg"+contline).css('display','inline').css('visibility','visible')
@@ -394,13 +394,13 @@ display = (delay) ->
     else
       $("#listbg"+i).removeClass('hover')
   
-  [gb.data.length...1000].map (i) ->
+  [gb.data.length...1000].forEach (i) ->
     $('#list'+i).css('display','none')
     $('#listbg'+i).css('display','none')
   
   input.css('display', if gb.editline == -1 then 'none' else 'block')
   
-  [0...gb.data.length].map (i) ->
+  [0...gb.data.length].forEach (i) ->
     posy[i] = $('#list'+i).position().top
   gb.align()
   
@@ -487,7 +487,7 @@ calcdoi = ->
   if q && q.value != ''
     re = pbs.regexp(q.value,false)
   maxind = maxindent()
-  [0...gb.data.length].map (i) ->
+  [0...gb.data.length].forEach (i) ->
     if (if re then re.exec(gb.data[i]) else true)
       doi[i] = maxind - indent(i)
     else
@@ -512,7 +512,7 @@ reload = ->
   reloadTimeout = setTimeout reload, reloadInterval
 
 sendfiles = (files) ->
-  [0...files.length].map (i) ->
+  [0...files.length].forEach (i) ->
     file = files[i]
     sendfile file, (filename) ->
       gb.editline = gb.data.length

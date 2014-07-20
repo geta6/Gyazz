@@ -16,23 +16,22 @@ class GyazzBuffer
     line.match(/^( *)/)[1].length
 
   data: []               # テキストデータ
-  editline: -1           # 現在選択してる行の番号
-  
+  editline: -1           # 現在選択してる行の番号  
   init: (arg) ->
     this.data = if typeof arg == 'string' then arg.split /\n/ else arg
     
   # 空白行を削除
   deleteblankdata: ->
-    this.data = _.filter this.data, (line) ->
+    @data = _.filter @data, (line) ->
       typeof line == "string" && !line.match /^ *$/
 
   # n行目のインデントを計算
   line_indent: (n) ->
-    _indent this.data[n]
+    _indent @data[n]
       
   # 最大のインデント値を取得
   maxindent: ->
-    Math.max (this.data.map (line) -> _indent line)...
+    Math.max (@data.map (line) -> _indent line)...
 
   #maxindent: ->
   #  indents = this.data.map (line) -> _indent line
