@@ -169,35 +169,35 @@ $(document).mousedown(function(event){
 //    return i-line;
 //}
 
-function destline_up(){
-    var ind;
-    // インデントが自分と同じか自分より深い行を捜す。
-    // ひとつもなければ -1 を返す。
-    var ind_editline = indent(gb.editline);
-    var foundline = -1;
-    for(var i=gb.editline-1;i>=0;i--){
-        ind = indent(i);
-        if(ind > ind_editline){
-            foundline = i;
-        }
-        if(ind == ind_editline) return i;
-        if(ind < ind_editline) return foundline;
-    }
-    return foundline;
-}
-
-function destline_down(){
-    var ind;
-    // インデントが自分と同じ行を捜す。
-    // ひとつもなければ -1 を返す。
-    var ind_editline = indent(gb.editline);
-    for(var i=gb.editline+1;i<gb.data.length;i++){
-        ind = indent(i);
-        if(ind == ind_editline) return i;
-        if(ind < ind_editline) return -1;
-    }
-    return -1;
-}
+//function destline_up(){
+//    var ind;
+//    // インデントが自分と同じか自分より深い行を捜す。
+//    // ひとつもなければ -1 を返す。
+//    var ind_editline = indent(gb.editline);
+//    var foundline = -1;
+//    for(var i=gb.editline-1;i>=0;i--){
+//        ind = indent(i);
+//        if(ind > ind_editline){
+//            foundline = i;
+//        }
+//        if(ind == ind_editline) return i;
+//        if(ind < ind_editline) return foundline;
+//    }
+//    return foundline;
+//}
+//
+//function destline_down(){
+//    var ind;
+//    // インデントが自分と同じ行を捜す。
+//    // ひとつもなければ -1 を返す。
+//    var ind_editline = indent(gb.editline);
+//    for(var i=gb.editline+1;i<gb.data.length;i++){
+//        ind = indent(i);
+//        if(ind == ind_editline) return i;
+//        if(ind < ind_editline) return -1;
+//    }
+//    return -1;
+//}
 
 $(document).keyup(function(event){
     var input = $("input#newtext");
@@ -232,19 +232,7 @@ $(document).keydown(function(event){
         writedata();
     }
     else if(kc == KC.down && sk){ // Shift+↓ = 下にブロック移動
-        if(gb.editline >= 0 && gb.editline < gb.data.length-1){
-            m = gb.movelines(gb.editline);
-            dst = destline_down();
-            if(dst >= 0){
-                m2 = gb.movelines(dst);
-                for(i=0;i<m;i++)  tmp[i] = gb.data[gb.editline+i];
-                for(i=0;i<m2;i++) gb.data[gb.editline+i] = gb.data[dst+i];
-                for(i=0;i<m;i++)  gb.data[gb.editline+m2+i] = tmp[i];
-                gb.editline = gb.editline + m2;
-                deleteblankdata();
-                writedata();
-            }
-        }
+        gb.block_down();
     }
     else if(kc == KC.k && ck){ // Ctrl+K カーソルより右側を削除する
         var input_tag = $("input#newtext");
@@ -292,19 +280,7 @@ $(document).keydown(function(event){
         }
     }
     else if(kc == KC.up && sk){ // 上にブロック移動
-        if(gb.editline > 0){
-            m = gb.movelines(gb.editline);
-            dst = destline_up();
-            if(dst >= 0){
-                m2 = gb.editline-dst;
-                for(i=0;i<m2;i++) tmp[i] = gb.data[dst+i];
-                for(i=0;i<m;i++)  gb.data[dst+i] = gb.data[gb.editline+i];
-                for(i=0;i<m2;i++) gb.data[dst+m+i] = tmp[i];
-                gb.editline = dst;
-                deleteblankdata();
-                writedata();
-            }
-        }
+        gb.block_up();
     }
     else if(kc == KC.up && ck && gb.editline > 0){ // Ctrl+↑= 上の行と入れ替え
         current_line_data = gb.data[gb.editline];
