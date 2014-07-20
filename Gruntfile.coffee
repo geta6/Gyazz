@@ -59,13 +59,12 @@ module.exports = (grunt) ->
         # # ext: '.js'
         # #
         files:
-          'public/javascripts/gyazz_transpose.js': 'public/javascripts/gyazz_transpose.coffee'
-          'public/javascripts/gyazz_align.js': 'public/javascripts/gyazz_align.coffee'
           'public/javascripts/gyazz_related.js': 'public/javascripts/gyazz_related.coffee'
           'public/javascripts/gyazz_tag.js': 'public/javascripts/gyazz_tag.coffee'
           'public/javascripts/gyazz_notification.js': 'public/javascripts/gyazz_notification.coffee'
           'public/javascripts/gyazz_edit.js': 'public/javascripts/gyazz_edit.coffee'
           'public/javascripts/gyazz_buffer.js': 'public/javascripts/gyazz_buffer.coffee'
+          'public/javascripts/gyazz_lib.js': 'public/javascripts/gyazz_lib.coffee'
       options:
         bare: yes
 

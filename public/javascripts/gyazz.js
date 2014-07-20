@@ -74,12 +74,6 @@ $(document).keypress(function(event){
     }
 });
 
-function hex2(v){
-    v = Math.floor(v);
-    if(v >= 256) v = 255;
-    return ("0" + v.toString(16)).slice(-2);
-}
-
 function bgcol(t){
     var i, r, g, b;
     // データの古さに応じて行の色を変える

@@ -68,6 +68,12 @@ class GyazzBuffer
         foundline = -1
         return true
     foundline
+    
+  #########################################################################
+  #
+  #   行移動 / ブロック移動
+  #
+  #########################################################################
 
   # editlineのブロックを下に移動
   block_down: ->
@@ -100,27 +106,23 @@ class GyazzBuffer
         writedata()       ########
 
   #########################################################################
-  # 
+  #
   #   桁揃え、行桁交換
-  # 
+  #
   #########################################################################
-  # 
+
   spaces: []  # 行に空白がいくつ含まれているか (桁揃えに利用)
 
   _similarlines = (process, condition) -> # 同じパタンの連続行の処理
-    #alert "similarlines"
     beginline = 0
     lastspaces = -1
     lastindent = -1
     [0...this.data.length].map (i) =>
-      #alert this.editline
       if this.spaces[i] > 0 && this.spaces[i] == lastspaces && this.line_indent(i) == lastindent
         # 連続パタン続行中
       else
         if lastspaces > 1 && i-beginline > 1  # 同じパタンの連続を検出
-          #alert "チェック開始"
           if condition beginline, i, this.editline
-            #alert "condition met"
             process.call @, beginline, i-beginline, this.line_indent(beginline)
         beginline = i
 
