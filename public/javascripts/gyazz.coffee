@@ -27,7 +27,7 @@ datestr = ''
 showold = false
 
 reloadTimeout = null                 # 放っておくとリロードするように
-reloadInterval = 10 * 60 * 1000; #10分ごとにリロード
+reloadInterval = 10 * 60 * 1000      #10分ごとにリロード
 
 editTimeout = null
 
@@ -63,7 +63,7 @@ $(document).keypress (event) ->
   if kc == KC.enter
     event.preventDefault()
   if kc == KC.enter
-    # 1行追加 
+    # 1行追加
     # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
     if gb.editline >= 0
       addblankline(gb.editline+1,indent(gb.editline))
@@ -135,79 +135,79 @@ $(document).keydown (event) ->
   not_saved = true
 
   switch
-   when ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
-     event.preventDefault()
-     gb.transpose()
-   when kc == KC.enter
-     $('#query').val('')
-     writedata()
-   when kc == KC.down && sk # Shift+↓ = 下にブロック移動
-     gb.block_down()
-   when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
-     input_tag = $("input#newtext")
-     if input_tag.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
-       gb.data[gb.editline] = ""# 現在の行を削除
-       deleteblankdata()
-       writedata()
-       setTimeout ->
-         # カーソルを行頭に移動
-         input_tag = $("#newtext")
-         input_tag[0].selectionStart = 0
-         input_tag[0].selectionEnd = 0
-       , 10
-       return
-     setTimeout ->  # Mac用。ctrl+kでカーソルより後ろを削除するまで待つ
-       cursor_pos = input_tag[0].selectionStart
-       if input_tag.val().length > cursor_pos  # ctrl+kでカーソルより後ろが削除されていない場合
-         input_tag.val input_tag.val().substring(0, cursor_pos) # カーソルより後ろを削除
-         input_tag.selectionStart = cursor_pos
-         input_tag.selectionEnd = cursor_pos
-     , 10
-   when kc == KC.down && ck # 行を下に移動
-     gb.line_down()
-   when kc == KC.down && !sk || kc == KC.n && !sk && ck # 下にカーソル移動
-     gb.cursor_down()
-   when kc == KC.up && sk # 上にブロック移動
-     gb.block_up()
-   when kc == KC.up && ck && gb.editline > 0 # 行を上に移動
-     gb.line_up()
-   when (kc == KC.up && !sk) || (kc == KC.p && !sk && ck) # 上にカーソル移動
-     gb.cursor_up()
-   when kc == KC.tab && !sk || kc == KC.right && sk # indent
-     if gb.editline >= 0 && gb.editline < gb.data.length
-       gb.data[gb.editline] = ' ' + gb.data[gb.editline]
-       writedata()
-   when kc == KC.tab && sk || kc == KC.left && sk # undent
-     if gb.editline >= 0 && gb.editline < gb.data.length
-       s = gb.data[gb.editline]
-       if s.substring(0,1) == ' '
-         gb.data[gb.editline] = s.substring(1,s.length)
-       writedata()
-   when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
-     if -zoomlevel < maxindent()
-       zoomlevel -= 1
-       display()
-   when kc == KC.right && !sk && !ck && gb.editline < 0 # zoom in
-     if zoomlevel < 0
-       zoomlevel += 1
-       display()
-   when ck && kc == KC.left # 古いバージョンゲット
-     version += 1
-     getdata
-       version:version
-   when ck && kc == KC.right
-     if version >= 0
-       version -= 1
-       getdata
-         version:version
-   when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
-     $('#querydiv').css('visibility','visible').css('display','block')
-     $('#query').focus()
-     
+    when ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
+      event.preventDefault()
+      gb.transpose()
+    when kc == KC.enter
+      $('#query').val('')
+      writedata()
+    when kc == KC.down && sk # Shift+↓ = 下にブロック移動
+      gb.block_down()
+    when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
+      input_tag = $("input#newtext")
+      if input_tag.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
+        gb.data[gb.editline] = ""# 現在の行を削除
+        deleteblankdata()
+        writedata()
+        setTimeout ->
+          # カーソルを行頭に移動
+          input_tag = $("#newtext")
+          input_tag[0].selectionStart = 0
+          input_tag[0].selectionEnd = 0
+        , 10
+        return
+      setTimeout ->  # Mac用。ctrl+kでカーソルより後ろを削除するまで待つ
+        cursor_pos = input_tag[0].selectionStart
+        if input_tag.val().length > cursor_pos  # ctrl+kでカーソルより後ろが削除されていない場合
+          input_tag.val input_tag.val().substring(0, cursor_pos) # カーソルより後ろを削除
+          input_tag.selectionStart = cursor_pos
+          input_tag.selectionEnd = cursor_pos
+      , 10
+    when kc == KC.down && ck # 行を下に移動
+      gb.line_down()
+    when kc == KC.down && !sk || kc == KC.n && !sk && ck # 下にカーソル移動
+      gb.cursor_down()
+    when kc == KC.up && sk # 上にブロック移動
+      gb.block_up()
+    when kc == KC.up && ck && gb.editline > 0 # 行を上に移動
+      gb.line_up()
+    when (kc == KC.up && !sk) || (kc == KC.p && !sk && ck) # 上にカーソル移動
+      gb.cursor_up()
+    when kc == KC.tab && !sk || kc == KC.right && sk # indent
+      if gb.editline >= 0 && gb.editline < gb.data.length
+        gb.data[gb.editline] = ' ' + gb.data[gb.editline]
+        writedata()
+    when kc == KC.tab && sk || kc == KC.left && sk # undent
+      if gb.editline >= 0 && gb.editline < gb.data.length
+        s = gb.data[gb.editline]
+        if s.substring(0,1) == ' '
+          gb.data[gb.editline] = s.substring(1,s.length)
+        writedata()
+    when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
+      if -zoomlevel < maxindent()
+        zoomlevel -= 1
+        display()
+    when kc == KC.right && !sk && !ck && gb.editline < 0 # zoom in
+      if zoomlevel < 0
+        zoomlevel += 1
+        display()
+    when ck && kc == KC.left # 古いバージョンゲット
+      version += 1
+      getdata
+        version:version
+    when ck && kc == KC.right
+      if version >= 0
+        version -= 1
+        getdata
+          version:version
+    when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
+      $('#querydiv').css('visibility','visible').css('display','block')
+      $('#query').focus()
+      
   if not_saved
     $("input#newtext").css('background-color','#f0f0d0')
-
-# 認証文字列をサーバに送る
+ 
+ # 認証文字列をサーバに送る
 tell_auth = ->
   authstr = authbuf.sort().join(",")
   $.ajax
@@ -257,8 +257,8 @@ setup = -> # 初期化
   $('#historyimage').hover (() ->
     showold = true
     ), () ->
-      showold = false
-      getdata()
+    showold = false
+    getdata()
   
   $('#historyimage').mousemove (event) ->
     imagewidth = parseInt($('#historyimage').attr('width'))
@@ -293,10 +293,10 @@ setup = -> # 初期化
 display = (delay) ->
   # zoomlevelに応じてバックグラウンドの色を変える
   $("body").css 'background-color', switch zoomlevel
-      when 0  then "#eeeeff"
-      when -1 then "#e0e0c0"
-      when -2 then "#c0c0a0"
-      else         "#a0a080"
+    when 0  then "#eeeeff"
+    when -1 then "#e0e0c0"
+    when -2 then "#c0c0a0"
+    else         "#a0a080"
   $('#datestr').text if version >= 0 || showold then datestr else ''
   $('#title').attr
     href: "#{root}/#{name}/#{title}/__edit/#{ if version >= 0 then version else 0 }"
@@ -345,13 +345,15 @@ display = (delay) ->
           s = ''
           [contline..i].forEach (j) ->
             s += gb.data[j].replace(/\\$/,'__newline__')
-          $("#list"+contline).css('display','inline').css('visibility','visible').html(tag(s,contline).replace(/__newline__/g,''))
+          $("#list"+contline).css('display','inline').css('visibility','visible')
+            .html(tag(s,contline).replace(/__newline__/g,''))
           $("#listbg"+contline).css('display','inline').css('visibility','visible')
           t.css('visibility','hidden')
           p.css('visibility','hidden')
         else # 通常行
           contline = -1
-          if typeof gb.data[i] == "string" && ( m = gb.data[i].match(/\[\[(https:\/\/gist\.github\.com.*\?.*)\]\]/i)) # gistエンベッド
+          if typeof gb.data[i] == "string" && (m = gb.data[i].match(/\[\[(https:\/\/gist\.github\.com.*\?.*)\]\]/i))
+            # gistエンベッド
             # https:#gist.github.com/1748966 のやり方
             gisturl = m[1]
             gistFrame = document.createElement("iframe")
@@ -359,7 +361,7 @@ display = (delay) ->
             gistFrame.id = "gistFrame" + i
             gistFrame.style.border = 'none'
             gistFrame.style.margin = '0'
-            t.children().remove(); # 子供を全部消す
+            t.children().remove() # 子供を全部消す
             t.append(gistFrame)
             gistFrameHTML = '<html><body onload="parent.adjustIframeSize(document.body.scrollHeight,'+i+
                 ')"><scr' + 'ipt type="text/javascript" src="' + gisturl + '"></sc'+'ript></body></html>'
@@ -372,7 +374,7 @@ display = (delay) ->
             
             gistFrameDoc.open()
             gistFrameDoc.writeln(gistFrameHTML)
-            gistFrameDoc.close(); 
+            gistFrameDoc.close()
           else
             t.css('display','inline').css('visibility','visible').css('line-height','').html(tag(gb.data[i],i))
             p.attr('class','listedit'+ind).css('display','block').css('visibility','visible').css('line-height','')
@@ -390,7 +392,7 @@ display = (delay) ->
       $(".hover").tipTip
         maxWidth: "auto" #ツールチップ最大幅
         edgeOffset: 5 #要素からのオフセット距離
-        activation: "hover" #hoverで表示、clickでも可能 
+        activation: "hover" #hoverで表示、clickでも可能
         defaultPosition: "bottom" #デフォルト表示位置
     else
       $("#listbg"+i).removeClass('hover')

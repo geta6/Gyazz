@@ -16,7 +16,7 @@ class GyazzBuffer
     line.match(/^( *)/)[1].length
 
   data: []               # テキストデータ
-  editline: -1           # 現在選択してる行の番号  
+  editline: -1           # 現在選択してる行の番号
   init: (arg) ->
     this.data = if typeof arg == 'string' then arg.split /\n/ else arg
     
