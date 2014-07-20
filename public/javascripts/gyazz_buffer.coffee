@@ -1,3 +1,8 @@
+#
+# テキストバッファの編集関連
+# 適宜HTMLを更新したりサーバと通信したりする必要あり
+#
+
 _ = require 'underscore' if typeof module != "undefined" && module.exports
 
 class GyazzBuffer
@@ -275,54 +280,3 @@ class GyazzBuffer
     this.editline = -1
     display true           ############
     # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if false
-  b = new GyazzBuffer()
-  b.init [
-    "a"
-    " bcd"
-    " efg"
-    "b"
-    "c"
-    " d e f"
-    "  g h i"
-    "  j k l"
-    ]
- 
-  console.log b.data
-  b.editline = 3
-  console.log b.block_up()
-  console.log "-----"
-  console.log b.data
-# console.log "-----"
-# console.log b.block_down
-# console.log "-----"
-# console.log b.block_down
-# console.log "-----"
-# console.log b.block_down
-# console.log "-----"
-# console.log b.block_down
-# console.log "-----"
-# console.log b.block_down
-# console.log "-----"
-# console.log b.block_down
-# console.log "-----"
-# console.log b.block_down
-# console.log "-----"
-
