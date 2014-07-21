@@ -26,9 +26,6 @@ posy = []
 datestr = ''
 showold = false
 
-reloadTimeout = null                 # 放っておくとリロードするように
-reloadInterval = 10 * 60 * 1000      #10分ごとにリロード
-
 editTimeout = null
 
 searchmode = false
@@ -93,10 +90,6 @@ longmousedown = ->
   display true
 
 $(document).mousedown (event) ->
-  if reloadTimeout
-    clearTimeout reloadTimeout
-  reloadTimeout = setTimeout reload, reloadInterval
-    
   y = event.pageY
   if y < 40
     searchmode = true
@@ -121,10 +114,6 @@ $(document).keyup (event) ->
 not_saved = false
 
 $(document).keydown (event) ->
-  if reloadTimeout
-    clearTimeout reloadTimeout
-  reloadTimeout = setTimeout reload, reloadInterval
-    
   kc = event.which
   sk = event.shiftKey
   ck = event.ctrlKey
@@ -241,8 +230,6 @@ setup = -> # 初期化
     x = $('<span>').attr('id','list'+i).mousedown(linefunc(i))
     $('#contents').append(y.append(x))
     
-  reloadTimeout = setTimeout reload, reloadInterval
-  
   $('#querydiv').css('display','none')
   
   b = $('body')
@@ -505,15 +492,6 @@ search = (event) ->
     zoomlevel = 0
     display()
   false
-
-# 最新のページに更新
-reload = ->
-  version = -1
-  getdata()
-  # display(); getdata()で呼ばれるはず
-  if reloadTimeout
-    clearTimeout(reloadTimeout)
-  reloadTimeout = setTimeout reload, reloadInterval
 
 sendfiles = (files) ->
   [0...files.length].forEach (i) ->

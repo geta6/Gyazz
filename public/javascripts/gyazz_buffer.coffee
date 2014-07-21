@@ -33,9 +33,10 @@ class GyazzBuffer
   maxindent: ->
     Math.max (@data.map (line) -> _indent line)...
 
-  #maxindent: ->
-  #  indents = @data.map (line) -> _indent line
-  #  _.reduce indents, ((x, y) -> Math.max(x, y)), 0
+  # reduce を使うとこういう感じになるのだが、Coffeeだと上のような記法が可能らしい
+  # maxindent: ->
+  #   indents = @data.map (line) -> _indent line
+  #   _.reduce indents, ((x, y) -> Math.max(x, y)), 0
 
   # n行目からブロック移動しようとするときのブロック行数
   movelines: (n) ->
@@ -243,6 +244,9 @@ class GyazzBuffer
     [0...cols].forEach (i) ->
       newlines[i] = _indentstr indent
 
+    # !!! タグ処理は gyazz_tag.coffee でやるべきではないか?
+    # tag_split() みたいなメソッドがいるのではないだろうか
+    #
     [0...lines].forEach (y) =>
       matched2 = []
       matched3 = []
