@@ -260,33 +260,13 @@ class GyazzBuffer
     [0...cols].forEach (i) ->
       newlines[i] = _indentstr indent
 
-    # !!! タグ処理は gyazz_tag.coffee でやるべきではないか?
-    # tag_split() みたいなメソッドがいるのではないだろうか
-    #
     [0...lines].forEach (y) =>
-      matched2 = []
-      matched3 = []
       s = @data[beginline+y]
-      s = s.replace /^\s*/, ''
-      s = s.replace /</g, '&lt'
-      while m = s.match /^(.*)\[\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\]\](.*)$/ # [[[....]]]
-        [x, pre, inner, x, post] = m
-        matched3.push inner
-        s = pre + '<<3<' + (matched3.length-1) + '>3>>' + post
-      while m = s.match /^(.*)\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\](.*)$/ # [[....]]
-        [x, pre, inner, x, post] = m
-        matched2.push inner
-        s = pre + '<<2<' + (matched2.length-1) + '>2>>' + post
-      elements = s.split ' '
-    
-      [0...elements.length].forEach (i) -> # 行桁入れ換え
-        while a = elements[i].match /^(.*)<<3<(\d+)>3>>(.*)$/
-          elements[i] = a[1] + "[[[" + matched3[a[2]] + "]]]" + a[3]
-        while a = elements[i].match /^(.*)<<2<(\d+)>2>>(.*)$/
-          elements[i] = a[1] + "[[" + matched2[a[2]] + "]]" + a[3]
-      [0...elements.length].forEach (i) ->
+      s = s.replace(/^\s*/,'').replace(/</g,'&lt')
+      a = tag_split(s)
+      [0...a.length].forEach (i) ->
         newlines[i] += " " if y != 0
-        newlines[i] += elements[i]
+        newlines[i] += a[i]
       
     # data[] の beginlineからlines行をnewlines[]で置き換える
     @data.splice beginline, lines

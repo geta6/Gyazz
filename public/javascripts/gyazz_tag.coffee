@@ -3,7 +3,7 @@
 #
 
 #
-# Gyazzg行を空白でsplitする。
+# Gyazz行を空白でsplitする。
 # [[...]], [[[...]]] タグの中は
 # 
 #  s = "a [[abc def]] [[http://pitecan.com]] def ghi"
@@ -185,11 +185,11 @@ tag_expand = (s, root, wiki) ->
 # [[....]], [[[...]]]の中身を解釈してspanタグをつける
 #
 # s = "a [[abc def]] [[http://pitecan.com]] def ghi"
-# tag_line(s,wiki,title,10) => <span id='e10_0'>a</span> <span id='e10_1'><a href='http://gyazz.com/増井研/abc def' class='tag'...
+# tag_line(s,wiki,title,10) =>
+#   <span id='e10_0'>a</span> <span id='e10_1'><a href='http://gyazz.com/増井研/abc def' class='tag'...
 #
 tag_line = (s, wiki, title, lineno) ->
   elements = tag_expand s, wiki, title
-  # gb.spaces[lineno] = elements.length - gb.line_indent(lineno) - 1 # !!!?????!!???
   [0...elements.length].forEach (i) ->
     elements[i] = "<span id='e#{lineno}_#{i}'>#{elements[i]}</span>" # 各要素にidをつける
   elements.join ' '
