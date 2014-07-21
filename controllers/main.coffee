@@ -137,11 +137,11 @@ module.exports = (app) ->
         if err
           debug "Write error"
         res.send "noconflict"
-        text.split(/\n/).forEach (line) ->
+        text.split(/\n/).forEach (line) -> # 新しい行ならば生成時刻を記録する
           Lines.find
-            wiki: wiki
+            wiki:  wiki
             title: title
-            line:line
+            line:  line
           .exec (err, results) ->
             if err
               debug "line read error"
