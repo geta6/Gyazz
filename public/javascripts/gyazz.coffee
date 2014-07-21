@@ -23,6 +23,8 @@ cache =
 
 posy = []
 
+not_saved = false
+
 datestr = ''
 showold = false
 
@@ -54,34 +56,13 @@ $ -> # $(document).ready()
     suggest: true # 1回目はsuggestオプションを付けてgetdata
   getrelated()
 
-#  keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
-$(document).keypress (event) ->
-  kc = event.which
-  if kc == KC.enter
-    event.preventDefault()
-  if kc == KC.enter
-    # 1行追加
-    # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
-    if gb.editline >= 0
-      addblankline(gb.editline+1,indent(gb.editline))
-      # search()
-      zoomlevel = 0
-      calcdoi()
-      display()
-      return false
-    # カーソルキーやタブを無効化
-    if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
-      return false
-
 $(document).mouseup (event) ->
-  if editTimeout
-    clearTimeout editTimeout
+  clearTimeout editTimeout if editTimeout
   eline = -1
   true
 
 $(document).mousemove (event) ->
-  if editTimeout
-    clearTimeout editTimeout
+  clearTimeout editTimeout if editTimeout
   true
 
 longmousedown = ->
@@ -111,7 +92,24 @@ $(document).keyup (event) ->
   input = $("input#newtext")
   gb.data[gb.editline] = input.val()
 
-not_saved = false
+#  keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
+$(document).keypress (event) ->
+  kc = event.which
+  if kc == KC.enter
+    event.preventDefault()
+  if kc == KC.enter
+    # 1行追加
+    # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
+    if gb.editline >= 0
+      addblankline(gb.editline+1,indent(gb.editline))
+      # search()
+      zoomlevel = 0
+      calcdoi()
+      display()
+      return false
+    # カーソルキーやタブを無効化
+    if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
+      return false
 
 $(document).keydown (event) ->
   kc = event.which
@@ -224,7 +222,7 @@ linefunc = (n) ->
 #
 # 初期化
 #
-setup = -> # 初期化
+setup = ->
   [0...1000].forEach (i) ->
     y = $('<div>').attr('id','listbg'+i)
     x = $('<span>').attr('id','list'+i).mousedown(linefunc(i))
