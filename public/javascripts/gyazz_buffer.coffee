@@ -17,14 +17,11 @@ class GyazzBuffer
 
   data: []               # テキストデータ
   editline: -1           # 現在選択してる行の番号
+  eline: -1
+  
   init: (arg) ->
     @data = if typeof arg == 'string' then arg.split /\n/ else arg
     
-  # 空白行を削除
-  deleteblankdata: ->
-    @data = _.filter @data, (line) ->
-      typeof line == "string" && !line.match /^ *$/
-
   # n行目のインデントを計算
   line_indent: (n) ->
     _indent @data[n]
@@ -38,6 +35,20 @@ class GyazzBuffer
   #   indents = @data.map (line) -> _indent line
   #   _.reduce indents, ((x, y) -> Math.max(x, y)), 0
 
+  # 空白行を削除
+  deleteblankdata: ->
+    @data = _.filter @data, (line) ->
+      typeof line == "string" && !line.match /^ *$/
+
+  # 空白行を挿入
+  addblankline: (line, indent) ->
+    @editline = line
+    @eline = line
+    @deleteblankdata()
+    [@data.length-1..@editline].forEach (i) =>
+      @data[i+1] = @data[i]
+    @data[@editline] = _indentstr indent
+  
   # n行目からブロック移動しようとするときのブロック行数
   movelines: (n) ->
     ind = @line_indent n
@@ -91,7 +102,7 @@ class GyazzBuffer
       if dest
         setTimeout =>
           @editline = dest
-          deleteblankdata()
+          @deleteblankdata()
           writedata()
           display()
         , 1
@@ -104,7 +115,7 @@ class GyazzBuffer
       if dest != undefined
         setTimeout =>
           @editline = dest
-          deleteblankdata()
+          @deleteblankdata()
           writedata()
           display()
         , 1
@@ -116,7 +127,7 @@ class GyazzBuffer
       [@data[l], @data[l+1]] = [@data[l+1], @data[l]]
       setTimeout =>
         @editline += 1
-        deleteblankdata()
+        @deleteblankdata()
         writedata() #####
         display()
       , 1
@@ -128,7 +139,7 @@ class GyazzBuffer
       [@data[l], @data[l-1]] = [@data[l-1], @data[l]]
       setTimeout =>
         @editline -= 1
-        deleteblankdata()
+        @deleteblankdata()
         writedata() #####
         display()
       , 1
@@ -145,7 +156,7 @@ class GyazzBuffer
         [0...m2].forEach (i) => @data[@editline+i] = @data[dst+i]
         [0...m].forEach  (i) => @data[@editline+m2+i] = tmp[i]
         @editline += m2
-        deleteblankdata()    ######## ここに必要?
+        @deleteblankdata()    ######## ここに必要?
         writedata()          ######## 通信モジュールに移動すべき
         display()
 
@@ -161,7 +172,7 @@ class GyazzBuffer
         [0...m].forEach (i)  => @data[dst+i] = @data[@editline+i]
         [0...m2].forEach (i) => @data[dst+m+i] = tmp[i]
         @editline = dst
-        deleteblankdata() ########
+        @deleteblankdata() ########
         writedata()       ########
         display()
 

@@ -13,8 +13,6 @@
 gb = new GyazzBuffer()
 version = -1
 
-eline = -1
-
 dt = []        # 背景色
 doi = []
 zoomlevel = 0
@@ -24,7 +22,7 @@ cache =
 not_saved = false
 
 datestr = ''
-showold = false
+showold = false          # 過去データ表示モード
 
 editTimeout = null
 
@@ -55,7 +53,7 @@ $ ->
 
 $(document).mouseup (event) ->
   clearTimeout editTimeout if editTimeout
-  eline = -1
+  gb.eline = -1
   true
 
 $(document).mousemove (event) ->
@@ -63,16 +61,16 @@ $(document).mousemove (event) ->
   true
 
 longmousedown = ->
-  gb.editline = eline
+  gb.editline = gb.eline
   calcdoi()
   display true
 
 $(document).mousedown (event) ->
   y = event.pageY
 
-  if eline == -1  # 行以外をクリック
+  if gb.eline == -1  # 行以外をクリック
     writedata()
-    gb.editline = eline
+    gb.editline = gb.eline
     calcdoi()
     display true
   else
@@ -94,7 +92,7 @@ $(document).keypress (event) ->
     # 1行追加
     # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
     if gb.editline >= 0
-      addblankline(gb.editline+1,indent(gb.editline))
+      gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
       # search()
       zoomlevel = 0
       calcdoi()
@@ -125,7 +123,7 @@ $(document).keydown (event) ->
       input_tag = $("#newtext")
       if input_tag.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
         gb.data[gb.editline] = ""# 現在の行を削除
-        deleteblankdata()
+        gb.deleteblankdata()
         writedata()
         setTimeout ->
           # カーソルを行頭に移動
@@ -162,7 +160,7 @@ $(document).keydown (event) ->
           gb.data[gb.editline] = s.substring(1,s.length)
         writedata()
     when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
-      if -zoomlevel < maxindent()
+      if -zoomlevel < gb.maxindent()
         zoomlevel -= 1
         display()
     when kc == KC.right && !sk && !ck && gb.editline < 0 # zoom in
@@ -202,12 +200,12 @@ tell_auth = ->
 linefunc = (n) ->
   (event) ->
     if writable
-      eline = n
+      gb.eline = n
     if do_auth
       authbuf.push(gb.data[n])
       tell_auth()
     if event.shiftKey
-      addblankline n, indent(n)  # 上に行を追加
+      gb.addblankline n, gb.line_indent(n)  # 上に行を追加
     search()
     true
 #
@@ -263,7 +261,7 @@ setup = ->
         show_history(res)
 
   $('#contents').mousedown (event) ->
-    if eline == -1  # 行以外をクリック
+    if gb.eline == -1  # 行以外をクリック
       writedata()
 
 display = (delay) ->
@@ -285,15 +283,15 @@ display = (delay) ->
   
   input = $("#newtext")
   if gb.editline == -1
-    deleteblankdata()
+    gb.deleteblankdata()
     input.css 'display', 'none'
   
   contline = -1
   if gb.data.length == 0
     gb.data = ["(empty)"]
-    doi[0] = maxindent()
+    doi[0] = gb.maxindent()
   [0...gb.data.length].forEach (i) ->
-    ind = indent(i)
+    ind = gb.line_indent(i)
     xmargin = ind * 30
     
     t = $("#list"+i)
@@ -466,12 +464,12 @@ calcdoi = ->
   re = null
   if q && q.val() != ''
     re = pbs.regexp q.val(), false
-  maxind = maxindent()
+  maxind = gb.maxindent()
   [0...gb.data.length].forEach (i) ->
     if (if re then re.exec(gb.data[i]) else true)
-      doi[i] = maxind - indent(i)
+      doi[i] = maxind - gb.line_indent(i)
     else
-      doi[i] = 0 - indent(i) - 1
+      doi[i] = 0 - gb.line_indent(i) - 1
 
 search = (event) ->
   if event
