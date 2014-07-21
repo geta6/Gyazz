@@ -24,7 +24,11 @@ not_saved = false
 datestr = ''
 showold = false          # 過去データ表示モード
 
-editTimeout = null
+editTimeout = null       # 行長押しで編集モードになる時間
+clearEditTimeout = () ->
+  if editTimeout
+    clearTimeout editTimeout
+    editTimeout = null
 
 KC =
   tab:   9
@@ -50,12 +54,12 @@ $ ->
   getrelated()
 
 $(document).mouseup (event) ->
-  clearTimeout editTimeout if editTimeout
+  clearEditTimeout()
   gb.eline = -1
   true
 
 $(document).mousemove (event) ->
-  clearTimeout editTimeout if editTimeout
+  clearEditTimeout()
   true
 
 longmousedown = ->
@@ -72,8 +76,7 @@ $(document).mousedown (event) ->
     calcdoi()
     display true
   else
-    if editTimeout
-      clearTimeout editTimeout
+    clearEditTimeout()
     editTimeout = setTimeout longmousedown, 300
   true
 

@@ -16,8 +16,8 @@ class GyazzBuffer
     line.match(/^( *)/)[1].length
 
   data: []               # テキストデータ
-  editline: -1           # 現在選択してる行の番号
-  eline: -1
+  editline: -1           # 現在編集中の行番号
+  eline: -1              # クリックした行の番号
   
   init: (arg) ->
     @data = if typeof arg == 'string' then arg.split /\n/ else arg
@@ -43,14 +43,14 @@ class GyazzBuffer
   # 空白行を挿入
   addblankline: (line, indent) ->
     @editline = line
-    @eline = line
+    @eline = line # ?????
     @deleteblankdata()
     [@data.length-1..@editline].forEach (i) =>
       @data[i+1] = @data[i]
     @data[@editline] = _indentstr indent
   
   # n行目からブロック移動しようとするときのブロック行数
-  movelines: (n) ->
+  _movelines = (n) ->
     ind = @line_indent n
     last = _.find [n+1...@data.length], (i) =>
       @line_indent(i) <= ind
@@ -59,7 +59,7 @@ class GyazzBuffer
   # インデントが自分と同じか自分より深い行を捜す。
   # ひとつもなければ -1 を返す。
   # 引数にeditlineを指定するように仕様が変わっている
-  destline_up: (n) ->
+  _destline_up = (n) ->
     ind_editline = @line_indent n
     foundline = -1
     if n > 0
@@ -75,7 +75,7 @@ class GyazzBuffer
 
   # インデントが自分と同じ行を捜す。
   # ひとつもなければ -1 を返す。
-  destline_down: (n) ->
+  _destline_down = (n) ->
     ind_editline = @line_indent n
     foundline = -1
     _.find [n+1...@data.length], (i) =>
@@ -147,10 +147,10 @@ class GyazzBuffer
   # editlineのブロックを下に移動
   block_down: ->
     if @editline >= 0 && @editline < @data.length - 1
-      m = @movelines @editline
-      dst = @destline_down @editline
+      m = _movelines.call @, @editline
+      dst = _destline_down.call @, @editline
       if dst >= 0
-        m2 = @movelines dst
+        m2 = _movelines.call @, dst
         tmp = []
         [0...m].forEach  (i) => tmp[i] = @data[@editline+i]
         [0...m2].forEach (i) => @data[@editline+i] = @data[dst+i]
@@ -163,8 +163,8 @@ class GyazzBuffer
   # editlineのブロックを上に移動
   block_up: ->
     if @editline > 0 && @editline < @data.length
-      m = @movelines @editline
-      dst = @destline_up @editline
+      m = _movelines.call @, @editline
+      dst = _destline_up.call @, @editline
       if dst >= 0
         m2 = @editline - dst
         tmp = []
