@@ -12,7 +12,7 @@ Attrs  = mongoose.model 'Attr'
 Access = mongoose.model 'Access'
 Lines  = mongoose.model 'Line'
 
-writetime = new Date
+writetime = {}
 
 module.exports = (app) ->
   app.get '/', (req, res) ->
@@ -121,18 +121,38 @@ module.exports = (app) ->
   # データ書込み
   app.post '/__write', (req, res) ->
     debug "__write: "
-    date = new Date
-    if date > writetime
-      writetime = date
+    wiki  = req.body.name
+    title = req.body.title
+    text  = req.body.data
+    curtime = new Date
+    lasttime = writetime["#{wiki}::#{title}"]
+    if !lasttime || curtime > lasttime
+      writetime["#{wiki}::#{title}"] = curtime
       newpage = new Pages
-      newpage.wiki = req.body.name
-      newpage.title = req.body.title
-      newpage.text = req.body.data
-      newpage.timestamp = date
+      newpage.wiki      = wiki
+      newpage.title     = title
+      newpage.text      = text
+      newpage.timestamp = curtime
       newpage.save (err) ->
         if err
           debug "Write error"
         res.send "noconflict"
+        text.split(/\n/).forEach (line) ->
+          Lines.remove
+            wiki: wiki
+            title: title
+            line:line
+          , (err) ->
+            if err
+              debug "line delete error"
+            newline = new Lines
+            newline.wiki      = wiki
+            newline.title     = title
+            newline.line      = line
+            newline.timestamp = curtime
+            newline.save (err) ->
+              if err
+                debug "line write error"
     
   # ページリスト
   app.get '/:wiki', (req, res) ->

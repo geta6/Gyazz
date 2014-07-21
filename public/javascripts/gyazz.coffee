@@ -26,8 +26,6 @@ showold = false          # 過去データ表示モード
 
 editTimeout = null
 
-orig_md5 = ''
-
 KC =
   tab:   9
   enter: 13
@@ -416,7 +414,6 @@ writedata = (force) ->
     data:
       name: name
       title: title
-      orig_md5: orig_md5
       data: datastr
     beforeSend: (xhr,settings) ->
       true
@@ -433,8 +430,6 @@ writedata = (force) ->
           getdata()
         when msg == 'noconflict'
           notifyBox.print("save success").show(1000)
-          #getdata(); # これをしないとorig_md5がセットされない
-          # orig_md5 = MD5_hexhash(utf16to8(datastr)); でいいのか?
         else
           notifyBox.print("Can't find old data - something's wrong.").show(3000)
           getdata()
@@ -455,7 +450,6 @@ getdata = (opts) -> # 20050815123456.utf のようなテキストを読み出し
       dt = res['age']
       gb.data = res['data'].concat()
       data_old = res['data'].concat()
-      orig_md5 = MD5_hexhash utf16to8(gb.data.join("\n").replace(/\n+$/,'')+"\n")
       search()
 
 calcdoi = ->
