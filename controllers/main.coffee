@@ -138,21 +138,22 @@ module.exports = (app) ->
           debug "Write error"
         res.send "noconflict"
         text.split(/\n/).forEach (line) ->
-          Lines.remove
+          Lines.find
             wiki: wiki
             title: title
             line:line
-          , (err) ->
+          .exec (err, results) ->
             if err
-              debug "line delete error"
-            newline = new Lines
-            newline.wiki      = wiki
-            newline.title     = title
-            newline.line      = line
-            newline.timestamp = curtime
-            newline.save (err) ->
-              if err
-                debug "line write error"
+              debug "line read error"
+            if results.length == 0
+              newline = new Lines
+              newline.wiki      = wiki
+              newline.title     = title
+              newline.line      = line
+              newline.timestamp = curtime
+              newline.save (err) ->
+                if err
+                  debug "line write error"
     
   # ページリスト
   app.get '/:wiki', (req, res) ->
