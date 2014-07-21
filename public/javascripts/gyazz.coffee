@@ -21,8 +21,6 @@ zoomlevel = 0
 cache =
   history : {} #  historyimageをなぞって表示するページ履歴 key:age, value:response
 
-posy = []
-
 not_saved = false
 
 datestr = ''
@@ -388,8 +386,6 @@ display = (delay) ->
   
   input.css('display', if gb.editline == -1 then 'none' else 'block')
   
-  [0...gb.data.length].forEach (i) ->
-    posy[i] = $('#list'+i).position().top
   gb.align()
   
   # リファラを消すプラグイン
