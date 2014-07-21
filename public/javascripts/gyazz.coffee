@@ -28,8 +28,6 @@ showold = false
 
 editTimeout = null
 
-searchmode = false
-
 orig_md5 = ''
 
 KC =
@@ -47,7 +45,8 @@ KC =
 
 authbuf = []
 
-$ -> # $(document).ready()
+# $(document).ready()
+$ ->
   $('#rawdata').hide()
   setup()
   getdata
@@ -70,10 +69,6 @@ longmousedown = ->
 
 $(document).mousedown (event) ->
   y = event.pageY
-  if y < 40
-    searchmode = true
-    return true
-  searchmode = false
 
   if eline == -1  # 行以外をクリック
     writedata()
@@ -87,7 +82,7 @@ $(document).mousedown (event) ->
   true
 
 $(document).keyup (event) ->
-  input = $("input#newtext")
+  input = $("#newtext")
   gb.data[gb.editline] = input.val()
 
 #  keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
@@ -115,8 +110,6 @@ $(document).keydown (event) ->
   ck = event.ctrlKey
   cd = event.metaKey && !ck
     
-  return true if searchmode
-    
   not_saved = true
 
   switch
@@ -129,7 +122,7 @@ $(document).keydown (event) ->
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
-      input_tag = $("input#newtext")
+      input_tag = $("#newtext")
       if input_tag.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
         gb.data[gb.editline] = ""# 現在の行を削除
         deleteblankdata()
@@ -190,7 +183,7 @@ $(document).keydown (event) ->
       $('#query').focus()
       
   if not_saved
-    $("input#newtext").css('background-color','#f0f0d0')
+    $("#newtext").css('background-color','#f0f0d0')
  
  # 認証文字列をサーバに送る
 tell_auth = ->
@@ -274,6 +267,8 @@ setup = ->
       writedata()
 
 display = (delay) ->
+  # $('#debug').text(searchmode)
+  
   # zoomlevelに応じてバックグラウンドの色を変える
   $("body").css 'background-color', switch zoomlevel
     when 0  then "#eeeeff"
@@ -288,7 +283,7 @@ display = (delay) ->
     setTimeout display, 200
     return
   
-  input = $("input#newtext")
+  input = $("#newtext")
   if gb.editline == -1
     deleteblankdata()
     input.css 'display', 'none'
@@ -316,7 +311,7 @@ display = (delay) ->
         input.focus()
         input.mousedown(linefunc(i))
         setTimeout ->
-          $("input#newtext").focus()
+          $("#newtext").focus()
         , 100  # 何故か少し待ってからfocus()を呼ばないとフォーカスされない...
       else
         lastchar = ''
@@ -428,7 +423,7 @@ writedata = (force) ->
     beforeSend: (xhr,settings) ->
       true
     success: (msg) ->
-      $("input#newtext").css('background-color','#ddd')
+      $("#newtext").css('background-color','#ddd')
       switch
         when msg.match /^conflict/
           # 再読み込み
@@ -466,11 +461,11 @@ getdata = (opts) -> # 20050815123456.utf のようなテキストを読み出し
       search()
 
 calcdoi = ->
-  q = document.getElementById("query")
+  q = $('#query')
   pbs = new POBoxSearch(assocwiki_pobox_dict)
   re = null
-  if q && q.value != ''
-    re = pbs.regexp(q.value,false)
+  if q && q.val() != ''
+    re = pbs.regexp q.val(), false
   maxind = maxindent()
   [0...gb.data.length].forEach (i) ->
     if (if re then re.exec(gb.data[i]) else true)
@@ -528,7 +523,7 @@ follow_scroll = ->
   return if gb.editline < 0
   return if showold
   
-  currentLinePos = $("input#newtext").offset().top
+  currentLinePos = $("#newtext").offset().top
   return if !(currentLinePos && currentLinePos > 0)
   currentScrollPos = $("body").scrollTop()
   windowHeight = window.innerHeight
