@@ -15,7 +15,10 @@ class GyazzBuffer
   _indent = (line) ->
     line.match(/^( *)/)[1].length
 
+  _spaces = []           # 行に含まれている空白文字の数
+
   data: []               # テキストデータ
+  
   editline: -1           # 現在編集中の行番号
   eline: -1              # クリックした行の番号
   
@@ -182,14 +185,16 @@ class GyazzBuffer
   #
   #########################################################################
 
-  spaces: []  # 行に空白がいくつ含まれているか (桁揃えに利用)
-
   _similarlines = (process, condition) -> # 同じパタンの連続行の処理
     beginline = 0
     lastspaces = -1
     lastindent = -1
+
+    _spaces = @data.map (line) -> # 行に空白がいくつ含まれているか
+      tag_split(line).length - _indent(line) - 1
+    
     [0...@data.length].forEach (i) =>
-      if @spaces[i] > 0 && @spaces[i] == lastspaces && @line_indent(i) == lastindent
+      if _spaces[i] > 0 && _spaces[i] == lastspaces && @line_indent(i) == lastindent
         # 連続パタン続行中
       else
         if lastspaces > 1 && i-beginline > 1  # 同じパタンの連続を検出
@@ -197,7 +202,7 @@ class GyazzBuffer
             process.call @, beginline, i-beginline, @line_indent(beginline)
         beginline = i
 
-      lastspaces = @spaces[i]
+      lastspaces = _spaces[i]
       lastindent = @line_indent(i)
 
     if lastspaces > 1 && @data.length-beginline > 1 #  同じパタンの連続を検出
@@ -218,21 +223,21 @@ class GyazzBuffer
     [begin...begin+lines].forEach (line) => # 表示されている要素の位置を取得
       pos[line] = []
       width[line] = []
-      [0..@spaces[begin]].forEach (i) =>
+      [0.._spaces[begin]].forEach (i) =>
         # 要素のidはtag()でつけられている
         id = "#e" + line + "_" + (i + @line_indent(line))
         pos[line][i] = $(id).offset().left
-      [0..@spaces[begin]].forEach (i) ->
+      [0.._spaces[begin]].forEach (i) ->
         width[line][i] = pos[line][i+1]-pos[line][i]
   
-    [0...@spaces[begin]].forEach (i) -> # 桁ごとに最大幅を計算 範囲 あってる????
+    [0..._spaces[begin]].forEach (i) -> # 桁ごとに最大幅を計算 範囲 あってる????
       max = 0
       [begin...begin+lines].forEach (line) ->
         max = width[line][i] if width[line][i] > max
       maxwidth[i] = max
   
     colpos = pos[begin][0]
-    [0..@spaces[begin]].forEach (i) => # 最大幅ずつずらして表示
+    [0.._spaces[begin]].forEach (i) => # 最大幅ずつずらして表示
       [begin...begin+lines].forEach (line) =>
         id = "#e" + line + "_" + (i + @line_indent(line))
         $(id).css('position','absolute').css('left',colpos)
@@ -250,7 +255,7 @@ class GyazzBuffer
     
   # begin番目からlines個の行の行と桁を入れ換え
   _do_transpose = (beginline, lines, indent) ->
-    cols = @spaces[beginline] + 1
+    cols = _spaces[beginline] + 1
     newlines = []
     [0...cols].forEach (i) ->
       newlines[i] = _indentstr indent

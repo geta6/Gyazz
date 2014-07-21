@@ -11,6 +11,7 @@
 #
 
 gb = new GyazzBuffer()
+
 version = -1
 
 dt = []        # 背景色
@@ -80,6 +81,11 @@ $(document).mousedown (event) ->
     editTimeout = setTimeout longmousedown, 300
   true
 
+# 何故かこれが動かないのでpage.jadeでonkeyupを指定している
+#$("#query").keyup (event) ->
+#  alert "keyup"
+#  search()
+
 $(document).keyup (event) ->
   input = $("#newtext")
   gb.data[gb.editline] = input.val()
@@ -121,24 +127,24 @@ $(document).keydown (event) ->
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
-      input_tag = $("#newtext")
-      if input_tag.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
+      input = $("#newtext")
+      if input.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
         gb.data[gb.editline] = ""# 現在の行を削除
         gb.deleteblankdata()
         writedata()
         setTimeout ->
           # カーソルを行頭に移動
-          input_tag = $("#newtext")
-          input_tag[0].selectionStart = 0
-          input_tag[0].selectionEnd = 0
+          # input = $("#newtext")
+          input[0].selectionStart = 0
+          input[0].selectionEnd = 0
         , 10
         return
       setTimeout ->  # Mac用。ctrl+kでカーソルより後ろを削除するまで待つ
-        cursor_pos = input_tag[0].selectionStart
-        if input_tag.val().length > cursor_pos  # ctrl+kでカーソルより後ろが削除されていない場合
-          input_tag.val input_tag.val().substring(0, cursor_pos) # カーソルより後ろを削除
-          input_tag.selectionStart = cursor_pos
-          input_tag.selectionEnd = cursor_pos
+        cursor_pos = input[0].selectionStart
+        if input.val().length > cursor_pos  # ctrl+kでカーソルより後ろが削除されていない場合
+          input.val input_tag.val().substring(0, cursor_pos) # カーソルより後ろを削除
+          input.selectionStart = cursor_pos
+          input.selectionEnd = cursor_pos
       , 10
     when kc == KC.down && ck # 行を下に移動
       gb.line_down()
@@ -323,7 +329,7 @@ display = (delay) ->
           [contline..i].forEach (j) ->
             s += gb.data[j].replace(/\\$/,'__newline__')
           $("#list"+contline).css('display','inline').css('visibility','visible')
-            .html(tag(s,contline).replace(/__newline__/g,''))
+            .html(tag_line(s,root,name,contline).replace(/__newline__/g,''))
           $("#listbg"+contline).css('display','inline').css('visibility','visible')
           t.css('visibility','hidden')
           p.css('visibility','hidden')
@@ -353,7 +359,7 @@ display = (delay) ->
             gistFrameDoc.writeln(gistFrameHTML)
             gistFrameDoc.close()
           else
-            t.css('display','inline').css('visibility','visible').css('line-height','').html(tag(gb.data[i],i))
+            t.css('display','inline').css('visibility','visible').css('line-height','').html(tag_line(gb.data[i],root,name,i))
             p.attr('class','listedit'+ind).css('display','block').css('visibility','visible').css('line-height','')
     else
       t.css('display','none')
