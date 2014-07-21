@@ -15,8 +15,6 @@ gb = new GyazzBuffer()
 version = -1
 
 dt = []        # 背景色
-doi = []
-zoomlevel = 0
 cache =
   history : {} #  historyimageをなぞって表示するページ履歴 key:age, value:response
 
@@ -24,6 +22,8 @@ not_saved = false
 
 datestr = ''
 showold = false          # 過去データ表示モード
+
+clickline = -1           # クリックしたときの行番号
 
 editTimeout = null       # 行長押しで編集モードになる時間
 clearEditTimeout = () ->
@@ -56,7 +56,7 @@ $ ->
 
 $(document).mouseup (event) ->
   clearEditTimeout()
-  gb.eline = -1
+  clickline = -1
   true
 
 $(document).mousemove (event) ->
@@ -64,18 +64,14 @@ $(document).mousemove (event) ->
   true
 
 longmousedown = ->
-  gb.editline = gb.eline
-  calcdoi()
-  display true
+  gb.seteditline clickline
 
 $(document).mousedown (event) ->
   y = event.pageY
 
-  if gb.eline == -1  # 行以外をクリック
+  if clickline == -1  # 行以外をクリック
     writedata()
-    gb.editline = gb.eline
-    calcdoi()
-    display true
+    gb.seteditline clickline
   else
     clearEditTimeout()
     editTimeout = setTimeout longmousedown, 300
@@ -101,9 +97,8 @@ $(document).keypress (event) ->
     if gb.editline >= 0
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
       # search()
-      zoomlevel = 0
-      calcdoi()
-      display()
+      gb.zoomlevel = 0
+      gb.calcdoi()
       return false
     # カーソルキーやタブを無効化
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
@@ -167,12 +162,12 @@ $(document).keydown (event) ->
           gb.data[gb.editline] = s.substring(1,s.length)
         writedata()
     when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
-      if -zoomlevel < gb.maxindent()
-        zoomlevel -= 1
+      if -gb.zoomlevel < gb.maxindent()
+        gb.zoomlevel -= 1
         display()
     when kc == KC.right && !sk && !ck && gb.editline < 0 # zoom in
-      if zoomlevel < 0
-        zoomlevel += 1
+      if gb.zoomlevel < 0
+        gb.zoomlevel += 1
         display()
     when ck && kc == KC.left # 古いバージョンゲット
       version += 1
@@ -207,7 +202,7 @@ tell_auth = ->
 linefunc = (n) ->
   (event) ->
     if writable
-      gb.eline = n
+      clickline = n
     if do_auth
       authbuf.push(gb.data[n])
       tell_auth()
@@ -220,8 +215,8 @@ linefunc = (n) ->
 #
 setup = ->
   [0...1000].forEach (i) ->
-    y = $('<div>').attr('id','listbg'+i)
-    x = $('<span>').attr('id','list'+i).mousedown(linefunc(i))
+    y = $('<div>').attr('id',"listbg#{i}")
+    x = $('<span>').attr('id',"list#{i}").mousedown(linefunc(i))
     $('#contents').append(y.append(x))
     
   $('#querydiv').css('display','none')
@@ -268,14 +263,12 @@ setup = ->
         show_history(res)
 
   $('#contents').mousedown (event) ->
-    if gb.eline == -1  # 行以外をクリック
+    if clickline == -1  # 行以外をクリック
       writedata()
 
 display = (delay) ->
-  # $('#debug').text(searchmode)
-  
   # zoomlevelに応じてバックグラウンドの色を変える
-  $("body").css 'background-color', switch zoomlevel
+  $("body").css 'background-color', switch gb.zoomlevel
     when 0  then "#eeeeff"
     when -1 then "#e0e0c0"
     when -2 then "#c0c0a0"
@@ -296,14 +289,22 @@ display = (delay) ->
   contline = -1
   if gb.data.length == 0
     gb.data = ["(empty)"]
-    doi[0] = gb.maxindent()
+    gb.doi[0] = gb.maxindent()
+    
+  #alert [0...gb.data.length].map (i) ->
+  #  gb.line_indent i
+    
+  #xx = [0...gb.data.length].map (i) ->
+  #  gb.line_indent i
+  #$('#debug').text xx.join(',')
+
   [0...gb.data.length].forEach (i) ->
-    ind = gb.line_indent(i)
+    ind = gb.line_indent i
     xmargin = ind * 30
     
-    t = $("#list"+i)
-    p = $("#listbg"+i)
-    if doi[i] >= -zoomlevel
+    t = $("#list#{i}")
+    p = $("#listbg#{i}")
+    if gb.doi[i] >= -gb.zoomlevel
       if i == gb.editline # 編集行
         t.css('display','inline').css('visibility','hidden')
         p.css('display','block').css('visibility','hidden')
@@ -359,30 +360,39 @@ display = (delay) ->
             gistFrameDoc.writeln(gistFrameHTML)
             gistFrameDoc.close()
           else
-            t.css('display','inline').css('visibility','visible').css('line-height','').html(tag_line(gb.data[i],root,name,i))
-            p.attr('class','listedit'+ind).css('display','block').css('visibility','visible').css('line-height','')
+            t.css
+              display: 'inline'
+              visibility: 'visible'
+              'line-height': ''
+            .html tag_line(gb.data[i],root,name,i)
+            p.attr "class", "listedit#{ind}" # addClassだとダメ!! 前のが残るのか?
+            p.css
+              display: 'block'
+              visibility: 'visible'
+              'line-height': ''
     else
-      t.css('display','none')
-      p.css('display','none')
+      t.css 'display', 'none'
+      p.css 'display', 'none'
+
     
     # 各行のバックグラウンド色設定
-    $("#listbg"+i).css('background-color', if (version >= 0 || showold) then bgcol(dt[i]) else 'transparent')
+    $("#listbg#{i}").css('background-color', if (version >= 0 || showold) then bgcol(dt[i]) else 'transparent')
     if version >= 0 # ツールチップに行の作成時刻を表示
-      $("#list"+i).addClass('hover')
+      $("#list#{i}").addClass('hover')
       date = new Date()
       createdate = new Date(date.getTime() - dt[i] * 1000)
-      $("#list"+i).attr('title',createdate.toLocaleString())
+      $("#list#{i}").attr 'title', createdate.toLocaleString()
       $(".hover").tipTip
         maxWidth: "auto" #ツールチップ最大幅
         edgeOffset: 5 #要素からのオフセット距離
         activation: "hover" #hoverで表示、clickでも可能
         defaultPosition: "bottom" #デフォルト表示位置
     else
-      $("#listbg"+i).removeClass('hover')
-  
+      $("#listbg#{i}").removeClass('hover')
+      
   [gb.data.length...1000].forEach (i) ->
-    $('#list'+i).css('display','none')
-    $('#listbg'+i).css('display','none')
+    $("#list#{i}").css('display','none')
+    $("#listbg#{i}").css('display','none')
   
   input.css('display', if gb.editline == -1 then 'none' else 'block')
   
@@ -461,26 +471,12 @@ getdata = (opts) -> # 20050815123456.utf のようなテキストを読み出し
       data_old = res['data'].concat()
       search()
 
-calcdoi = ->
-  q = $('#query')
-  pbs = new POBoxSearch(assocwiki_pobox_dict)
-  re = null
-  if q && q.val() != ''
-    re = pbs.regexp q.val(), false
-  maxind = gb.maxindent()
-  [0...gb.data.length].forEach (i) ->
-    if (if re then re.exec(gb.data[i]) else true)
-      doi[i] = maxind - gb.line_indent(i)
-    else
-      doi[i] = 0 - gb.line_indent(i) - 1
-
 search = (event) ->
   if event
     kc = event.which
   if event == null || kc != KC.down && kc != KC.up && kc != KC.left && kc != KC.right
-    calcdoi()
-    zoomlevel = 0
-    display()
+    gb.zoomlevel = 0
+    gb.calcdoi()
   false
 
 # 編集中の行が画面外に移動した時に、ブラウザをスクロールして追随する

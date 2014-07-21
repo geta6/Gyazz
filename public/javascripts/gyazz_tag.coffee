@@ -1,11 +1,11 @@
 #
-# Gyazzタグの解析
+# Gyazzタグの処理
 #
 
 #
 # Gyazz行を空白でsplitする。
-# [[...]], [[[...]]] タグの中は
-# 
+# [[...]], [[[...]]] タグ中の空白は無視する
+#
 #  s = "a [[abc def]] [[http://pitecan.com]] def ghi"
 #  tag_split(s) => [ 'a', '[[abc def]]', '[[http://pitecan.com]]', 'def', 'ghi' ]
 #
@@ -27,7 +27,7 @@ tag_split = (s) ->
       .replace new RegExp(PAT2L,"g"), '[['
       .replace new RegExp(PAT2R,"g"), ']]'
       .replace new RegExp(SPACE,"g"), ' '
-      
+
 #
 # [[....]], [[[...]]]の中身を解釈してHTMLの配列にする
 #
@@ -52,11 +52,12 @@ tag_expand = (s, root, wiki) ->
         when t = inner.match /^(https?:\/\/[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[[http:... ....jpg]]]
           matched.push "<a href='#{t[1]}'><img src='#{t[2]}.#{t[3]} border='none' target='_blank' height=80></a>"
         when t = inner.match /^(https?:\/\/.+)\.(jpg|jpeg|jpe|png|gif)$/i  # [[[http...jpg]]]
-          matched.push "<a href='#{t[1]}.#{t[2]} target='_blank'><img src='#{t[1]}.#{t[2]} border='none' height=80></a>"
+          matched.push "<a href='#{t[1]}.#{t[2]} target='_blank'>" +
+            "<img src='#{t[1]}.#{t[2]} border='none' height=80></a>"
         else  # [[[abc]]]
           matched.push "<b>#{inner}</b>"
       s = "<<<#{matched.length-1}>>>"
-  
+
     if m = s.match /^\[\[(.*)\]\]$/ # [[....]]
       inner = m[1]
       switch
@@ -123,7 +124,7 @@ tag_expand = (s, root, wiki) ->
                  "</a>::<a href='#{url}' class='link' target='_blank' title='#{wikititle}'>#{wikititle}</a>"
         when t = inner.match /^([a-fA-F0-9]{32})\.(\w+) (.*)$/ # (MD5).ext をmasui.sfcにリンク
           matched.push "<a href='http://masui.sfc.keio.ac.jp/#{t[1]}.#{t[2]}' class='link'>#{t[3]}</a>"
-  
+
         # googlemapの表示
         # [[E135.0W35.0]] や [[W35.0.0E135.0.0Z12]] のような記法で地図を表示
         when inner.match /^([EW]\d+\.\d+[\d\.]*[NS]\d+\.\d+[\d\.]*|[NS]\d+\.\d+[\d\.]+[EW]\d+\.\d+[\d\.]*)(Z\d+)?$/
@@ -167,10 +168,9 @@ tag_expand = (s, root, wiki) ->
             });
           """
           matched.push s
-  
         else
           matched.push "<a href='#{root}/#{wiki}/#{inner}' class='tag' target='_blank'>#{inner}</a>"
-  
+
       s = "<<<#{matched.length-1}>>>"
     else
       s

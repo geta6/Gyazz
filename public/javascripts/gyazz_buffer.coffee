@@ -18,9 +18,29 @@ class GyazzBuffer
   _spaces = []           # 行に含まれている空白文字の数
 
   data: []               # テキストデータ
+  doi: []
   
   editline: -1           # 現在編集中の行番号
-  eline: -1              # クリックした行の番号
+
+  zoomlevel: 0
+
+  seteditline: (line) ->
+    @editline = line
+    display true
+
+  calcdoi: (query) ->
+    q = $('#query')
+    pbs = new POBoxSearch(assocwiki_pobox_dict)
+    re = null
+    if q && q.val() != ''
+      re = pbs.regexp q.val(), false
+    maxind = @maxindent()
+    [0...@data.length].forEach (i) =>
+      if (if re then re.exec(@data[i]) else true)
+        @doi[i] = maxind - @line_indent(i)
+      else
+        @doi[i] = 0 - @line_indent(i) - 1
+    display()
   
   init: (arg) ->
     @data = if typeof arg == 'string' then arg.split /\n/ else arg
@@ -46,7 +66,7 @@ class GyazzBuffer
   # 空白行を挿入
   addblankline: (line, indent) ->
     @editline = line
-    @eline = line # ?????
+    # @eline = line # ?????
     @deleteblankdata()
     [@data.length-1..@editline].forEach (i) =>
       @data[i+1] = @data[i]
@@ -100,8 +120,8 @@ class GyazzBuffer
   # カーソルを下に移動
   cursor_down: ->
     if @editline >= 0 && @editline < @data.length-1
-      dest = _.find [@editline+1...@data.length], (i) ->
-        doi[i] >= -zoomlevel
+      dest = _.find [@editline+1...@data.length], (i) =>
+        @doi[i] >= -@zoomlevel
       if dest
         setTimeout =>
           @editline = dest
@@ -113,8 +133,8 @@ class GyazzBuffer
   # カーソルを上に移動
   cursor_up: ->
     if @editline > 0
-      dest = _.find [@editline-1..0], (i) ->
-        doi[i] >= -zoomlevel
+      dest = _.find [@editline-1..0], (i) =>
+        @doi[i] >= -@zoomlevel
       if dest != undefined
         setTimeout =>
           @editline = dest
@@ -207,7 +227,6 @@ class GyazzBuffer
 
     if lastspaces > 1 && @data.length-beginline > 1 #  同じパタンの連続を検出
       if condition beginline, @data.length
-        #alert "condition met"
         process.call @, beginline, @data.length-beginline, @line_indent(beginline)
 
   #
