@@ -63,9 +63,9 @@ module.exports = (app) ->
       Lines.timestamps req.params.wiki, req.params.title, data, (err, timestamps) ->
         # データ返信
         res.send
-          date: page?.timestamp
-          age:  timestamps
-          data: data
+          date:        page?.timestamp
+          timestamps:  timestamps
+          data:        data
 
   # repimageなどのページ属性
   app.get '/:wiki/:title/attr', (req, res) ->

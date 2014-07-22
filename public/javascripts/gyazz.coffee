@@ -13,15 +13,13 @@
 gb = new GyazzBuffer()
 
 version = -1             # ページの古さ
-
 timestamps = []          # 行の古さを示す配列
 historycache = {}        # 編集履歴視覚化キャッシュ
-
-not_saved = false
-
+not_saved = false        # 行編集中で未セーブ
 showold = false          # 過去データ表示モード
-
 clickline = -1           # マウスクリックして押してるときだけ行番号が入る
+authbuf = []
+datestr = ''
 
 editTimeout = null       # 行長押しで編集モードに移行
 clearEditTimeout = () ->
@@ -42,14 +40,61 @@ KC =
   p:     80
   s:     83
 
-authbuf = []
-
-# $(document).ready()
-$ ->
+$ -> # = $(document).ready()
   $('#rawdata').hide()
-  setup()
+
+  [0...1000].forEach (i) ->
+    y = $('<div>').attr('id',"listbg#{i}")
+    x = $('<span>').attr('id',"list#{i}").mousedown(linefunc(i))
+    $('#contents').append(y.append(x))
+    
+  $('#filterdiv').css('display','none')
+  
+  b = $('body')
+  b.bind "dragover", (e) -> false
+  b.bind "dragend",  (e) -> false
+  b.bind "drop",     (e) -> # Drag&Dropでファイルをアップロード
+    e.preventDefault() # デフォルトは「ファイルを開く」
+    files = e.originalEvent.dataTransfer.files
+    sendfiles files
+    false
+  
+  $("#filter").keyup (event) ->
+    search()
+
+  $('#historyimage').hover (() ->
+    showold = true
+    ), () ->
+    showold = false
+    getdata()
+  
+  $('#historyimage').mousemove (event) ->
+    imagewidth = parseInt($('#historyimage').attr('width'))
+    age = Math.floor((imagewidth + $('#historyimage').offset().left - event.pageX) * 25 / imagewidth)
+
+    if historycache[age]
+      show_history historycache[age]
+    else
+      $.ajax
+        type: "GET"
+        async: false, # こうしないと履歴表示が大変なことになるのだが...
+        url: "#{root}/#{name}/#{title}/json"
+        data:
+          age: age
+        error: (XMLHttpRequest, textStatus, errorThrown) ->
+          alert("ERROR!")
+        success: (res) ->
+          historycache[age] = res
+          show_history res
+
+  $('#contents').mousedown (event) ->
+    if clickline == -1  # 行以外をクリック
+      writedata()
+
   getdata
     suggest: true # 1回目はsuggestオプションを付けてgetdata
+  historycache = {} # 履歴cacheをリセット
+
   getrelated()
 
 $(document).mouseup (event) ->
@@ -65,8 +110,6 @@ longmousedown = ->
   gb.seteditline clickline
 
 $(document).mousedown (event) ->
-  y = event.pageY
-
   if clickline == -1  # 行以外をクリック
     writedata()
     gb.seteditline clickline
@@ -190,12 +233,10 @@ tell_auth = ->
       title: title,
       authstr: authstr
 
-# こうすると動的に関数を定義できる (クロージャ)
-# 行をクリックしたとき呼ばれる
+# 行クリックで呼ばれる関数をクロージャで定義
 linefunc = (n) ->
   (event) ->
-    if writable
-      clickline = n
+    clickline = n
     if do_auth
       authbuf.push(gb.data[n])
       tell_auth()
@@ -232,6 +273,8 @@ setup = ->
     ), () ->
     showold = false
     getdata()
+
+  historycache = {} # 履歴cacheをリセット
   
   $('#historyimage').mousemove (event) ->
     imagewidth = parseInt($('#historyimage').attr('width'))
@@ -257,9 +300,9 @@ setup = ->
       writedata()
       
 show_history = (res) ->
-  datestr = res['date']
-  timestamps = res['age']
-  gb.data = res['data']
+  datestr =    res['date']
+  timestamps = res['timestamps']
+  gb.data =    res['data']
   search()
 
 display = (delay) ->
@@ -404,68 +447,6 @@ display = (delay) ->
 adjustIframeSize = (newHeight,i) ->
   frame= document.getElementById("gistFrame"+i)
   frame.style.height = parseInt(newHeight) + "px"
-
-data_old = []
-
-writedata = (force) ->
-  not_saved = false
-  return if !writable
-
-  datastr = gb.data.join("\n").replace(/\n+$/,'')+"\n"
-  if !force && (JSON.stringify(gb.data) == JSON.stringify(data_old))
-    search()
-    return
-    
-  data_old = gb.data.concat()
-
-  historycache = {} # 履歴cacheをリセット
-
-  notifyBox.print("saving..", {progress: true}).show()
-  
-  $.ajax
-    type: "POST"
-    async: true
-    url: "#{root}/__write"
-    data:
-      name: name
-      title: title
-      data: datastr
-    beforeSend: (xhr,settings) ->
-      true
-    success: (msg) ->
-      $("#editline").css('background-color','#ddd')
-      switch
-        when msg.match /^conflict/
-          # 再読み込み
-          notifyBox.print("write conflict").show(1000)
-          getdata() # ここで強制書き換えしてしまうのがマズい? (2011/6/17)
-        when msg == 'protected'
-          # 再読み込み
-          notifyBox.print("このページは編集できません").show(3000)
-          getdata()
-        when msg == 'noconflict'
-          notifyBox.print("save success").show(1000)
-        else
-          notifyBox.print("Can't find old data - something's wrong.").show(3000)
-          getdata()
-    error: ->
-      notifyBox.print("write error").show(3000)
-
-getdata = (opts) -> # 20050815123456.utf のようなテキストを読み出し
-  opts = {} if opts == null || typeof opts != 'object'
-  if typeof opts.version != 'number' || 0 > opts.version
-    opts.version = 0
-  $.ajax
-    type: "GET"
-    async: true
-    url: "#{root}/#{name}/#{title}/json"
-    data: opts
-    success: (res) ->
-      datestr = res['date']
-      timestamps = res['age']
-      gb.data = res['data'].concat()
-      data_old = res['data'].concat()
-      search()
 
 search = (event) ->
   if event
