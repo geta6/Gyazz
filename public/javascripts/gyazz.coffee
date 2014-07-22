@@ -10,14 +10,15 @@
 #  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
 #
 
-gb = new GyazzBuffer()
-rw = new GyazzReadWrite()
+gb = new GyazzBuffer()      # Gyazzテキスト編集関連
+rw = new GyazzReadWrite()   # サーバとのデータやりとり
 
 version = -1             # ページの古さ
 historycache = {}        # 編集履歴視覚化キャッシュ
 showold = false          # 過去データ表示モード
 clickline = -1           # マウスクリックして押してるときだけ行番号が入る
 authbuf = []
+not_saved = false
 
 editTimeout = null       # 行長押しで編集モードに移行
 clearEditTimeout = () ->
@@ -82,7 +83,8 @@ $ -> # = $(document).ready()
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 行以外をクリック
-      rw.writedata()
+      rw.writedata gb.data
+      not_saved = false
 
   rw.getdata
     suggest: true # 1回目はsuggestオプションを付けてgetdata
@@ -104,7 +106,8 @@ longmousedown = ->
 
 $(document).mousedown (event) ->
   if clickline == -1  # 行以外をクリック
-    rw.writedata()
+    rw.writedata gb.data
+    not_saved = false
     gb.seteditline clickline
   else
     clearEditTimeout()
@@ -139,7 +142,7 @@ $(document).keydown (event) ->
   ck = event.ctrlKey
   cd = event.metaKey && !ck
     
-  rw.not_saved = true
+  not_saved = true
 
   switch
     when ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
@@ -147,7 +150,8 @@ $(document).keydown (event) ->
       gb.transpose()
     when kc == KC.enter
       $('#filter').val('')
-      rw.writedata()
+      rw.writedata gb.data
+      not_saved = false
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
@@ -155,7 +159,8 @@ $(document).keydown (event) ->
       if input.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
         gb.data[gb.editline] = ""# 現在の行を削除
         gb.deleteblankdata()
-        rw.writedata()
+        rw.writedata gb.data
+        not_saved = false
         setTimeout ->
           # カーソルを行頭に移動
           # input = $("#editline")
@@ -183,13 +188,15 @@ $(document).keydown (event) ->
     when kc == KC.tab && !sk || kc == KC.right && sk # indent
       if gb.editline >= 0 && gb.editline < gb.data.length
         gb.data[gb.editline] = ' ' + gb.data[gb.editline]
-        rw.writedata()
+        rw.writedata gb.data
+        not_saved = false
     when kc == KC.tab && sk || kc == KC.left && sk # undent
       if gb.editline >= 0 && gb.editline < gb.data.length
         s = gb.data[gb.editline]
         if s.substring(0,1) == ' '
           gb.data[gb.editline] = s.substring(1,s.length)
-        rw.writedata()
+        rw.writedata gb.data
+        not_saved = false
     when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
       if -gb.zoomlevel < gb.maxindent()
         gb.zoomlevel -= 1
@@ -211,11 +218,12 @@ $(document).keydown (event) ->
       $('#filterdiv').css('visibility','visible').css('display','block')
       $('#filter').focus()
       
-  if rw.not_saved
+  if not_saved
     $("#editline").css('background-color','#f0f0d0')
  
 # 認証文字列をサーバに送る
-#tell_auth = ->
+tell_auth = ->
+
 #  authstr = authbuf.sort().join(",")
 #  $.ajax
 #    type: "POST",

@@ -126,7 +126,7 @@ class GyazzBuffer
         setTimeout =>
           @editline = dest
           @deleteblankdata()
-          rw.writedata()
+          rw.writedata @data
           display()
         , 1
 
@@ -139,7 +139,7 @@ class GyazzBuffer
         setTimeout =>
           @editline = dest
           @deleteblankdata()
-          rw.writedata()
+          rw.writedata @data
           display()
         , 1
 
@@ -151,7 +151,7 @@ class GyazzBuffer
       setTimeout =>
         @editline += 1
         @deleteblankdata()
-        rw.writedata() #####
+        rw.writedata @data  #####
         display()
       , 1
   
@@ -163,7 +163,7 @@ class GyazzBuffer
       setTimeout =>
         @editline -= 1
         @deleteblankdata()
-        rw.writedata() #####
+        rw.writedata @data  #####
         display()
       , 1
   
@@ -180,7 +180,7 @@ class GyazzBuffer
         [0...m].forEach  (i) => @data[@editline+m2+i] = tmp[i]
         @editline += m2
         @deleteblankdata()    ######## ここに必要?
-        rw.writedata()          ######## 通信モジュールに移動すべき
+        rw.writedata @data    ######## 通信モジュールに移動すべき
         display()
 
   # editlineのブロックを上に移動
@@ -196,7 +196,7 @@ class GyazzBuffer
         [0...m2].forEach (i) => @data[dst+m+i] = tmp[i]
         @editline = dst
         @deleteblankdata() ########
-        rw.writedata()       ########
+        rw.writedata @data ########
         display()
 
   #########################################################################
@@ -292,7 +292,7 @@ class GyazzBuffer
     [0...newlines.length].forEach (i) =>
       @data.splice beginline+i, 0, newlines[i]
   
-    rw.writedata()            ############
+    rw.writedata @data     ############
     @editline = -1
     display true           ############
     # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない
