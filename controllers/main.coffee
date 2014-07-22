@@ -64,7 +64,7 @@ module.exports = (app) ->
         # データ返信
         res.send
           date: page?.timestamp
-          age: timestamps
+          age:  timestamps
           data: data
 
   # repimageなどのページ属性

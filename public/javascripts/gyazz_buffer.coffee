@@ -29,7 +29,7 @@ class GyazzBuffer
     display true
 
   calcdoi: (query) ->
-    q = $('#query')
+    q = $('#filter')
     pbs = new POBoxSearch(assocwiki_pobox_dict)
     re = null
     if q && q.val() != ''

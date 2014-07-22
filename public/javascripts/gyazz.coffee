@@ -77,11 +77,6 @@ $(document).mousedown (event) ->
     editTimeout = setTimeout longmousedown, 300
   true
 
-# 何故かこれが動かないのでpage.jadeでonkeyupを指定している
-#$("#query").keyup (event) ->
-#  alert "keyup"
-#  search()
-
 $(document).keyup (event) ->
   input = $("#newtext")
   gb.data[gb.editline] = input.val()
@@ -117,7 +112,7 @@ $(document).keydown (event) ->
       event.preventDefault()
       gb.transpose()
     when kc == KC.enter
-      $('#query').val('')
+      $('#filter').val('')
       writedata()
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
@@ -179,8 +174,8 @@ $(document).keydown (event) ->
         getdata
           version:version
     when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
-      $('#querydiv').css('visibility','visible').css('display','block')
-      $('#query').focus()
+      $('#filterdiv').css('visibility','visible').css('display','block')
+      $('#filter').focus()
       
   if not_saved
     $("#newtext").css('background-color','#f0f0d0')
@@ -210,6 +205,7 @@ linefunc = (n) ->
       gb.addblankline n, gb.line_indent(n)  # 上に行を追加
     search()
     true
+    
 #
 # 初期化
 #
@@ -219,7 +215,7 @@ setup = ->
     x = $('<span>').attr('id',"list#{i}").mousedown(linefunc(i))
     $('#contents').append(y.append(x))
     
-  $('#querydiv').css('display','none')
+  $('#filterdiv').css('display','none')
   
   b = $('body')
   b.bind "dragover", (e) -> false
@@ -230,6 +226,9 @@ setup = ->
     sendfiles files
     false
   
+  $("#filter").keyup (event) ->
+    search()
+
   $('#historyimage').hover (() ->
     showold = true
     ), () ->
