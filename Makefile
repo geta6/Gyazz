@@ -1,5 +1,4 @@
-# run: compile
-run:
+run: compile
 	DEBUG=* npm start
 
 compile:

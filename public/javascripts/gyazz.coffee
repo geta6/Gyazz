@@ -134,7 +134,7 @@ $(document).mousedown (event) ->
     clearEditTimeout()
     editTimeout = setTimeout longmousedown, 300
   true
-
+  
 $(document).keyup (event) ->
   input = $("#editline")
   gb.data[gb.editline] = input.val()
@@ -323,7 +323,7 @@ window.display = (delay) ->
         input.blur()
         input.val(gb.data[i]) # Firefoxの場合日本語入力中にこれが効かないことがあるような... blurしておけば大丈夫ぽい
         input.focus()
-        input.mousedown(linefunc(i))
+        input.mousedown linefunc(i)
         setTimeout ->
           $("#editline").focus()
         , 100  # 何故か少し待ってからfocus()を呼ばないとフォーカスされない...
