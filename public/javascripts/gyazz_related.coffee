@@ -1,10 +1,10 @@
 # リンク先アイコン表示
 
-getrelated = (x) ->
+window.getrelated = (x) ->
   $.ajax
     type: "GET"
     async: true
-    url: root + "/" + name + "/" + title + "/related"
+    url: "#{root}/#{name}/#{title}/related"
     success: (pages) ->
       pages.map (page) ->
         title = page.title
@@ -30,6 +30,10 @@ getrelated = (x) ->
           b = hex2 parseInt(md5.substr(4,2),16) * 0.5 + 16
           div1 = $('<div>').addClass('icontext').text(title)
           div2 = $('<div>').addClass('icon').css('background-color','#'+r+g+b).append(div1)
-          $('#links').append($("<a>").attr('href',url).attr('target','_blank').attr('class','links').append(div2))
-    error: () ->
+          $('#links').append($("<a>").attr
+            href: url
+            target: '_blank'
+            class: 'links'
+          .append(div2))
+    error: ->
       notifyBox.print("getrelated() fail").show(1000)

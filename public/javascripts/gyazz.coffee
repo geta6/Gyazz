@@ -281,7 +281,7 @@ show_history = (res) ->
   gb.data =     res.data
   search()
 
-display = (delay) ->
+window.display = (delay) ->
   # zoomlevelに応じてバックグラウンドの色を変える
   $("body").css 'background-color', switch gb.zoomlevel
     when 0  then "#eeeeff"
@@ -417,7 +417,7 @@ adjustIframeSize = (newHeight,i) ->
   frame= document.getElementById("gistFrame"+i)
   frame.style.height = parseInt(newHeight) + "px"
 
-search = (event) ->
+window.search = (event) ->
   if event
     kc = event.which
   if event == null || kc != KC.down && kc != KC.up && kc != KC.left && kc != KC.right
