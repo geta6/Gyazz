@@ -19,6 +19,7 @@ showold = false          # 過去データ表示モード
 clickline = -1           # マウスクリックして押してるときだけ行番号が入る
 authbuf = []
 not_saved = false
+timestamps = []
 
 editTimeout = null       # 行長押しで編集モードに移行
 clearEditTimeout = () ->
@@ -65,8 +66,12 @@ $ -> # = $(document).ready()
     showold = true
     ), () ->
     showold = false
-    rw.getdata()
-  
+    rw.getdata
+      async: false  # ヒストリ表示をきっちり終了させるのに必要...?
+    , (res) ->
+      gb.data = res.data.concat()
+      display()
+
   $('#historyimage').mousemove (event) ->
     imagewidth = parseInt($('#historyimage').attr('width'))
     age = Math.floor((imagewidth + $('#historyimage').offset().left - event.pageX) * 25 / imagewidth)
@@ -78,16 +83,28 @@ $ -> # = $(document).ready()
         async: false # こうしないと履歴表示が大変なことになるのだが...
         age:   age
       , (res) ->
-         historycache[age] = res
-         show_history res
+        historycache[age] = res
+        show_history res
+        gb.data = res['data'].concat()
+        search()
+        display()
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 行以外をクリック
       rw.writedata gb.data
       not_saved = false
+      search() # ??
+      display()
+    true
 
   rw.getdata
+    async: false
     suggest: true # 1回目はsuggestオプションを付けてgetdata
+  , (res) ->
+    timestamps = res.timestamps
+    gb.data = res.data.concat()
+    search()
+    
   historycache = {} # 履歴cacheをリセット
 
   getrelated()
@@ -209,11 +226,17 @@ $(document).keydown (event) ->
       version += 1
       rw.getdata
         version:version
+      , (res) ->
+        gb.data = res.data.concat()
+        
     when ck && kc == KC.right
       if version >= 0
         version -= 1
         rw.getdata
           version:version
+        , (res) ->
+          gb.data = res.data.concat()
+
     when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
       $('#filterdiv').css('visibility','visible').css('display','block')
       $('#filter').focus()
@@ -248,7 +271,7 @@ linefunc = (n) ->
     
 show_history = (res) ->
   rw.datestr =    res['date']
-  rw.timestamps = res['timestamps']
+  timestamps =    res['timestamps']
   gb.data =       res['data']
   search()
 
@@ -277,13 +300,6 @@ display = (delay) ->
     gb.data = ["(empty)"]
     gb.doi[0] = gb.maxindent()
     
-  #alert [0...gb.data.length].map (i) ->
-  #  gb.line_indent i
-    
-  #xx = [0...gb.data.length].map (i) ->
-  #  gb.line_indent i
-  #$('#debug').text xx.join(',')
-
   [0...gb.data.length].forEach (i) ->
     ind = gb.line_indent i
     xmargin = ind * 30
@@ -362,11 +378,11 @@ display = (delay) ->
 
     
     # 各行のバックグラウンド色設定
-    $("#listbg#{i}").css('background-color', if (version >= 0 || showold) then bgcol(rw.timestamps[i]) else 'transparent')
+    $("#listbg#{i}").css('background-color', if (version >= 0 || showold) then bgcol(timestamps[i]) else 'transparent')
     if version >= 0 # ツールチップに行の作成時刻を表示
       $("#list#{i}").addClass('hover')
       date = new Date()
-      createdate = new Date(date.getTime() - rw.timestamps[i] * 1000)
+      createdate = new Date(date.getTime() - timestamps[i] * 1000)
       $("#list#{i}").attr 'title', createdate.toLocaleString()
       $(".hover").tipTip
         maxWidth: "auto" #ツールチップ最大幅
