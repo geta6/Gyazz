@@ -9,7 +9,7 @@
 #  s = "a [[abc def]] [[http://pitecan.com]] def ghi"
 #  tag_split(s) => [ 'a', '[[abc def]]', '[[http://pitecan.com]]', 'def', 'ghi' ]
 #
-window.tag_split = (s) ->
+tag_split = (s) ->
   PAT3L = "<<<3<<<"
   PAT3R = ">>>3>>>"
   PAT2L = "<<<2<<<"
@@ -129,6 +129,7 @@ tag_expand = (s, root, wiki) ->
         # [[E135.0W35.0]] や [[W35.0.0E135.0.0Z12]] のような記法で地図を表示
         when inner.match /^([EW]\d+\.\d+[\d\.]*[NS]\d+\.\d+[\d\.]*|[NS]\d+\.\d+[\d\.]+[EW]\d+\.\d+[\d\.]*)(Z\d+)?$/
           o = parseloc(inner)
+          s = ""
           s = """
             <div id='map' style='width:300px;height:300px'></div>
             <div id='line1' style='position:absolute;width:300px;height:4px;
@@ -188,7 +189,7 @@ tag_expand = (s, root, wiki) ->
 # tag_line(s,wiki,title,10) =>
 #   <span id='e10_0'>a</span> <span id='e10_1'><a href='http://gyazz.com/増井研/abc def' class='tag'...
 #
-window.tag_line = (s, wiki, title, lineno) ->
+tag_line = (s, wiki, title, lineno) ->
   elements = tag_expand s, wiki, title
   [0...elements.length].forEach (i) ->
     elements[i] = "<span id='e#{lineno}_#{i}'>#{elements[i]}</span>" # 各要素にidをつける
