@@ -9,7 +9,7 @@
 #  s = "a [[abc def]] [[http://pitecan.com]] def ghi"
 #  tag_split(s) => [ 'a', '[[abc def]]', '[[http://pitecan.com]]', 'def', 'ghi' ]
 #
-tag_split = (s) ->
+window.tag_split = (s) ->
   PAT3L = "<<<3<<<"
   PAT3R = ">>>3>>>"
   PAT2L = "<<<2<<<"
@@ -189,7 +189,7 @@ tag_expand = (s, root, wiki) ->
 # tag_line(s,wiki,title,10) =>
 #   <span id='e10_0'>a</span> <span id='e10_1'><a href='http://gyazz.com/増井研/abc def' class='tag'...
 #
-tag_line = (s, wiki, title, lineno) ->
+window.tag_line = (s, wiki, title, lineno) ->
   elements = tag_expand s, wiki, title
   [0...elements.length].forEach (i) ->
     elements[i] = "<span id='e#{lineno}_#{i}'>#{elements[i]}</span>" # 各要素にidをつける
