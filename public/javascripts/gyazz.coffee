@@ -214,17 +214,17 @@ $(document).keydown (event) ->
   if rw.not_saved
     $("#editline").css('background-color','#f0f0d0')
  
- # 認証文字列をサーバに送る
-tell_auth = ->
-  authstr = authbuf.sort().join(",")
-  $.ajax
-    type: "POST",
-    async: false,
-    url: "#{root}/__tellauth",
-    data:
-      name: name,
-      title: title,
-      authstr: authstr
+# 認証文字列をサーバに送る
+#tell_auth = ->
+#  authstr = authbuf.sort().join(",")
+#  $.ajax
+#    type: "POST",
+#    async: false,
+#    url: "#{root}/__tellauth",
+#    data:
+#      name: name,
+#      title: title,
+#      authstr: authstr
 
 # 行クリックで呼ばれる関数をクロージャで定義
 linefunc = (n) ->
@@ -238,60 +238,6 @@ linefunc = (n) ->
     search()
     true
     
-#
-# 初期化
-#
-setup = ->
-  [0...1000].forEach (i) ->
-    y = $('<div>').attr('id',"listbg#{i}")
-    x = $('<span>').attr('id',"list#{i}").mousedown(linefunc(i))
-    $('#contents').append(y.append(x))
-    
-  $('#filterdiv').css('display','none')
-  
-  b = $('body')
-  b.bind "dragover", (e) -> false
-  b.bind "dragend",  (e) -> false
-  b.bind "drop",     (e) -> # Drag&Dropでファイルをアップロード
-    e.preventDefault() # デフォルトは「ファイルを開く」
-    files = e.originalEvent.dataTransfer.files
-    sendfiles files
-    false
-  
-  $("#filter").keyup (event) ->
-    search()
-
-  $('#historyimage').hover (() ->
-    showold = true
-    ), () ->
-    showold = false
-    rw.getdata()
-
-  historycache = {} # 履歴cacheをリセット
-  
-  $('#historyimage').mousemove (event) ->
-    imagewidth = parseInt($('#historyimage').attr('width'))
-    age = Math.floor((imagewidth + $('#historyimage').offset().left - event.pageX) * 25 / imagewidth)
-
-    if historycache[age]
-      show_history historycache[age]
-    else
-      $.ajax
-        type: "GET"
-        async: false, # こうしないと履歴表示が大変なことになるのだが...
-        url: "#{root}/#{name}/#{title}/json"
-        data:
-          age: age
-        error: (XMLHttpRequest, textStatus, errorThrown) ->
-          alert("ERROR!")
-        success: (res) ->
-          historycache[age] = res
-          show_history res
-
-  $('#contents').mousedown (event) ->
-    if clickline == -1  # 行以外をクリック
-      rw.writedata()
-      
 show_history = (res) ->
   rw.datestr =    res['date']
   rw.timestamps = res['timestamps']
