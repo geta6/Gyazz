@@ -388,7 +388,7 @@ div.listedit8:before {
   color: #00f000;
 }
 
-#newtext {
+input#editline {
   font-size:10pt;
   position:absolute;
   width:600;

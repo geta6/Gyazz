@@ -12,20 +12,18 @@
 
 gb = new GyazzBuffer()
 
-version = -1
+version = -1             # ページの古さ
 
-dt = []        # 背景色
-cache =
-  history : {} #  historyimageをなぞって表示するページ履歴 key:age, value:response
+timestamps = []          # 行の古さを示す配列
+historycache = {}        # 編集履歴視覚化キャッシュ
 
 not_saved = false
 
-datestr = ''
 showold = false          # 過去データ表示モード
 
-clickline = -1           # クリックしたときの行番号
+clickline = -1           # マウスクリックして押してるときだけ行番号が入る
 
-editTimeout = null       # 行長押しで編集モードになる時間
+editTimeout = null       # 行長押しで編集モードに移行
 clearEditTimeout = () ->
   if editTimeout
     clearTimeout editTimeout
@@ -78,7 +76,7 @@ $(document).mousedown (event) ->
   true
 
 $(document).keyup (event) ->
-  input = $("#newtext")
+  input = $("#editline")
   gb.data[gb.editline] = input.val()
 
 #  keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
@@ -117,14 +115,14 @@ $(document).keydown (event) ->
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
-      input = $("#newtext")
+      input = $("#editline")
       if input.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
         gb.data[gb.editline] = ""# 現在の行を削除
         gb.deleteblankdata()
         writedata()
         setTimeout ->
           # カーソルを行頭に移動
-          # input = $("#newtext")
+          # input = $("#editline")
           input[0].selectionStart = 0
           input[0].selectionEnd = 0
         , 10
@@ -178,7 +176,7 @@ $(document).keydown (event) ->
       $('#filter').focus()
       
   if not_saved
-    $("#newtext").css('background-color','#f0f0d0')
+    $("#editline").css('background-color','#f0f0d0')
  
  # 認証文字列をサーバに送る
 tell_auth = ->
@@ -239,31 +237,30 @@ setup = ->
     imagewidth = parseInt($('#historyimage').attr('width'))
     age = Math.floor((imagewidth + $('#historyimage').offset().left - event.pageX) * 25 / imagewidth)
 
-    show_history = (res) ->
-      datestr = res['date']
-      dt = res['age']
-      gb.data = res['data']
-      search()
-
-    if cache.history[age]
-      show_history(cache.history[age])
-      return
-
-    $.ajax
-      type: "GET"
-      async: false, # こうしないと履歴表示が大変なことになるのだが...
-      url: "#{root}/#{name}/#{title}/json"
-      data:
-        age: age
-      error: (XMLHttpRequest, textStatus, errorThrown) ->
-        alert("ERROR!")
-      success: (res) ->
-        cache.history[age] = res
-        show_history(res)
+    if historycache[age]
+      show_history historycache[age]
+    else
+      $.ajax
+        type: "GET"
+        async: false, # こうしないと履歴表示が大変なことになるのだが...
+        url: "#{root}/#{name}/#{title}/json"
+        data:
+          age: age
+        error: (XMLHttpRequest, textStatus, errorThrown) ->
+          alert("ERROR!")
+        success: (res) ->
+          historycache[age] = res
+          show_history res
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 行以外をクリック
       writedata()
+      
+show_history = (res) ->
+  datestr = res['date']
+  timestamps = res['age']
+  gb.data = res['data']
+  search()
 
 display = (delay) ->
   # zoomlevelに応じてバックグラウンドの色を変える
@@ -280,7 +277,7 @@ display = (delay) ->
     setTimeout display, 200
     return
   
-  input = $("#newtext")
+  input = $("#editline")
   if gb.editline == -1
     gb.deleteblankdata()
     input.css 'display', 'none'
@@ -316,7 +313,7 @@ display = (delay) ->
         input.focus()
         input.mousedown(linefunc(i))
         setTimeout ->
-          $("#newtext").focus()
+          $("#editline").focus()
         , 100  # 何故か少し待ってからfocus()を呼ばないとフォーカスされない...
       else
         lastchar = ''
@@ -375,11 +372,11 @@ display = (delay) ->
 
     
     # 各行のバックグラウンド色設定
-    $("#listbg#{i}").css('background-color', if (version >= 0 || showold) then bgcol(dt[i]) else 'transparent')
+    $("#listbg#{i}").css('background-color', if (version >= 0 || showold) then bgcol(timestamps[i]) else 'transparent')
     if version >= 0 # ツールチップに行の作成時刻を表示
       $("#list#{i}").addClass('hover')
       date = new Date()
-      createdate = new Date(date.getTime() - dt[i] * 1000)
+      createdate = new Date(date.getTime() - timestamps[i] * 1000)
       $("#list#{i}").attr 'title', createdate.toLocaleString()
       $(".hover").tipTip
         maxWidth: "auto" #ツールチップ最大幅
@@ -421,7 +418,7 @@ writedata = (force) ->
     
   data_old = gb.data.concat()
 
-  cache.history = {} # 履歴cacheをリセット
+  historycache = {} # 履歴cacheをリセット
 
   notifyBox.print("saving..", {progress: true}).show()
   
@@ -436,7 +433,7 @@ writedata = (force) ->
     beforeSend: (xhr,settings) ->
       true
     success: (msg) ->
-      $("#newtext").css('background-color','#ddd')
+      $("#editline").css('background-color','#ddd')
       switch
         when msg.match /^conflict/
           # 再読み込み
@@ -465,7 +462,7 @@ getdata = (opts) -> # 20050815123456.utf のようなテキストを読み出し
     data: opts
     success: (res) ->
       datestr = res['date']
-      dt = res['age']
+      timestamps = res['age']
       gb.data = res['data'].concat()
       data_old = res['data'].concat()
       search()
@@ -484,7 +481,7 @@ follow_scroll = ->
   return if gb.editline < 0
   return if showold
   
-  currentLinePos = $("#newtext").offset().top
+  currentLinePos = $("#editline").offset().top
   return if !(currentLinePos && currentLinePos > 0)
   currentScrollPos = $("body").scrollTop()
   windowHeight = window.innerHeight
