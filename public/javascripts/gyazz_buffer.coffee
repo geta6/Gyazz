@@ -3,10 +3,13 @@
 # 適宜HTMLを更新したりサーバと通信したりする必要あり
 #
 
-_ = require 'underscore' if typeof module != "undefined" && module.exports
+# _ = require 'underscore' if typeof module != "undefined" && module.exports
 
 class GyazzBuffer
-  
+
+  constructor: (rw) ->
+    @rw = rw
+    
   # levelの長さの空白文字列
   _indentstr = (level) ->
     ([0...level].map (x) -> " ").join('')
@@ -126,7 +129,7 @@ class GyazzBuffer
         setTimeout =>
           @editline = dest
           @deleteblankdata()
-          rw.writedata @data
+          @rw.writedata @data
           display()
         , 1
 
@@ -139,7 +142,7 @@ class GyazzBuffer
         setTimeout =>
           @editline = dest
           @deleteblankdata()
-          rw.writedata @data
+          @rw.writedata @data
           display()
         , 1
 
@@ -151,7 +154,7 @@ class GyazzBuffer
       setTimeout =>
         @editline += 1
         @deleteblankdata()
-        rw.writedata @data  #####
+        @rw.writedata @data  #####
         display()
       , 1
   
@@ -163,7 +166,7 @@ class GyazzBuffer
       setTimeout =>
         @editline -= 1
         @deleteblankdata()
-        rw.writedata @data  #####
+        @rw.writedata @data  #####
         display()
       , 1
   
@@ -180,7 +183,7 @@ class GyazzBuffer
         [0...m].forEach  (i) => @data[@editline+m2+i] = tmp[i]
         @editline += m2
         @deleteblankdata()    ######## ここに必要?
-        rw.writedata @data    ######## 通信モジュールに移動すべき
+        @rw.writedata @data    ######## 通信モジュールに移動すべき
         display()
 
   # editlineのブロックを上に移動
@@ -196,7 +199,7 @@ class GyazzBuffer
         [0...m2].forEach (i) => @data[dst+m+i] = tmp[i]
         @editline = dst
         @deleteblankdata() ########
-        rw.writedata @data ########
+        @rw.writedata @data ########
         display()
 
   #########################################################################
@@ -292,7 +295,9 @@ class GyazzBuffer
     [0...newlines.length].forEach (i) =>
       @data.splice beginline+i, 0, newlines[i]
   
-    rw.writedata @data     ############
+    @rw.writedata @data     ############
     @editline = -1
     display true           ############
     # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない
+
+window.GyazzBuffer = GyazzBuffer

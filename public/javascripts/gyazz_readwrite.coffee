@@ -59,3 +59,5 @@ class GyazzReadWrite
         callback res if callback
       error: (XMLHttpRequest, textStatus, errorThrown) ->
         alert("getdata ERROR!")
+
+window.GyazzReadWrite = GyazzReadWrite

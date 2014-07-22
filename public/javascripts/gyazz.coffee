@@ -10,8 +10,8 @@
 #  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
 #
 
-gb = new GyazzBuffer()      # Gyazzテキスト編集関連
-rw = new GyazzReadWrite()   # サーバとのデータやりとり
+rw = new GyazzReadWrite     # サーバとのデータやりとり
+gb = new GyazzBuffer(rw)    # Gyazzテキスト編集関連
 
 version = -1             # ページの古さ
 historycache = {}        # 編集履歴視覚化キャッシュ

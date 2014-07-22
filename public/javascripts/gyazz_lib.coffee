@@ -1,13 +1,13 @@
-_ = require 'underscore' if typeof module != "undefined" && module.exports
+# _ = require 'underscore' if typeof module != "undefined" && module.exports
 
 # 16進2桁
-hex2 = (v) ->
+window.hex2 = (v) ->
   v = Math.floor(v)
   v = 255 if v >= 256
   ("0" + v.toString(16)).slice(-2)
 
 # 古さから背景色作成
-bgcol = (t) ->
+window.bgcol = (t) ->
   table = [
     [0,                                  256,256,256]
     [10,                                 240,240,240]
@@ -35,7 +35,7 @@ bgcol = (t) ->
   else
     "#000000"
 
-sendfiles = (files) ->
+window.sendfiles = (files) ->
   [0...files.length].forEach (i) ->
     file = files[i]
     sendfile file, (filename) ->
@@ -48,7 +48,7 @@ sendfiles = (files) ->
       gb.editline = -1
       display true
 
-sendfile = (file, callback) ->
+window.sendfile = (file, callback) ->
   fd = new FormData
   fd.append 'uploadfile', file
   notifyBox.print("uploading..", {progress: true}).show()
