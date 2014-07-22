@@ -24,9 +24,6 @@ module.exports = (app) ->
     .sort
       timestamp: -1
     .exec (err, results) ->
-      if param.version # Nバージョン前のデータを取得
-        callback err, results[param.version]
-        return
       if param.age # 履歴画像上ドラッグで古いデータを取得
         days = Math.ceil(Math.exp(param.age * Math.log(1.5)))              # だいたい何日前のデータか計算
         if results.length > 0
@@ -34,6 +31,9 @@ module.exports = (app) ->
           oldpage = _.find(results, (result) -> result.timestamp < time)     # それより古いデータを取得
           oldpage = results[results.length - 1] unless oldpage               # なければ最古のものを取得
           callback err, oldpage if oldpage
+        return
+      if param.version # Nバージョン前のデータを取得
+        callback err, results[param.version]
         return
       callback err, results[0] # 最新バージョンを取得
 

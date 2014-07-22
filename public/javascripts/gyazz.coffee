@@ -11,15 +11,13 @@
 #
 
 gb = new GyazzBuffer()
+rw = new GyazzReadWrite()
 
 version = -1             # ページの古さ
-timestamps = []          # 行の古さを示す配列
 historycache = {}        # 編集履歴視覚化キャッシュ
-not_saved = false        # 行編集中で未セーブ
 showold = false          # 過去データ表示モード
 clickline = -1           # マウスクリックして押してるときだけ行番号が入る
 authbuf = []
-datestr = ''
 
 editTimeout = null       # 行長押しで編集モードに移行
 clearEditTimeout = () ->
@@ -66,7 +64,7 @@ $ -> # = $(document).ready()
     showold = true
     ), () ->
     showold = false
-    getdata()
+    rw.getdata()
   
   $('#historyimage').mousemove (event) ->
     imagewidth = parseInt($('#historyimage').attr('width'))
@@ -75,23 +73,18 @@ $ -> # = $(document).ready()
     if historycache[age]
       show_history historycache[age]
     else
-      $.ajax
-        type: "GET"
-        async: false, # こうしないと履歴表示が大変なことになるのだが...
-        url: "#{root}/#{name}/#{title}/json"
-        data:
-          age: age
-        error: (XMLHttpRequest, textStatus, errorThrown) ->
-          alert("ERROR!")
-        success: (res) ->
-          historycache[age] = res
-          show_history res
+      rw.getdata
+        async: false # こうしないと履歴表示が大変なことになるのだが...
+        age:   age
+      , (res) ->
+         historycache[age] = res
+         show_history res
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 行以外をクリック
-      writedata()
+      rw.writedata()
 
-  getdata
+  rw.getdata
     suggest: true # 1回目はsuggestオプションを付けてgetdata
   historycache = {} # 履歴cacheをリセット
 
@@ -111,7 +104,7 @@ longmousedown = ->
 
 $(document).mousedown (event) ->
   if clickline == -1  # 行以外をクリック
-    writedata()
+    rw.writedata()
     gb.seteditline clickline
   else
     clearEditTimeout()
@@ -146,7 +139,7 @@ $(document).keydown (event) ->
   ck = event.ctrlKey
   cd = event.metaKey && !ck
     
-  not_saved = true
+  rw.not_saved = true
 
   switch
     when ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
@@ -154,7 +147,7 @@ $(document).keydown (event) ->
       gb.transpose()
     when kc == KC.enter
       $('#filter').val('')
-      writedata()
+      rw.writedata()
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
@@ -162,7 +155,7 @@ $(document).keydown (event) ->
       if input.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
         gb.data[gb.editline] = ""# 現在の行を削除
         gb.deleteblankdata()
-        writedata()
+        rw.writedata()
         setTimeout ->
           # カーソルを行頭に移動
           # input = $("#editline")
@@ -190,13 +183,13 @@ $(document).keydown (event) ->
     when kc == KC.tab && !sk || kc == KC.right && sk # indent
       if gb.editline >= 0 && gb.editline < gb.data.length
         gb.data[gb.editline] = ' ' + gb.data[gb.editline]
-        writedata()
+        rw.writedata()
     when kc == KC.tab && sk || kc == KC.left && sk # undent
       if gb.editline >= 0 && gb.editline < gb.data.length
         s = gb.data[gb.editline]
         if s.substring(0,1) == ' '
           gb.data[gb.editline] = s.substring(1,s.length)
-        writedata()
+        rw.writedata()
     when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
       if -gb.zoomlevel < gb.maxindent()
         gb.zoomlevel -= 1
@@ -207,18 +200,18 @@ $(document).keydown (event) ->
         display()
     when ck && kc == KC.left # 古いバージョンゲット
       version += 1
-      getdata
+      rw.getdata
         version:version
     when ck && kc == KC.right
       if version >= 0
         version -= 1
-        getdata
+        rw.getdata
           version:version
     when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
       $('#filterdiv').css('visibility','visible').css('display','block')
       $('#filter').focus()
       
-  if not_saved
+  if rw.not_saved
     $("#editline").css('background-color','#f0f0d0')
  
  # 認証文字列をサーバに送る
@@ -272,7 +265,7 @@ setup = ->
     showold = true
     ), () ->
     showold = false
-    getdata()
+    rw.getdata()
 
   historycache = {} # 履歴cacheをリセット
   
@@ -297,12 +290,12 @@ setup = ->
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 行以外をクリック
-      writedata()
+      rw.writedata()
       
 show_history = (res) ->
-  datestr =    res['date']
-  timestamps = res['timestamps']
-  gb.data =    res['data']
+  rw.datestr =    res['date']
+  rw.timestamps = res['timestamps']
+  gb.data =       res['data']
   search()
 
 display = (delay) ->
@@ -312,7 +305,7 @@ display = (delay) ->
     when -1 then "#e0e0c0"
     when -2 then "#c0c0a0"
     else         "#a0a080"
-  $('#datestr').text if version >= 0 || showold then datestr else ''
+  $('#datestr').text if version >= 0 || showold then rw.datestr else ''
   $('#title').attr
     href: "#{root}/#{name}/#{title}/__edit/#{ if version >= 0 then version else 0 }"
   
@@ -415,11 +408,11 @@ display = (delay) ->
 
     
     # 各行のバックグラウンド色設定
-    $("#listbg#{i}").css('background-color', if (version >= 0 || showold) then bgcol(timestamps[i]) else 'transparent')
+    $("#listbg#{i}").css('background-color', if (version >= 0 || showold) then bgcol(rw.timestamps[i]) else 'transparent')
     if version >= 0 # ツールチップに行の作成時刻を表示
       $("#list#{i}").addClass('hover')
       date = new Date()
-      createdate = new Date(date.getTime() - timestamps[i] * 1000)
+      createdate = new Date(date.getTime() - rw.timestamps[i] * 1000)
       $("#list#{i}").attr 'title', createdate.toLocaleString()
       $(".hover").tipTip
         maxWidth: "auto" #ツールチップ最大幅
