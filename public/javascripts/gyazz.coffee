@@ -20,6 +20,7 @@ clickline = -1           # マウスクリックして押してるときだけ�
 authbuf = []
 not_saved = false
 timestamps = []
+datestr = ''
 
 editTimeout = null       # 行長押しで編集モードに移行
 clearEditTimeout = () ->
@@ -70,6 +71,7 @@ $ -> # = $(document).ready()
       async: false  # ヒストリ表示をきっちり終了させるのに必要...?
     , (res) ->
       gb.data = res.data.concat()
+      datestr = res.date
       display()
 
   $('#historyimage').mousemove (event) ->
@@ -85,7 +87,8 @@ $ -> # = $(document).ready()
       , (res) ->
         historycache[age] = res
         show_history res
-        gb.data = res['data'].concat()
+        gb.data = res.data.concat()
+        datestr = res.date
         search()
         display()
 
@@ -103,6 +106,7 @@ $ -> # = $(document).ready()
   , (res) ->
     timestamps = res.timestamps
     gb.data = res.data.concat()
+    datestr = res.date
     search()
     
   historycache = {} # 履歴cacheをリセット
@@ -228,6 +232,7 @@ $(document).keydown (event) ->
         version:version
       , (res) ->
         gb.data = res.data.concat()
+        datestr = res.date
         
     when ck && kc == KC.right
       if version >= 0
@@ -236,6 +241,7 @@ $(document).keydown (event) ->
           version:version
         , (res) ->
           gb.data = res.data.concat()
+          datestr = res.date
 
     when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
       $('#filterdiv').css('visibility','visible').css('display','block')
@@ -270,9 +276,9 @@ linefunc = (n) ->
     true
     
 show_history = (res) ->
-  rw.datestr =    res['date']
-  timestamps =    res['timestamps']
-  gb.data =       res['data']
+  datestr =     res.date
+  timestamps =  res.timestamps
+  gb.data =     res.data
   search()
 
 display = (delay) ->
@@ -282,7 +288,7 @@ display = (delay) ->
     when -1 then "#e0e0c0"
     when -2 then "#c0c0a0"
     else         "#a0a080"
-  $('#datestr').text if version >= 0 || showold then rw.datestr else ''
+  $('#datestr').text if version >= 0 || showold then datestr else ''
   $('#title').attr
     href: "#{root}/#{name}/#{title}/__edit/#{ if version >= 0 then version else 0 }"
   
