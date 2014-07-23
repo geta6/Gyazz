@@ -10,9 +10,10 @@
 #  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
 #
 
-rw =  new GyazzReadWrite     # サーバとのデータやりとり
-gb =  new GyazzBuffer(rw)    # Gyazzテキスト編集関連
-tag = new GyazzTag
+rw =  new GyazzReadWrite    # サーバとのデータやりとり
+gb =  new GyazzBuffer(rw)   # Gyazzテキスト編集関連
+tag = new GyazzTag          # タグ処理
+gr =  new GyazzRelated      # 関連ページ取得
 
 version = -1             # ページの古さ
 historycache = {}        # 編集履歴視覚化キャッシュ
@@ -102,7 +103,7 @@ $ -> # = $(document).ready()
     
   historycache = {} # 履歴cacheをリセット
 
-  getrelated()
+  gr.getrelated()
 
 
 longmousedown = ->
