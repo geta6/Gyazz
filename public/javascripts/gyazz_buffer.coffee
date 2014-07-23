@@ -9,8 +9,6 @@ class GyazzBuffer
 
   tag = new GyazzTag
 
-  
-
   constructor: (rw, gd) ->
     @rw = rw
     @gd = gd
@@ -37,7 +35,7 @@ class GyazzBuffer
     @editline = line
     @gd.display @, true
 
-  calcdoi: (query) ->
+  calcdoi: ->
     q = $('#filter')
     pbs = new POBoxSearch(assocwiki_pobox_dict)
     re = null
@@ -60,11 +58,11 @@ class GyazzBuffer
   # 最大のインデント値を取得
   maxindent: ->
     Math.max (@data.map (line) -> _indent line)...
-
-  # reduce を使うとこういう感じになるのだが、Coffeeだと上のような記法が可能らしい
-  # maxindent: ->
-  #   indents = data.map (line) -> _indent line
-  #   _.reduce indents, ((x, y) -> Math.max(x, y)), 0
+    #
+    # reduce を使うとこういう感じになるのだが、Coffeeだと上のような記法が可能らしい
+    # maxindent: ->
+    #   indents = data.map (line) -> _indent line
+    #   _.reduce indents, ((x, y) -> Math.max(x, y)), 0
 
   # 空白行を削除
   deleteblankdata: ->
@@ -187,8 +185,8 @@ class GyazzBuffer
         [0...m2].forEach (i) => @data[@editline+i] = @data[dst+i]
         [0...m].forEach  (i) => @data[@editline+m2+i] = tmp[i]
         @editline += m2
-        @deleteblankdata()    ######## ここに必要?
-        @rw.writedata @data    ######## 通信モジュールに移動すべき
+        @deleteblankdata()
+        @rw.writedata @data
         @gd.display @
 
   # editlineのブロックを上に移動
@@ -203,8 +201,8 @@ class GyazzBuffer
         [0...m].forEach (i)  => @data[dst+i] = @data[@editline+i]
         [0...m2].forEach (i) => @data[dst+m+i] = tmp[i]
         @editline = dst
-        @deleteblankdata() ########
-        @rw.writedata @data ########
+        @deleteblankdata()
+        @rw.writedata @data
         @gd.display @
 
   #########################################################################
@@ -367,9 +365,9 @@ class GyazzBuffer
     [0...newlines.length].forEach (i) =>
       @data.splice beginline+i, 0, newlines[i]
   
-    @rw.writedata @data        ############
+    @rw.writedata @data
     @editline = -1
-    @gd.display @, true           ############
+    @gd.display @, true
     # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない
 
 window.GyazzBuffer = GyazzBuffer
