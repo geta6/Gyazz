@@ -7,8 +7,6 @@ class GyazzDisplay
     
   version: -1
   showold: false
-  timestamps: []
-  datestr: ''
 
   display: (gb, delay) ->
     # zoomlevelに応じてバックグラウンドの色を変える
@@ -17,7 +15,7 @@ class GyazzDisplay
       when -1 then "#e0e0c0"
       when -2 then "#c0c0a0"
       else         "#a0a080"
-    $('#datestr').text if @version >= 0 || @showold then @datestr else ''
+    $('#datestr').text if @version >= 0 || @showold then gb.datestr else ''
     $('#title').attr
       href: "#{root}/#{name}/#{title}/__edit/#{ if @version >= 0 then @version else 0 }"
     
@@ -68,7 +66,7 @@ class GyazzDisplay
               s += gb.data[j].replace(/\\$/,'__newline__')
             $("#list#{contline}").css('display','inline').css('visibility','visible')
               .html(tag.expand(s,root,name,contline).replace(/__newline__/g,''))
-            $("#listbg"+contline).css('display','inline').css('visibility','visible')
+            $("#listbg#{contline}").css('display','inline').css('visibility','visible')
             t.css('visibility','hidden')
             p.css('visibility','hidden')
           else # 通常行
@@ -113,12 +111,12 @@ class GyazzDisplay
   
       
       # 各行のバックグラウンド色設定
-      color = if (@version >= 0 || @showold) then bgcol(@timestamps[i]) else 'transparent'
+      color = if (@version >= 0 || @showold) then bgcol(gb.timestamps[i]) else 'transparent'
       $("#listbg#{i}").css 'background-color', color
       if @version >= 0 # ツールチップに行の作成時刻を表示
         $("#list#{i}").addClass 'hover'
         date = new Date()
-        createdate = new Date(date.getTime() - @timestamps[i] * 1000)
+        createdate = new Date(date.getTime() - gb.timestamps[i] * 1000)
         $("#list#{i}").attr 'title', createdate.toLocaleString()
         $(".hover").tipTip
           maxWidth:        "auto"   #ツールチップ最大幅

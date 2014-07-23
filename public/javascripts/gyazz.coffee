@@ -16,7 +16,7 @@ gb =  new GyazzBuffer(rw,gd) # Gyazzテキスト編集関連
 gr =  new GyazzRelated       # 関連ページ取得
 gu =  new GyazzUpload(gb)    # アップロード処理
 
-historycache = {}
+historycache = {}            # 履歴cache
 clickline = -1               # マウスクリックして押してるときだけ行番号が入る
 
 KC =
@@ -66,8 +66,8 @@ $ -> # = $(document).ready()
     rw.getdata
       async: false  # ヒストリ表示をきっちり終了させるのに必要...?
     , (res) ->
-      gb.data = res.data.concat()
-      gd.datestr = res.date
+      gb.data =    res.data.concat()
+      gb.datestr = res.date
       gd.display gb
 
   $('#historyimage').mousemove (event) ->
@@ -84,7 +84,7 @@ $ -> # = $(document).ready()
         historycache[age] = res
         show_history res
         gb.data = res.data.concat()
-        gd.datestr = res.date
+        gb.datestr = res.date
         gd.display gb
 
   $('#contents').mousedown (event) ->
@@ -96,12 +96,11 @@ $ -> # = $(document).ready()
     async: false
     suggest: true # 1回目はsuggestオプションを付けてデータ取得
   , (res) ->
-    gd.timestamps = res.timestamps
+    gb.timestamps = res.timestamps
     gb.data = res.data.concat()
-    gd.datestr = res.date
+    gb.datestr = res.date
     reset()
     
-  historycache = {} # 履歴cacheをリセット
 
   gr.getrelated()
 
@@ -154,7 +153,7 @@ getversion = (n) ->
       version:gd.version
     , (res) ->
       gb.data = res.data.concat()
-      gd.datestr = res.date
+      gb.datestr = res.date
     reset()
           
 $(document).keydown (event) ->
@@ -214,12 +213,11 @@ window.linefunc = (n,gb) ->
     true
     
 show_history = (res) ->
-  gd.datestr =     res.date
-  gd.timestamps =  res.timestamps
-  gb.data =      res.data
+  gb.datestr =    res.date
+  gb.timestamps = res.timestamps
+  gb.data =       res.data
   reset()
 
-adjustIframeSize = (newHeight,i) ->
+window.adjustIframeSize = (newHeight, i) ->
   frame= document.getElementById("gistFrame"+i)
   frame.style.height = parseInt(newHeight) + "px"
-

@@ -23,7 +23,9 @@ class GyazzBuffer
 
   _spaces = []           # 行に含まれている空白文字の数
 
-  data: []             # テキストデータ
+  data: []               # テキストデータ
+  datestr: ''
+  timestamps: []
   doi: []
   
   editline: -1           # 現在編集中の行番号
