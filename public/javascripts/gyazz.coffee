@@ -16,7 +16,6 @@ gb =  new GyazzBuffer(rw,gd) # Gyazzテキスト編集関連
 gr =  new GyazzRelated       # 関連ページ取得
 gu =  new GyazzUpload(gb)    # アップロード処理
 
-historycache = {}        # 編集履歴視覚化キャッシュ
 clickline = -1           # マウスクリックして押してるときだけ行番号が入る
 
 KC =
@@ -32,12 +31,12 @@ KC =
   p:     80
   s:     83
 
-reset = () ->
+reset = ->
   $('#filterdiv').css('display','none') if $('#filter').val() == ''
   gb.zoomlevel = 0
   gb.calcdoi()
   gd.display gb
-    
+
 $ -> # = $(document).ready()
   $('#rawdata').hide()
 
@@ -90,6 +89,7 @@ $ -> # = $(document).ready()
   $('#contents').mousedown (event) ->
     if clickline == -1  # 選択行がないとき
       rw.writedata gb.data()
+      ## gd.display()
     true
     
   rw.getdata
@@ -130,6 +130,7 @@ $(document).mousedown (event) ->
   
 $(document).keyup (event) ->
   gb.setline $("#editline").val()
+  # gb.data[gb.editline] = $("#editline").val()
 
 #  keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
 $(document).keypress (event) ->
@@ -211,14 +212,25 @@ window.linefunc = (n,gb) ->
     clickline = n
     if event.shiftKey
       gb.addblankline n, gb.line_indent(n)  # 上に行を追加
+      # search() # ???
     true
     
 show_history = (res) ->
   gd.datestr =     res.date
   gd.timestamps =  res.timestamps
   gb.setdata       res.data
+  # search() # ???
   reset()
 
 adjustIframeSize = (newHeight,i) ->
   frame= document.getElementById("gistFrame"+i)
   frame.style.height = parseInt(newHeight) + "px"
+
+#search = (event) -> # なんかよくわからない関数なので削除する予定
+#  if event
+#    kc = event.which
+#  if event == null || kc != KC.down && kc != KC.up && kc != KC.left && kc != KC.right
+#    gb.zoomlevel = 0
+#    gb.calcdoi()
+#    gd.display gb
+#  false
