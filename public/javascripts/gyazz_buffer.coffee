@@ -117,46 +117,6 @@ class GyazzBuffer
     
   #########################################################################
   #
-  #   インデント
-  #
-  #########################################################################
-
-  # インデント
-  indent: ->
-    if @editline >= 0 && @editline < @data.length
-      @data[@editline] = ' ' + @data[@editline]
-      @rw.writedata @data
-      display()
-
-  # アンデント
-  undent: ->
-    if @editline >= 0 && @editline < @data.length
-      s = @data[@editline]
-      if s.substring(0,1) == ' '
-        @data[@editline] = s.substring(1,s.length)
-      @rw.writedata @data
-      display()
-
-  #########################################################################
-  #
-  #   ズーミング
-  #
-  #########################################################################
-
-  # ズームイン
-  zoomin: ->
-    if @zoomlevel < 0
-      @zoomlevel += 1
-      display()
-
-  # ズームアウト
-  zoomout: ->
-    if -@zoomlevel < @maxindent()
-      @zoomlevel -= 1
-      display()
-
-  #########################################################################
-  #
   #   行移動 / ブロック移動
   #
   #########################################################################
@@ -243,6 +203,73 @@ class GyazzBuffer
         @rw.writedata @data ########
         display()
 
+  #########################################################################
+  #
+  #   インデント
+  #
+  #########################################################################
+
+  # インデント
+  indent: ->
+    if @editline >= 0 && @editline < @data.length
+      @data[@editline] = ' ' + @data[@editline]
+      @rw.writedata @data
+      display()
+
+  # アンデント
+  undent: ->
+    if @editline >= 0 && @editline < @data.length
+      s = @data[@editline]
+      if s.substring(0,1) == ' '
+        @data[@editline] = s.substring(1,s.length)
+      @rw.writedata @data
+      display()
+
+  #########################################################################
+  #
+  #   ズーミング
+  #
+  #########################################################################
+
+  # ズームイン
+  zoomin: ->
+    if @zoomlevel < 0
+      @zoomlevel += 1
+      display()
+
+  # ズームアウト
+  zoomout: ->
+    if -@zoomlevel < @maxindent()
+      @zoomlevel -= 1
+      display()
+
+  #########################################################################
+  #
+  #   右側消去
+  #
+  #########################################################################
+
+  kill: ->
+    input = $("#editline")
+    if input.val().match(/^\s*$/) && @editline < @data.length-1  # 行が完全に削除された時
+      @data[@editline] = ""# 現在の行を削除
+      @deleteblankdata()
+      @rw.writedata @data
+      setTimeout ->
+        # カーソルを行頭に移動
+        # input = $("#editline")
+        input[0].selectionStart = 0
+        input[0].selectionEnd = 0
+      , 10
+      return
+    setTimeout ->  # Mac用。ctrl+kでカーソルより後ろを削除するまで待つ
+      cursor_pos = input[0].selectionStart
+      if input.val().length > cursor_pos  # ctrl+kでカーソルより後ろが削除されていない場合
+        input.val input_tag.val().substring(0, cursor_pos) # カーソルより後ろを削除
+        input.selectionStart = cursor_pos
+        input.selectionEnd = cursor_pos
+    , 10
+    
   #########################################################################
   #
   #   桁揃え、行桁交換

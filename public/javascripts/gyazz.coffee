@@ -166,25 +166,7 @@ $(document).keydown (event) ->
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
-      input = $("#editline")
-      if input.val().match(/^\s*$/) && gb.editline < gb.data.length-1  # 行が完全に削除された時
-        gb.data[gb.editline] = ""# 現在の行を削除
-        gb.deleteblankdata()
-        rw.writedata gb.data
-        setTimeout ->
-          # カーソルを行頭に移動
-          # input = $("#editline")
-          input[0].selectionStart = 0
-          input[0].selectionEnd = 0
-        , 10
-        return
-      setTimeout ->  # Mac用。ctrl+kでカーソルより後ろを削除するまで待つ
-        cursor_pos = input[0].selectionStart
-        if input.val().length > cursor_pos  # ctrl+kでカーソルより後ろが削除されていない場合
-          input.val input_tag.val().substring(0, cursor_pos) # カーソルより後ろを削除
-          input.selectionStart = cursor_pos
-          input.selectionEnd = cursor_pos
-      , 10
+      gb.kill()
     when kc == KC.down && ck # 行を下に移動
       gb.line_down()
     when kc == KC.down && !sk || kc == KC.n && !sk && ck # 下にカーソル移動
