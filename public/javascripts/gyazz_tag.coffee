@@ -48,8 +48,9 @@ class GyazzTag
     s = s.replace /</g,'&lt'
   
     elements = @split(s).map (s) ->
-      if m = s.match /^\[\[\[(.*)\]\]\]$/ # [[[....]]]
-        inner = m[1]
+      # if m = s.match /^\[\[\[(.*)\]\]\]$/ # [[[....]]]
+      if m = s.match /^(.*)\[\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\]\](.*)$/ # [[[....]]]
+        [all, pre, inner, dummy, post] = m
         switch
           when t = inner.match /^(https?:\/\/[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[[http:... ....jpg]]]
             matched.push "<a href='#{t[1]}'><img src='#{t[2]}.#{t[3]} border='none' target='_blank' height=80></a>"
@@ -58,10 +59,10 @@ class GyazzTag
               "<img src='#{t[1]}.#{t[2]} border='none' height=80></a>"
           else  # [[[abc]]]
             matched.push "<b>#{inner}</b>"
-        s = "<<<#{matched.length-1}>>>"
+        s = "#{pre}<<<#{matched.length-1}>>>#{post}"
   
-      if m = s.match /^\[\[(.*)\]\]$/ # [[....]]
-        inner = m[1]
+      if m = s.match /^(.*)\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\](.*)$/ # [[....]]
+        [all, pre, inner, dummy, post] = m
         switch
           when t = inner.match /^(http[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://.../ http://.../abc.jpg]]
             matched.push "<a href='#{t[1]}' target='_blank'><img src='#{t[2]}.#{t[3]} border='none'></a>"
@@ -174,7 +175,7 @@ class GyazzTag
           else
             matched.push "<a href='#{root}/#{wiki}/#{inner}' class='tag' target='_blank'>#{inner}</a>"
 
-        s = "<<<#{matched.length-1}>>>"
+        s = "#{pre}<<<#{matched.length-1}>>>#{post}"
       else
         s
 
