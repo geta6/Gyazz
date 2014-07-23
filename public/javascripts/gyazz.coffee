@@ -86,14 +86,14 @@ $ -> # = $(document).ready()
         display()
 
   $('#contents').mousedown (event) ->
-    if clickline == -1  # 行以外をクリック
+    if clickline == -1  # 選択行がないとき
       rw.writedata gb.data
-      display()
+      ## display()
     true
 
   rw.getdata
     async: false
-    suggest: true # 1回目はsuggestオプションを付けてgetdata
+    suggest: true # 1回目はsuggestオプションを付けてデータ取得
   , (res) ->
     timestamps = res.timestamps
     gb.data = res.data.concat()
@@ -124,7 +124,8 @@ $(document).mousedown (event) ->
     gb.seteditline clickline
   else
     clearTimeout longPressTimeout?
-    longPressTimeout = setTimeout longmousedown, 300
+    if gb.editline != clickline # #27
+      longPressTimeout = setTimeout longmousedown, 300
   true
   
 $(document).keyup (event) ->
@@ -148,6 +149,17 @@ $(document).keypress (event) ->
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
       return false
 
+getversion = (n) ->
+  if version + n >= -1
+    version += n
+    rw.getdata
+      version:version
+    , (res) ->
+      gb.data = res.data.concat()
+      datestr = res.date
+    gb.calcdoi()
+    display()
+          
 $(document).keydown (event) ->
   kc = event.which
   sk = event.shiftKey
@@ -186,22 +198,9 @@ $(document).keydown (event) ->
     when kc == KC.right && !sk && !ck && gb.editline < 0 # zoom in
       gb.zoomin()
     when ck && kc == KC.left # 古いバージョンゲット
-      version += 1
-      rw.getdata
-        version:version
-      , (res) ->
-        gb.data = res.data.concat()
-        datestr = res.date
-        
+      getversion 1
     when ck && kc == KC.right
-      if version >= 0
-        version -= 1
-        rw.getdata
-          version:version
-        , (res) ->
-          gb.data = res.data.concat()
-          datestr = res.date
-
+      getversion -1
     when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
       $('#filterdiv').css('visibility','visible').css('display','block')
       $('#filter').focus()
@@ -231,7 +230,7 @@ linefunc = (n) ->
     #  tell_auth()
     if event.shiftKey
       gb.addblankline n, gb.line_indent(n)  # 上に行を追加
-    search() # ???
+      # search() # ???
     true
     
 show_history = (res) ->
