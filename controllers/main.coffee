@@ -164,3 +164,4 @@ module.exports = (app) ->
         wiki:  req.params.wiki
         q:     ''
         pages: list
+

@@ -58,5 +58,31 @@ mongoose.connect mongodb_uri, (err) ->
     return
   debug "connect MongoDB"
 
-  app.listen process.env.PORT
-  console.log "Listening on port #{process.env.PORT}..."
+  # socket.io を入れる前の状態
+  # app.listen process.env.PORT
+  # console.log "Listening on port #{process.env.PORT}..."
+
+  #
+  # socket.io を入れてみる
+  #
+  http = require('http').Server(app)
+  io = require('socket.io')(http)
+  
+  io.on 'connection', (socket) ->
+    console.log "socket.io connected from client--------"
+    socket.on 'gyazz update', (msg) ->
+      console.log "message from client = #{msg.text}"
+      console.log "  wiki = #{msg.wiki}"
+      io.emit 'gyazz update notification', # broadcastの場合
+        wiki: "wikiname"
+        title: "title"
+        text: "Gyazz text returned from server"
+        
+      # socket.emit 'chat message', 'REPLY MESSAGE' # 個別に返す場合
+      # socket.broadcast.emit 'msg push', "BROADCAST MESSAGE"
+    socket.on 'disconnect', ->
+      console.log 'disconnected'
+  
+  http.listen process.env.PORT, ->
+    console.log "listening on *:#{process.env.PORT}..."
+

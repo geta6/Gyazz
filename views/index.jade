@@ -3,10 +3,17 @@ html
   head
     title #{title}
     script(src='/javascripts/coffee-script.js')
+    script(src='/javascripts/socket.io.js')
   body
     h1 #{title}
     p Welcome to #{title}
 
+    script(type='text/coffeescript').
+      socket = io()
+      socket.emit 'gyazz update',
+        text: 'Gyazz data updated'
+        wiki: 'wikiname'
+        title: 'titlename'
 
-
-
+      socket.on 'gyazz update notification', (msg) ->
+        alert msg.text
