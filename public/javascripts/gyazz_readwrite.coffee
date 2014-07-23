@@ -5,6 +5,8 @@ class GyazzReadWrite
   
   _data_old = ''
 
+  not_saved: false
+
   writedata: (data) ->
     datastr = data.join("\n").replace(/\n+$/,'')+"\n"
     if JSON.stringify(data) == JSON.stringify(_data_old)
@@ -26,6 +28,7 @@ class GyazzReadWrite
       beforeSend: (xhr,settings) ->
         true
       success: (msg) ->
+        @not_saved = false
         $("#editline").css('background-color','#ddd')
         switch
           when msg.match /^conflict/

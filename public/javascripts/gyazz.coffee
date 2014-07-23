@@ -19,7 +19,6 @@ historycache = {}        # 編集履歴視覚化キャッシュ
 showold = false          # 過去データ表示モード
 clickline = -1           # マウスクリックして押してるときだけ行番号が入る
 authbuf = []
-not_saved = false
 timestamps = []
 datestr = ''
 
@@ -96,7 +95,6 @@ $ -> # = $(document).ready()
   $('#contents').mousedown (event) ->
     if clickline == -1  # 行以外をクリック
       rw.writedata gb.data
-      not_saved = false
       search() # ??
       display()
     true
@@ -129,7 +127,6 @@ longmousedown = ->
 $(document).mousedown (event) ->
   if clickline == -1  # 行以外をクリック
     rw.writedata gb.data
-    not_saved = false
     gb.seteditline clickline
   else
     clearEditTimeout()
@@ -164,7 +161,7 @@ $(document).keydown (event) ->
   ck = event.ctrlKey
   cd = event.metaKey && !ck
     
-  not_saved = true
+  rw.not_saved = true
 
   switch
     when ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
@@ -173,7 +170,6 @@ $(document).keydown (event) ->
     when kc == KC.enter
       $('#filter').val('')
       rw.writedata gb.data
-      not_saved = false
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
@@ -182,7 +178,6 @@ $(document).keydown (event) ->
         gb.data[gb.editline] = ""# 現在の行を削除
         gb.deleteblankdata()
         rw.writedata gb.data
-        not_saved = false
         setTimeout ->
           # カーソルを行頭に移動
           # input = $("#editline")
@@ -211,14 +206,12 @@ $(document).keydown (event) ->
       if gb.editline >= 0 && gb.editline < gb.data.length
         gb.data[gb.editline] = ' ' + gb.data[gb.editline]
         rw.writedata gb.data
-        not_saved = false
     when kc == KC.tab && sk || kc == KC.left && sk # undent
       if gb.editline >= 0 && gb.editline < gb.data.length
         s = gb.data[gb.editline]
         if s.substring(0,1) == ' '
           gb.data[gb.editline] = s.substring(1,s.length)
         rw.writedata gb.data
-        not_saved = false
     when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
       if -gb.zoomlevel < gb.maxindent()
         gb.zoomlevel -= 1
@@ -248,7 +241,7 @@ $(document).keydown (event) ->
       $('#filterdiv').css('visibility','visible').css('display','block')
       $('#filter').focus()
       
-  if not_saved
+  if rw.not_saved
     $("#editline").css('background-color','#f0f0d0')
  
 # 認証文字列をサーバに送る
@@ -268,9 +261,9 @@ tell_auth = ->
 linefunc = (n) ->
   (event) ->
     clickline = n
-    if do_auth
-      authbuf.push(gb.data[n])
-      tell_auth()
+    #if do_auth
+    #  authbuf.push(gb.data[n])
+    #  tell_auth()
     if event.shiftKey
       gb.addblankline n, gb.line_indent(n)  # 上に行を追加
     search()
@@ -385,16 +378,17 @@ window.display = (delay) ->
 
     
     # 各行のバックグラウンド色設定
-    $("#listbg#{i}").css('background-color', if (version >= 0 || showold) then bgcol(timestamps[i]) else 'transparent')
+    color = if (version >= 0 || showold) then bgcol(timestamps[i]) else 'transparent'
+    $("#listbg#{i}").css 'background-color', color
     if version >= 0 # ツールチップに行の作成時刻を表示
-      $("#list#{i}").addClass('hover')
+      $("#list#{i}").addClass 'hover'
       date = new Date()
       createdate = new Date(date.getTime() - timestamps[i] * 1000)
       $("#list#{i}").attr 'title', createdate.toLocaleString()
       $(".hover").tipTip
-        maxWidth: "auto" #ツールチップ最大幅
-        edgeOffset: 5 #要素からのオフセット距離
-        activation: "hover" #hoverで表示、clickでも可能
+        maxWidth:        "auto"   #ツールチップ最大幅
+        edgeOffset:      5        #要素からのオフセット距離
+        activation:      "hover"  #hoverで表示、clickでも可能
         defaultPosition: "bottom" #デフォルト表示位置
     else
       $("#listbg#{i}").removeClass('hover')

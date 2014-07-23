@@ -49,6 +49,7 @@ html
     div.title
       span.wordtitle
         img#historyimage(src="/#{wiki}/#{title}/modify.png",height=18,width=80)
+        // sanitize必要
         if writable
           a#title(href="/#{wiki}/#{title}/__edit/0") #{title}
         else
