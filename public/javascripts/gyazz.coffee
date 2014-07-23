@@ -19,6 +19,18 @@ gu =  new GyazzUpload(gb)    # アップロード処理
 historycache = {}            # 履歴cache
 clickline = -1               # マウスクリックして押してるときだけ行番号が入る
 
+### ナイーブなsocketio利用
+window.socket = io()
+socket.on 'gyazz update notification', (msg) ->
+  if msg.wiki == name && msg.title == title # 自分のページ更新必要
+    rw.getdata
+      async: true
+    , (res) ->
+      gb.timestamps = res.timestamps
+      gb.data       = res.data.concat()
+      gb.datestr    = res.date
+      refresh()
+
 KC =
   tab:   9
   enter: 13

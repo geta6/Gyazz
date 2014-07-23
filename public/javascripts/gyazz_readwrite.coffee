@@ -26,6 +26,11 @@ class GyazzReadWrite
       beforeSend: (xhr,settings) ->
         true
       success: (msg) ->
+        socket.emit 'page update',
+          wiki:  name
+          title: title
+          date: new Date
+          
         @not_saved = false
         $("#editline").css('background-color','#ddd')
         switch

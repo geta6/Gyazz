@@ -70,13 +70,15 @@ mongoose.connect mongodb_uri, (err) ->
   
   io.on 'connection', (socket) ->
     console.log "socket.io connected from client--------"
-    socket.on 'gyazz update', (msg) ->
-      console.log "message from client = #{msg.text}"
+    socket.on 'page update', (msg) ->
+      console.log "message from client"
       console.log "  wiki = #{msg.wiki}"
-      io.emit 'gyazz update notification', # broadcastの場合
-        wiki: "wikiname"
-        title: "title"
-        text: "Gyazz text returned from server"
+      console.log "  title = #{msg.title}"
+      console.log "  date = #{msg.date}"
+      io.emit 'gyazz update notification', # broadcast
+        wiki:  msg.wiki
+        title: msg.title
+        text:  "Gyazz page #{msg.wiki}::#{msg.title} updated!!"
         
       # socket.emit 'chat message', 'REPLY MESSAGE' # 個別に返す場合
       # socket.broadcast.emit 'msg push', "BROADCAST MESSAGE"
