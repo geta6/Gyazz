@@ -143,10 +143,10 @@ class GyazzDisplay
                 
     # 編集中の行│画面外に移動した時に、ブラウザをスクロールして追随する
 
-  follow_scroll = (gb)->
+  follow_scroll = (gb) =>
     # 編集中かどうかチェック
     return if gb.editline < 0
-    return if showold
+    return if @showold
     
     currentLinePos = $("#editline").offset().top
     return if !(currentLinePos && currentLinePos > 0)
