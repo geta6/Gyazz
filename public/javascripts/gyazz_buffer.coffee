@@ -23,7 +23,7 @@ class GyazzBuffer
 
   _spaces = []           # 行に含まれている空白文字の数
 
-  _data = []             # テキストデータ
+  data: []             # テキストデータ
   doi: []
   
   editline: -1           # 現在編集中の行番号
@@ -34,15 +34,6 @@ class GyazzBuffer
     @editline = line
     @gd.display @, true
 
-  setdata: (data) ->
-    _data = data
-
-  data: ->
-    _data
-
-  setline: (str) ->
-    _data[@editline] = str
-
   calcdoi: (query) ->
     q = $('#filter')
     pbs = new POBoxSearch(assocwiki_pobox_dict)
@@ -50,31 +41,31 @@ class GyazzBuffer
     if q && q.val() != ''
       re = pbs.regexp q.val(), false
     maxind = @maxindent()
-    [0..._data.length].forEach (i) =>
-      if (if re then re.exec(_data[i]) else true)
+    [0...@data.length].forEach (i) =>
+      if (if re then re.exec(@data[i]) else true)
         @doi[i] = maxind - @line_indent(i)
       else
         @doi[i] = 0 - @line_indent(i) - 1
   
   init: (arg) ->
-    _data = if typeof arg == 'string' then arg.split /\n/ else arg
+    @data = if typeof arg == 'string' then arg.split /\n/ else arg
     
   # n行目のインデントを計算
   line_indent: (n) ->
-    _indent _data[n]
+    _indent @data[n]
       
   # 最大のインデント値を取得
   maxindent: ->
-    Math.max (_data.map (line) -> _indent line)...
+    Math.max (@data.map (line) -> _indent line)...
 
   # reduce を使うとこういう感じになるのだが、Coffeeだと上のような記法が可能らしい
   # maxindent: ->
-  #   indents = _data.map (line) -> _indent line
+  #   indents = data.map (line) -> _indent line
   #   _.reduce indents, ((x, y) -> Math.max(x, y)), 0
 
   # 空白行を削除
   deleteblankdata: ->
-    _data = _.filter _data, (line) ->
+    @data = _.filter @data, (line) ->
       typeof line == "string" && !line.match /^ *$/
 
   # 空白行を挿入
@@ -82,16 +73,16 @@ class GyazzBuffer
     @editline = line
     # @eline = line # ?????
     @deleteblankdata()
-    [_data.length-1..@editline].forEach (i) =>
-      _data[i+1] = _data[i]
-    _data[@editline] = _indentstr indent
+    [@data.length-1..@editline].forEach (i) =>
+      @data[i+1] = @data[i]
+    @data[@editline] = _indentstr indent
   
   # n行目からブロック移動しようとするときのブロック行数
   _movelines = (n) ->
     ind = @line_indent n
-    last = _.find [n+1..._data.length], (i) =>
+    last = _.find [n+1...@data.length], (i) =>
       @line_indent(i) <= ind
-    (last ||= _data.length) - n
+    (last ||= @data.length) - n
 
   # インデントが自分と同じか自分より深い行を捜す。
   # ひとつもなければ -1 を返す。
@@ -115,7 +106,7 @@ class GyazzBuffer
   _destline_down = (n) ->
     ind_editline = @line_indent n
     foundline = -1
-    _.find [n+1..._data.length], (i) =>
+    _.find [n+1...@data.length], (i) =>
       ind = @line_indent i
       if ind == ind_editline
         foundline = i
@@ -133,14 +124,14 @@ class GyazzBuffer
 
   # カーソルを下に移動
   cursor_down: ->
-    if @editline >= 0 && @editline < _data.length-1
-      dest = _.find [@editline+1..._data.length], (i) =>
+    if @editline >= 0 && @editline < @data.length-1
+      dest = _.find [@editline+1...@data.length], (i) =>
         @doi[i] >= -@zoomlevel
       if dest
         setTimeout =>
           @editline = dest
           @deleteblankdata()
-          @rw.writedata _data
+          @rw.writedata @data
           @gd.display @
         , 1
 
@@ -153,19 +144,19 @@ class GyazzBuffer
         setTimeout =>
           @editline = dest
           @deleteblankdata()
-          @rw.writedata _data
+          @rw.writedata @data
           @gd.display @
         , 1
 
   # カーソルの行を下に移動
   line_down: ->
-    if @editline >= 0 && @editline < _data.length-1
+    if @editline >= 0 && @editline < @data.length-1
       l = @editline
-      [_data[l], _data[l+1]] = [_data[l+1], _data[l]]
+      [@data[l], @data[l+1]] = [@data[l+1], @data[l]]
       setTimeout =>
         @editline += 1
         @deleteblankdata()
-        @rw.writedata _data  #####
+        @rw.writedata @data  #####
         @gd.display @
       , 1
   
@@ -173,44 +164,44 @@ class GyazzBuffer
   line_up: ->
     if @editline > 0
       l = @editline
-      [_data[l], _data[l-1]] = [_data[l-1], _data[l]]
+      [@data[l], @data[l-1]] = [@data[l-1], @data[l]]
       setTimeout =>
         @editline -= 1
         @deleteblankdata()
-        @rw.writedata _data  #####
+        @rw.writedata @data  #####
         @gd.display @
       , 1
   
   # editlineのブロックを下に移動
   block_down: ->
-    if @editline >= 0 && @editline < _data.length - 1
+    if @editline >= 0 && @editline < @data.length - 1
       m = _movelines.call @, @editline
       dst = _destline_down.call @, @editline
       if dst >= 0
         m2 = _movelines.call @, dst
         tmp = []
-        [0...m].forEach  (i) => tmp[i] = _data[@editline+i]
-        [0...m2].forEach (i) => _data[@editline+i] = _data[dst+i]
-        [0...m].forEach  (i) => _data[@editline+m2+i] = tmp[i]
+        [0...m].forEach  (i) => tmp[i] = @data[@editline+i]
+        [0...m2].forEach (i) => @data[@editline+i] = @data[dst+i]
+        [0...m].forEach  (i) => @data[@editline+m2+i] = tmp[i]
         @editline += m2
         @deleteblankdata()    ######## ここに必要?
-        @rw.writedata _data    ######## 通信モジュールに移動すべき
+        @rw.writedata @data    ######## 通信モジュールに移動すべき
         @gd.display @
 
   # editlineのブロックを上に移動
   block_up: ->
-    if @editline > 0 && @editline < _data.length
+    if @editline > 0 && @editline < @data.length
       m = _movelines.call @, @editline
       dst = _destline_up.call @, @editline
       if dst >= 0
         m2 = @editline - dst
         tmp = []
-        [0...m2].forEach (i) => tmp[i] = _data[dst+i]
-        [0...m].forEach (i)  => _data[dst+i] = _data[@editline+i]
-        [0...m2].forEach (i) => _data[dst+m+i] = tmp[i]
+        [0...m2].forEach (i) => tmp[i] = @data[dst+i]
+        [0...m].forEach (i)  => @data[dst+i] = @data[@editline+i]
+        [0...m2].forEach (i) => @data[dst+m+i] = tmp[i]
         @editline = dst
         @deleteblankdata() ########
-        @rw.writedata _data ########
+        @rw.writedata @data ########
         @gd.display @
 
   #########################################################################
@@ -221,18 +212,18 @@ class GyazzBuffer
 
   # インデント
   indent: ->
-    if @editline >= 0 && @editline < _data.length
-      _data[@editline] = ' ' + _data[@editline]
-      @rw.writedata _data
+    if @editline >= 0 && @editline < @data.length
+      @data[@editline] = ' ' + @data[@editline]
+      @rw.writedata @data
       @gd.display @
 
   # アンデント
   undent: ->
-    if @editline >= 0 && @editline < _data.length
-      s = _data[@editline]
+    if @editline >= 0 && @editline < @data.length
+      s = @data[@editline]
       if s.substring(0,1) == ' '
-        _data[@editline] = s.substring(1,s.length)
-      @rw.writedata _data
+        @data[@editline] = s.substring(1,s.length)
+      @rw.writedata @data
       @gd.display @
 
   #########################################################################
@@ -261,10 +252,10 @@ class GyazzBuffer
 
   kill: ->
     input = $("#editline")
-    if input.val().match(/^\s*$/) && @editline < _data.length-1  # 行が完全に削除された時
-      _data[@editline] = ""# 現在の行を削除
+    if input.val().match(/^\s*$/) && @editline < @data.length-1  # 行が完全に削除された時
+      @data[@editline] = ""# 現在の行を削除
       @deleteblankdata()
-      @rw.writedata _data
+      @rw.writedata @data
       setTimeout ->
         # カーソルを行頭に移動
         # input = $("#editline")
@@ -291,10 +282,10 @@ class GyazzBuffer
     lastspaces = -1
     lastindent = -1
 
-    _spaces = _data.map (line) -> # 行に空白がいくつ含まれているか
+    _spaces = @data.map (line) -> # 行に空白がいくつ含まれているか
       tag.split(line).length - _indent(line) - 1
     
-    [0..._data.length].forEach (i) =>
+    [0...@data.length].forEach (i) =>
       if _spaces[i] > 0 && _spaces[i] == lastspaces && @line_indent(i) == lastindent
         # 連続パタン続行中
       else
@@ -306,9 +297,9 @@ class GyazzBuffer
       lastspaces = _spaces[i]
       lastindent = @line_indent(i)
 
-    if lastspaces > 1 && _data.length-beginline > 1 #  同じパタンの連続を検出
-      if condition beginline, _data.length
-        process.call @, beginline, _data.length-beginline, @line_indent(beginline)
+    if lastspaces > 1 && @data.length-beginline > 1 #  同じパタンの連続を検出
+      if condition beginline, @data.length
+        process.call @, beginline, @data.length-beginline, @line_indent(beginline)
 
   #
   # 桁揃え
@@ -361,7 +352,7 @@ class GyazzBuffer
       newlines[i] = _indentstr indent
 
     [0...lines].forEach (y) =>
-      s = _data[beginline+y]
+      s = @data[beginline+y]
       s = s.replace(/^\s*/,'').replace(/</g,'&lt')
       a = tag.split(s)
       [0...a.length].forEach (i) ->
@@ -369,11 +360,11 @@ class GyazzBuffer
         newlines[i] += a[i]
       
     # data[] の beginlineからlines行をnewlines[]で置き換える
-    _data.splice beginline, lines
+    @data.splice beginline, lines
     [0...newlines.length].forEach (i) =>
-      _data.splice beginline+i, 0, newlines[i]
+      @data.splice beginline+i, 0, newlines[i]
   
-    @rw.writedata _data        ############
+    @rw.writedata @data        ############
     @editline = -1
     @gd.display @, true           ############
     # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない

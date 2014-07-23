@@ -31,11 +31,11 @@ class GyazzDisplay
       input.css 'display', 'none'
     
     contline = -1
-    if gb.data().length == 0
+    if gb.data.length == 0
       gb.setdata ["(empty)"]
       gb.doi[0] = gb.maxindent()
       
-    [0...gb.data().length].forEach (i) =>
+    [0...gb.data.length].forEach (i) =>
       ind = gb.line_indent i
       xmargin = ind * 30
       
@@ -50,7 +50,7 @@ class GyazzDisplay
           input.css('left',xmargin+25)
           input.css('top',p.position().top)
           input.blur()
-          input.val(gb.data()[i]) # Firefoxの場合日本語入力中にこれが効かないことがあるような... blurしておけば大丈夫ぽい
+          input.val(gb.data[i]) # Firefoxの場合日本語入力中にこれが効かないことがあるような... blurしておけば大丈夫ぽい
           input.focus()
           input.mousedown linefunc(i, gb)
           setTimeout ->
@@ -58,14 +58,14 @@ class GyazzDisplay
           , 100  # 何故か少し待ってからfocus()を呼ばないとフォーカスされない...
         else
           lastchar = ''
-          if i > 0 && typeof gb.data()[i-1] == "string"
-            lastchar = gb.data()[i-1][gb.data()[i-1].length-1]
+          if i > 0 && typeof gb.data[i-1] == "string"
+            lastchar = gb.data[i-1][gb.data[i-1].length-1]
           if gb.editline == -1 && lastchar == '\\' # 継続行
             if contline < 0
               contline = i-1
             s = ''
             [contline..i].forEach (j) ->
-              s += gb.data()[j].replace(/\\$/,'__newline__')
+              s += gb.data[j].replace(/\\$/,'__newline__')
             $("#list#{contline}").css('display','inline').css('visibility','visible')
               .html(tag.expand(s,root,name,contline).replace(/__newline__/g,''))
             $("#listbg"+contline).css('display','inline').css('visibility','visible')
@@ -73,7 +73,7 @@ class GyazzDisplay
             p.css('visibility','hidden')
           else # 通常行
             contline = -1
-            if typeof gb.data()[i] == "string" && (m = gb.data()[i].match(/\[\[(https:\/\/gist\.github\.com.*\?.*)\]\]/i))
+            if typeof gb.data[i] == "string" && (m = gb.data[i].match(/\[\[(https:\/\/gist\.github\.com.*\?.*)\]\]/i))
               # gistエンベッド
               # https:#gist.github.com/1748966 のやり方
               gisturl = m[1]
@@ -101,7 +101,7 @@ class GyazzDisplay
                 display: 'inline'
                 visibility: 'visible'
                 'line-height': ''
-              .html tag.expand(gb.data()[i],root,name,i)
+              .html tag.expand(gb.data[i],root,name,i)
               p.attr "class", "listedit#{ind}" # addClassだとダメ!! 前のが残るのか?
               p.css
                 display: 'block'
@@ -128,7 +128,7 @@ class GyazzDisplay
       else
         $("#listbg#{i}").removeClass('hover')
         
-    [gb.data().length...1000].forEach (i) ->
+    [gb.data.length...1000].forEach (i) ->
       $("#list#{i}").css('display','none')
       $("#listbg#{i}").css('display','none')
     
