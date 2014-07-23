@@ -60,7 +60,7 @@ $ -> # = $(document).ready()
     rw.getdata
       async: false  # ヒストリ表示をきっちり終了させるのに必要...?
     , (res) ->
-      gb.data = res.data.concat()
+      gb.setdata res.data.concat()
       gd.datestr = res.date
       gd.display gb
 
@@ -77,22 +77,22 @@ $ -> # = $(document).ready()
       , (res) ->
         historycache[age] = res
         show_history res
-        gb.data = res.data.concat()
+        gb.setdata res.data.concat()
         gd.datestr = res.date
         gd.display gb
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 選択行がないとき
-      rw.writedata gb.data
+      rw.writedata gb.data()
       ## gd.display()
     true
-
+    
   rw.getdata
     async: false
     suggest: true # 1回目はsuggestオプションを付けてデータ取得
   , (res) ->
     gd.timestamps = res.timestamps
-    gb.data = res.data.concat()
+    gb.setdata res.data.concat()
     gd.datestr = res.date
     gb.calcdoi()
     gd.display gb
@@ -116,7 +116,7 @@ $(document).mousemove (event) ->
 
 $(document).mousedown (event) ->
   if clickline == -1  # 行以外をクリック
-    rw.writedata gb.data
+    rw.writedata gb.data()
     gb.seteditline clickline
   else
     clearTimeout longPressTimeout?
@@ -125,7 +125,8 @@ $(document).mousedown (event) ->
   true
   
 $(document).keyup (event) ->
-  gb.data[gb.editline] = $("#editline").val()
+  gb.setline $("#editline").val()
+  # gb.data[gb.editline] = $("#editline").val()
 
 #  keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
 $(document).keypress (event) ->
@@ -151,7 +152,7 @@ getversion = (n) ->
     rw.getdata
       version:gd.version
     , (res) ->
-      gb.data = res.data.concat()
+      gb.setdata res.data.concat()
       gd.datestr = res.date
     gb.calcdoi()
     gd.display gb
@@ -170,7 +171,7 @@ $(document).keydown (event) ->
       gb.transpose()
     when kc == KC.enter
       $('#filter').val('')
-      rw.writedata gb.data
+      rw.writedata gb.data()
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
@@ -216,7 +217,7 @@ window.linefunc = (n,gb) ->
 show_history = (res) ->
   gd.datestr =     res.date
   gd.timestamps =  res.timestamps
-  gb.data =        res.data
+  gb.setdata       res.data
   # search() # ???
   gb.calcdoi()
   gd.display gb
