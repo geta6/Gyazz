@@ -32,6 +32,12 @@ KC =
   p:     80
   s:     83
 
+reset = () ->
+  $('#filterdiv').css('display','none') if $('#filter').val() == ''
+  gb.zoomlevel = 0
+  gb.calcdoi()
+  gd.display gb
+    
 $ -> # = $(document).ready()
   $('#rawdata').hide()
 
@@ -51,7 +57,7 @@ $ -> # = $(document).ready()
   
   $('#filterdiv').css('display','none')
   $("#filter").keyup (event) ->
-    search()
+    reset()
 
   $('#historyimage').hover (() ->
     gd.showold = true
@@ -84,7 +90,6 @@ $ -> # = $(document).ready()
   $('#contents').mousedown (event) ->
     if clickline == -1  # 選択行がないとき
       rw.writedata gb.data()
-      ## gd.display()
     true
     
   rw.getdata
@@ -94,8 +99,7 @@ $ -> # = $(document).ready()
     gd.timestamps = res.timestamps
     gb.setdata res.data.concat()
     gd.datestr = res.date
-    gb.calcdoi()
-    gd.display gb
+    reset()
     
   historycache = {} # 履歴cacheをリセット
 
@@ -126,7 +130,6 @@ $(document).mousedown (event) ->
   
 $(document).keyup (event) ->
   gb.setline $("#editline").val()
-  # gb.data[gb.editline] = $("#editline").val()
 
 #  keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
 $(document).keypress (event) ->
@@ -138,9 +141,7 @@ $(document).keypress (event) ->
     # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
     if gb.editline >= 0
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
-      gb.zoomlevel = 0
-      gb.calcdoi()
-      gd.display gb
+      reset()
       return false
     # カーソルキーやタブを無効化
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
@@ -154,8 +155,7 @@ getversion = (n) ->
     , (res) ->
       gb.setdata res.data.concat()
       gd.datestr = res.date
-    gb.calcdoi()
-    gd.display gb
+    reset()
           
 $(document).keydown (event) ->
   kc = event.which
@@ -199,7 +199,7 @@ $(document).keydown (event) ->
     when ck && kc == KC.right
       getversion -1
     when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
-      $('#filterdiv').css('visibility','visible').css('display','block')
+      $('#filterdiv').css('display','block')
       $('#filter').focus()
       
   if rw.not_saved
@@ -211,26 +211,14 @@ window.linefunc = (n,gb) ->
     clickline = n
     if event.shiftKey
       gb.addblankline n, gb.line_indent(n)  # 上に行を追加
-      # search() # ???
     true
     
 show_history = (res) ->
   gd.datestr =     res.date
   gd.timestamps =  res.timestamps
   gb.setdata       res.data
-  # search() # ???
-  gb.calcdoi()
-  gd.display gb
+  reset()
 
 adjustIframeSize = (newHeight,i) ->
   frame= document.getElementById("gistFrame"+i)
   frame.style.height = parseInt(newHeight) + "px"
-
-search = (event) -> # なんかよくわからない関数なので削除する予定
-  if event
-    kc = event.which
-  if event == null || kc != KC.down && kc != KC.up && kc != KC.left && kc != KC.right
-    gb.zoomlevel = 0
-    gb.calcdoi()
-    gd.display gb
-  false
