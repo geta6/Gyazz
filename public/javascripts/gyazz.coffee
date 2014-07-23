@@ -22,12 +22,6 @@ authbuf = []
 timestamps = []
 datestr = ''
 
-editTimeout = null       # 行長押しで編集モードに移行
-clearEditTimeout = () ->
-  if editTimeout
-    clearTimeout editTimeout
-    editTimeout = null
-
 KC =
   tab:   9
   enter: 13
@@ -49,8 +43,6 @@ $ -> # = $(document).ready()
     x = $('<span>').attr('id',"list#{i}").mousedown(linefunc(i))
     $('#contents').append(y.append(x))
     
-  $('#filterdiv').css('display','none')
-  
   b = $('body')
   b.bind "dragover", (e) -> false
   b.bind "dragend",  (e) -> false
@@ -60,6 +52,7 @@ $ -> # = $(document).ready()
     sendfiles files
     false
   
+  $('#filterdiv').css('display','none')
   $("#filter").keyup (event) ->
     search()
 
@@ -112,30 +105,30 @@ $ -> # = $(document).ready()
 
   getrelated()
 
+
+longmousedown = ->
+  gb.seteditline clickline
+
 $(document).mouseup (event) ->
-  clearEditTimeout()
+  clearTimeout longPressTimeout?
   clickline = -1
   true
 
 $(document).mousemove (event) ->
-  clearEditTimeout()
+  clearTimeout longPressTimeout?
   true
-
-longmousedown = ->
-  gb.seteditline clickline
 
 $(document).mousedown (event) ->
   if clickline == -1  # 行以外をクリック
     rw.writedata gb.data
     gb.seteditline clickline
   else
-    clearEditTimeout()
-    editTimeout = setTimeout longmousedown, 300
+    clearTimeout longPressTimeout?
+    longPressTimeout = setTimeout longmousedown, 300
   true
   
 $(document).keyup (event) ->
-  input = $("#editline")
-  gb.data[gb.editline] = input.val()
+  gb.data[gb.editline] = $("#editline").val()
 
 #  keypressを定義しておかないとFireFox上で矢印キーを押してときカーソルが動いてしまう
 $(document).keypress (event) ->
@@ -402,7 +395,7 @@ adjustIframeSize = (newHeight,i) ->
   frame= document.getElementById("gistFrame"+i)
   frame.style.height = parseInt(newHeight) + "px"
 
-window.search = (event) ->
+search = (event) ->
   if event
     kc = event.which
   if event == null || kc != KC.down && kc != KC.up && kc != KC.left && kc != KC.right

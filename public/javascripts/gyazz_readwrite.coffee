@@ -10,7 +10,6 @@ class GyazzReadWrite
   writedata: (data) ->
     datastr = data.join("\n").replace(/\n+$/,'')+"\n"
     if JSON.stringify(data) == JSON.stringify(_data_old)
-      search()
       return
     
     _data_old = data.concat()
@@ -58,7 +57,6 @@ class GyazzReadWrite
       data: opts
       success: (res) ->
         _data_old =   res['data'].concat()
-        search()
         callback res if callback
       error: (XMLHttpRequest, textStatus, errorThrown) ->
         alert("getdata ERROR!")
