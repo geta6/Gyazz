@@ -82,13 +82,11 @@ $ -> # = $(document).ready()
         show_history res
         gb.data = res.data.concat()
         datestr = res.date
-        search()
         display()
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 行以外をクリック
       rw.writedata gb.data
-      search() # ??
       display()
     true
 
@@ -99,7 +97,8 @@ $ -> # = $(document).ready()
     timestamps = res.timestamps
     gb.data = res.data.concat()
     datestr = res.date
-    search()
+    gb.calcdoi()
+    display()
     
   historycache = {} # 履歴cacheをリセット
 
@@ -140,7 +139,6 @@ $(document).keypress (event) ->
     # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
     if gb.editline >= 0
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
-      # search()
       gb.zoomlevel = 0
       gb.calcdoi()
       display()
@@ -250,14 +248,16 @@ linefunc = (n) ->
     #  tell_auth()
     if event.shiftKey
       gb.addblankline n, gb.line_indent(n)  # 上に行を追加
-    search()
+    search() # ???
     true
     
 show_history = (res) ->
   datestr =     res.date
   timestamps =  res.timestamps
   gb.data =     res.data
-  search()
+  # search() # ???
+  gb.calcdoi()
+  display()
 
 window.display = (delay) ->
   # zoomlevelに応じてバックグラウンドの色を変える
@@ -396,7 +396,7 @@ adjustIframeSize = (newHeight,i) ->
   frame= document.getElementById("gistFrame"+i)
   frame.style.height = parseInt(newHeight) + "px"
 
-search = (event) ->
+search = (event) -> # なんかよくわからない関数なので削除する予定
   if event
     kc = event.which
   if event == null || kc != KC.down && kc != KC.up && kc != KC.left && kc != KC.right
