@@ -9,8 +9,7 @@ class GyazzReadWrite
 
   writedata: (data) ->
     datastr = data.join("\n").replace(/\n+$/,'')+"\n"
-    if JSON.stringify(data) == JSON.stringify(_data_old)
-      return
+    return if JSON.stringify(data) == JSON.stringify(_data_old) # 何か変
     
     _data_old = data.concat()
 

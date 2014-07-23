@@ -143,6 +143,7 @@ $(document).keypress (event) ->
       # search()
       gb.zoomlevel = 0
       gb.calcdoi()
+      display()
       return false
     # カーソルキーやタブを無効化
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
@@ -401,6 +402,7 @@ search = (event) ->
   if event == null || kc != KC.down && kc != KC.up && kc != KC.left && kc != KC.right
     gb.zoomlevel = 0
     gb.calcdoi()
+    display()
   false
 
 # 編集中の行が画面外に移動した時に、ブラウザをスクロールして追随する

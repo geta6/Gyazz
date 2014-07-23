@@ -45,7 +45,6 @@ class GyazzBuffer
         @doi[i] = maxind - @line_indent(i)
       else
         @doi[i] = 0 - @line_indent(i) - 1
-    display()
   
   init: (arg) ->
     @data = if typeof arg == 'string' then arg.split /\n/ else arg
