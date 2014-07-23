@@ -9,6 +9,8 @@ class GyazzBuffer
 
   tag = new GyazzTag
 
+  
+
   constructor: (rw, gd) ->
     @rw = rw
     @gd = gd
@@ -23,13 +25,12 @@ class GyazzBuffer
 
   _spaces = []           # 行に含まれている空白文字の数
 
-  data: []               # テキストデータ
-  datestr: ''
+  # 外部から見える変数
+  data:       []         # テキストデータ
+  datestr:    ''
   timestamps: []
-  doi: []
-  
+  doi:        []
   editline: -1           # 現在編集中の行番号
-
   zoomlevel: 0
 
   seteditline: (line) ->

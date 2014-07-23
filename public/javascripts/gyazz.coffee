@@ -32,8 +32,7 @@ KC =
   p:     80
   s:     83
 
-reset = ->
-  $('#filterdiv').css('display','none') if $('#filter').val() == ''
+refresh = ->
   gb.zoomlevel = 0
   gb.calcdoi()
   gd.display gb
@@ -57,7 +56,8 @@ $ -> # = $(document).ready()
   
   $('#filterdiv').css('display','none')
   $("#filter").keyup (event) ->
-    reset()
+    $('#filterdiv').css('display','none') if $('#filter').val() == ''
+    refresh()
 
   $('#historyimage').hover (() ->
     gd.showold = true
@@ -66,7 +66,7 @@ $ -> # = $(document).ready()
     rw.getdata
       async: false  # ヒストリ表示をきっちり終了させるのに必要...?
     , (res) ->
-      gb.data =    res.data.concat()
+      gb.data    = res.data.concat()
       gb.datestr = res.date
       gd.display gb
 
@@ -83,7 +83,7 @@ $ -> # = $(document).ready()
       , (res) ->
         historycache[age] = res
         show_history res
-        gb.data = res.data.concat()
+        gb.data    = res.data.concat()
         gb.datestr = res.date
         gd.display gb
 
@@ -97,9 +97,9 @@ $ -> # = $(document).ready()
     suggest: true # 1回目はsuggestオプションを付けてデータ取得
   , (res) ->
     gb.timestamps = res.timestamps
-    gb.data = res.data.concat()
-    gb.datestr = res.date
-    reset()
+    gb.data       = res.data.concat()
+    gb.datestr    = res.date
+    refresh()
     
 
   gr.getrelated()
@@ -140,7 +140,7 @@ $(document).keypress (event) ->
     # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
     if gb.editline >= 0
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
-      reset()
+      refresh()
       return false
     # カーソルキーやタブを無効化
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
@@ -154,7 +154,7 @@ getversion = (n) ->
     , (res) ->
       gb.data = res.data.concat()
       gb.datestr = res.date
-    reset()
+    refresh()
           
 $(document).keydown (event) ->
   kc = event.which
@@ -216,7 +216,7 @@ show_history = (res) ->
   gb.datestr =    res.date
   gb.timestamps = res.timestamps
   gb.data =       res.data
-  reset()
+  refresh()
 
 window.adjustIframeSize = (newHeight, i) ->
   frame= document.getElementById("gistFrame"+i)
