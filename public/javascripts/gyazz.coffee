@@ -18,8 +18,6 @@ gu =  new GyazzUpload(gb)    # アップロード処理
 
 historycache = {}        # 編集履歴視覚化キャッシュ
 clickline = -1           # マウスクリックして押してるときだけ行番号が入る
-timestamps = []
-datestr = ''
 
 KC =
   tab:   9
@@ -40,7 +38,6 @@ $ -> # = $(document).ready()
   [0...1000].forEach (i) ->
     y = $('<div>').attr('id',"listbg#{i}")
     x = $('<span>').attr('id',"list#{i}").mousedown(linefunc(i,gb))
-    # x = $('<span>').attr('id',"list#{i}")
     $('#contents').append(y.append(x))
     
   b = $('body')
@@ -64,7 +61,7 @@ $ -> # = $(document).ready()
       async: false  # ヒストリ表示をきっちり終了させるのに必要...?
     , (res) ->
       gb.data = res.data.concat()
-      datestr = res.date
+      gd.datestr = res.date
       gd.display gb
 
   $('#historyimage').mousemove (event) ->
@@ -81,7 +78,7 @@ $ -> # = $(document).ready()
         historycache[age] = res
         show_history res
         gb.data = res.data.concat()
-        datestr = res.date
+        gd.datestr = res.date
         gd.display gb
 
   $('#contents').mousedown (event) ->
@@ -94,9 +91,9 @@ $ -> # = $(document).ready()
     async: false
     suggest: true # 1回目はsuggestオプションを付けてデータ取得
   , (res) ->
-    timestamps = res.timestamps
+    gd.timestamps = res.timestamps
     gb.data = res.data.concat()
-    datestr = res.date
+    gd.datestr = res.date
     gb.calcdoi()
     gd.display gb
     
@@ -155,7 +152,7 @@ getversion = (n) ->
       version:gd.version
     , (res) ->
       gb.data = res.data.concat()
-      datestr = res.date
+      gd.datestr = res.date
     gb.calcdoi()
     gd.display gb
           
@@ -217,9 +214,9 @@ window.linefunc = (n,gb) ->
     true
     
 show_history = (res) ->
-  datestr =     res.date
-  timestamps =  res.timestamps
-  gb.data =     res.data
+  gd.datestr =     res.date
+  gd.timestamps =  res.timestamps
+  gb.data =        res.data
   # search() # ???
   gb.calcdoi()
   gd.display gb
