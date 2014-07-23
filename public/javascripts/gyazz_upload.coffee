@@ -1,16 +1,19 @@
 class GyazzUpload
+  constructor: (gb) ->
+    @gb = gb
+    
   sendfiles: (files) ->
     [0...files.length].forEach (i) ->
       file = files[i]
       _sendfile.call @, file, (filename) ->
-        gb.editline = gb.data.length
+        @gb.editline = @gb.data.length
         if filename.match(/\.(jpg|jpeg|png|gif)$/i)
-          gb.data[gb.editline] = "[[[#{root}/upload/#{filename}]]]"
+          @gb.data[@gb.editline] = "[[[#{root}/upload/#{filename}]]]"
         else
-          gb.data[gb.editline] = "[[#{root}/upload/#{filename} #{file.name}]]"
+          @gb.data[@gb.editline] = "[[#{root}/upload/#{filename} #{file.name}]]"
         writedata()
-        gb.editline = -1
-        display true
+        @gb.editline = -1
+        display gb, true
 
   _sendfile = (file, callback) ->
     fd = new FormData

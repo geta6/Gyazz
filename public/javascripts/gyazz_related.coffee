@@ -40,3 +40,4 @@ class GyazzRelated
         notifyBox.print("getrelated() fail").show(1000)
 
 window.GyazzRelated = GyazzRelated
+

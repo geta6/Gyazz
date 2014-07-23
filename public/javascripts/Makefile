@@ -6,4 +6,5 @@ compile:
 	coffee -c gyazz_tag.coffee
 	coffee -c gyazz_notification.coffee
 	coffee -c gyazz_upload.coffee
+	coffee -c gyazz_display.coffee
 	coffee -c gyazz.coffee

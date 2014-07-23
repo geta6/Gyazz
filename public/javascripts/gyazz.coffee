@@ -10,17 +10,14 @@
 #  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
 #
 
-rw =  new GyazzReadWrite    # サーバとのデータやりとり
-gb =  new GyazzBuffer(rw)   # Gyazzテキスト編集関連
-tag = new GyazzTag          # タグ処理
-gr =  new GyazzRelated      # 関連ページ取得
-gu =  new GyazzUpload       # アップロード処理
+gd =  new GyazzDisplay       # display()
+rw =  new GyazzReadWrite     # サーバとのデータやりとり
+gb =  new GyazzBuffer(rw,gd) # Gyazzテキスト編集関連
+gr =  new GyazzRelated       # 関連ページ取得
+gu =  new GyazzUpload(gb)    # アップロード処理
 
-version = -1             # ページの古さ
 historycache = {}        # 編集履歴視覚化キャッシュ
-showold = false          # 過去データ表示モード
 clickline = -1           # マウスクリックして押してるときだけ行番号が入る
-authbuf = []
 timestamps = []
 datestr = ''
 
@@ -42,7 +39,8 @@ $ -> # = $(document).ready()
 
   [0...1000].forEach (i) ->
     y = $('<div>').attr('id',"listbg#{i}")
-    x = $('<span>').attr('id',"list#{i}").mousedown(linefunc(i))
+    x = $('<span>').attr('id',"list#{i}").mousedown(linefunc(i,gb))
+    # x = $('<span>').attr('id',"list#{i}")
     $('#contents').append(y.append(x))
     
   b = $('body')
@@ -59,15 +57,15 @@ $ -> # = $(document).ready()
     search()
 
   $('#historyimage').hover (() ->
-    showold = true
+    gd.showold = true
     ), () ->
-    showold = false
+    gd.showold = false
     rw.getdata
       async: false  # ヒストリ表示をきっちり終了させるのに必要...?
     , (res) ->
       gb.data = res.data.concat()
       datestr = res.date
-      display()
+      gd.display gb
 
   $('#historyimage').mousemove (event) ->
     imagewidth = parseInt($('#historyimage').attr('width'))
@@ -84,12 +82,12 @@ $ -> # = $(document).ready()
         show_history res
         gb.data = res.data.concat()
         datestr = res.date
-        display()
+        gd.display gb
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 選択行がないとき
       rw.writedata gb.data
-      ## display()
+      ## gd.display()
     true
 
   rw.getdata
@@ -100,7 +98,7 @@ $ -> # = $(document).ready()
     gb.data = res.data.concat()
     datestr = res.date
     gb.calcdoi()
-    display()
+    gd.display gb
     
   historycache = {} # 履歴cacheをリセット
 
@@ -144,22 +142,22 @@ $(document).keypress (event) ->
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
       gb.zoomlevel = 0
       gb.calcdoi()
-      display()
+      gd.display gb
       return false
     # カーソルキーやタブを無効化
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
       return false
 
 getversion = (n) ->
-  if version + n >= -1
-    version += n
+  if gd.version + n >= -1
+    gd.version += n
     rw.getdata
-      version:version
+      version:gd.version
     , (res) ->
       gb.data = res.data.concat()
       datestr = res.date
     gb.calcdoi()
-    display()
+    gd.display gb
           
 $(document).keydown (event) ->
   kc = event.which
@@ -209,26 +207,10 @@ $(document).keydown (event) ->
   if rw.not_saved
     $("#editline").css('background-color','#f0f0d0')
  
-# 認証文字列をサーバに送る
-tell_auth = ->
-
-#  authstr = authbuf.sort().join(",")
-#  $.ajax
-#    type: "POST",
-#    async: false,
-#    url: "#{root}/__tellauth",
-#    data:
-#      name: name,
-#      title: title,
-#      authstr: authstr
-
 # 行クリックで呼ばれる関数をクロージャで定義
-linefunc = (n) ->
+window.linefunc = (n,gb) ->
   (event) ->
     clickline = n
-    #if do_auth
-    #  authbuf.push(gb.data[n])
-    #  tell_auth()
     if event.shiftKey
       gb.addblankline n, gb.line_indent(n)  # 上に行を追加
       # search() # ???
@@ -240,9 +222,9 @@ show_history = (res) ->
   gb.data =     res.data
   # search() # ???
   gb.calcdoi()
-  display()
+  gd.display gb
 
-window.display = (delay) ->
+window.display____ = (delay) ->
   # zoomlevelに応じてバックグラウンドの色を変える
   $("body").css 'background-color', switch gb.zoomlevel
     when 0  then "#eeeeff"
@@ -284,7 +266,7 @@ window.display = (delay) ->
         input.blur()
         input.val(gb.data[i]) # Firefoxの場合日本語入力中にこれが効かないことがあるような... blurしておけば大丈夫ぽい
         input.focus()
-        input.mousedown linefunc(i)
+        input.mousedown linefunc(i,gb)
         setTimeout ->
           $("#editline").focus()
         , 100  # 何故か少し待ってからfocus()を呼ばないとフォーカスされない...
@@ -385,21 +367,21 @@ search = (event) -> # なんかよくわからない関数なので削除する�
   if event == null || kc != KC.down && kc != KC.up && kc != KC.left && kc != KC.right
     gb.zoomlevel = 0
     gb.calcdoi()
-    display()
+    gd.display gb
   false
 
 # 編集中の行が画面外に移動した時に、ブラウザをスクロールして追随する
-follow_scroll = ->
-  # 編集中かどうかチェック
-  return if gb.editline < 0
-  return if showold
-  
-  currentLinePos = $("#editline").offset().top
-  return if !(currentLinePos && currentLinePos > 0)
-  currentScrollPos = $("body").scrollTop()
-  windowHeight = window.innerHeight
-  
-  # 編集中の行が画面内にある場合、スクロールする必要が無い
-  return if currentScrollPos < currentLinePos && currentLinePos < currentScrollPos+windowHeight
-  
-  $("body").stop().animate({'scrollTop': currentLinePos - windowHeight/2}, 200)
+#follow_scroll = ->
+#  # 編集中かどうかチェック
+#  return if gb.editline < 0
+#  return if showold
+#  
+#  currentLinePos = $("#editline").offset().top
+#  return if !(currentLinePos && currentLinePos > 0)
+#  currentScrollPos = $("body").scrollTop()
+#  windowHeight = window.innerHeight
+#  
+#  # 編集中の行が画面内にある場合、スクロールする必要が無い
+#  return if currentScrollPos < currentLinePos && currentLinePos < currentScrollPos+windowHeight
+#  
+#  $("body").stop().animate({'scrollTop': currentLinePos - windowHeight/2}, 200)

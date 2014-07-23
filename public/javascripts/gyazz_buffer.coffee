@@ -9,8 +9,9 @@ class GyazzBuffer
 
   tag = new GyazzTag
 
-  constructor: (rw) ->
+  constructor: (rw, gd) ->
     @rw = rw
+    @gd = gd
     
   # levelの長さの空白文字列
   _indentstr = (level) ->
@@ -31,7 +32,7 @@ class GyazzBuffer
 
   seteditline: (line) ->
     @editline = line
-    display true
+    @gd.display @, true
 
   calcdoi: (query) ->
     q = $('#filter')
@@ -131,7 +132,7 @@ class GyazzBuffer
           @editline = dest
           @deleteblankdata()
           @rw.writedata @data
-          display()
+          @gd.display @
         , 1
 
   # カーソルを上に移動
@@ -144,7 +145,7 @@ class GyazzBuffer
           @editline = dest
           @deleteblankdata()
           @rw.writedata @data
-          display()
+          @gd.display @
         , 1
 
   # カーソルの行を下に移動
@@ -156,7 +157,7 @@ class GyazzBuffer
         @editline += 1
         @deleteblankdata()
         @rw.writedata @data  #####
-        display()
+        @gd.display @
       , 1
   
   # カーソルの行を上に移動
@@ -168,7 +169,7 @@ class GyazzBuffer
         @editline -= 1
         @deleteblankdata()
         @rw.writedata @data  #####
-        display()
+        @gd.display @
       , 1
   
   # editlineのブロックを下に移動
@@ -185,7 +186,7 @@ class GyazzBuffer
         @editline += m2
         @deleteblankdata()    ######## ここに必要?
         @rw.writedata @data    ######## 通信モジュールに移動すべき
-        display()
+        @gd.display @
 
   # editlineのブロックを上に移動
   block_up: ->
@@ -201,7 +202,7 @@ class GyazzBuffer
         @editline = dst
         @deleteblankdata() ########
         @rw.writedata @data ########
-        display()
+        @gd.display @
 
   #########################################################################
   #
@@ -214,7 +215,7 @@ class GyazzBuffer
     if @editline >= 0 && @editline < @data.length
       @data[@editline] = ' ' + @data[@editline]
       @rw.writedata @data
-      display()
+      @gd.display @
 
   # アンデント
   undent: ->
@@ -223,7 +224,7 @@ class GyazzBuffer
       if s.substring(0,1) == ' '
         @data[@editline] = s.substring(1,s.length)
       @rw.writedata @data
-      display()
+      @gd.display @
 
   #########################################################################
   #
@@ -235,13 +236,13 @@ class GyazzBuffer
   zoomin: ->
     if @zoomlevel < 0
       @zoomlevel += 1
-      display()
+      @gd.display @
 
   # ズームアウト
   zoomout: ->
     if -@zoomlevel < @maxindent()
       @zoomlevel -= 1
-      display()
+      @gd.display @
 
   #########################################################################
   #
@@ -365,7 +366,7 @@ class GyazzBuffer
   
     @rw.writedata @data     ############
     @editline = -1
-    display true           ############
+    @gd.display @, true           ############
     # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない
 
 window.GyazzBuffer = GyazzBuffer
