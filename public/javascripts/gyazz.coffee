@@ -203,23 +203,13 @@ $(document).keydown (event) ->
     when (kc == KC.up && !sk) || (kc == KC.p && !sk && ck) # 上にカーソル移動
       gb.cursor_up()
     when kc == KC.tab && !sk || kc == KC.right && sk # indent
-      if gb.editline >= 0 && gb.editline < gb.data.length
-        gb.data[gb.editline] = ' ' + gb.data[gb.editline]
-        rw.writedata gb.data
+      gb.indent()
     when kc == KC.tab && sk || kc == KC.left && sk # undent
-      if gb.editline >= 0 && gb.editline < gb.data.length
-        s = gb.data[gb.editline]
-        if s.substring(0,1) == ' '
-          gb.data[gb.editline] = s.substring(1,s.length)
-        rw.writedata gb.data
+      gb.undent()
     when kc == KC.left && !sk && !ck && gb.editline < 0 # zoom out
-      if -gb.zoomlevel < gb.maxindent()
-        gb.zoomlevel -= 1
-        display()
+      gb.zoomout()
     when kc == KC.right && !sk && !ck && gb.editline < 0 # zoom in
-      if gb.zoomlevel < 0
-        gb.zoomlevel += 1
-        display()
+      gb.zoomin()
     when ck && kc == KC.left # 古いバージョンゲット
       version += 1
       rw.getdata

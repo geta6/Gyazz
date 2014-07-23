@@ -118,6 +118,46 @@ class GyazzBuffer
     
   #########################################################################
   #
+  #   インデント
+  #
+  #########################################################################
+
+  # インデント
+  indent: ->
+    if @editline >= 0 && @editline < @data.length
+      @data[@editline] = ' ' + @data[@editline]
+      @rw.writedata @data
+      display()
+
+  # アンデント
+  undent: ->
+    if @editline >= 0 && @editline < @data.length
+      s = @data[@editline]
+      if s.substring(0,1) == ' '
+        @data[@editline] = s.substring(1,s.length)
+      @rw.writedata @data
+      display()
+
+  #########################################################################
+  #
+  #   ズーミング
+  #
+  #########################################################################
+
+  # ズームイン
+  zoomin: ->
+    if @zoomlevel < 0
+      @zoomlevel += 1
+      display()
+
+  # ズームアウト
+  zoomout: ->
+    if -@zoomlevel < @maxindent()
+      @zoomlevel -= 1
+      display()
+
+  #########################################################################
+  #
   #   行移動 / ブロック移動
   #
   #########################################################################
