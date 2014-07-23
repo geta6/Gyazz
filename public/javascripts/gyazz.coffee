@@ -10,8 +10,9 @@
 #  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
 #
 
-rw = new GyazzReadWrite     # サーバとのデータやりとり
-gb = new GyazzBuffer(rw)    # Gyazzテキスト編集関連
+rw =  new GyazzReadWrite     # サーバとのデータやりとり
+gb =  new GyazzBuffer(rw)    # Gyazzテキスト編集関連
+tag = new GyazzTag
 
 version = -1             # ページの古さ
 historycache = {}        # 編集履歴視覚化キャッシュ
@@ -338,7 +339,7 @@ window.display = (delay) ->
           [contline..i].forEach (j) ->
             s += gb.data[j].replace(/\\$/,'__newline__')
           $("#list"+contline).css('display','inline').css('visibility','visible')
-            .html(tag_line(s,root,name,contline).replace(/__newline__/g,''))
+            .html(tag.expand(s,root,name,contline).replace(/__newline__/g,''))
           $("#listbg"+contline).css('display','inline').css('visibility','visible')
           t.css('visibility','hidden')
           p.css('visibility','hidden')
@@ -372,7 +373,7 @@ window.display = (delay) ->
               display: 'inline'
               visibility: 'visible'
               'line-height': ''
-            .html tag_line(gb.data[i],root,name,i)
+            .html tag.expand(gb.data[i],root,name,i)
             p.attr "class", "listedit#{ind}" # addClassだとダメ!! 前のが残るのか?
             p.css
               display: 'block'

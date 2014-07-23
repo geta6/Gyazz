@@ -7,6 +7,8 @@
 
 class GyazzBuffer
 
+  tag = new GyazzTag
+
   constructor: (rw) ->
     @rw = rw
     
@@ -214,7 +216,7 @@ class GyazzBuffer
     lastindent = -1
 
     _spaces = @data.map (line) -> # 行に空白がいくつ含まれているか
-      tag_split(line).length - _indent(line) - 1
+      tag.split(line).length - _indent(line) - 1
     
     [0...@data.length].forEach (i) =>
       if _spaces[i] > 0 && _spaces[i] == lastspaces && @line_indent(i) == lastindent
@@ -285,7 +287,7 @@ class GyazzBuffer
     [0...lines].forEach (y) =>
       s = @data[beginline+y]
       s = s.replace(/^\s*/,'').replace(/</g,'&lt')
-      a = tag_split(s)
+      a = tag.split(s)
       [0...a.length].forEach (i) ->
         newlines[i] += " " if y != 0
         newlines[i] += a[i]
