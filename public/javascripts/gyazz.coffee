@@ -14,6 +14,7 @@ rw =  new GyazzReadWrite    # サーバとのデータやりとり
 gb =  new GyazzBuffer(rw)   # Gyazzテキスト編集関連
 tag = new GyazzTag          # タグ処理
 gr =  new GyazzRelated      # 関連ページ取得
+gu =  new GyazzUpload       # アップロード処理
 
 version = -1             # ページの古さ
 historycache = {}        # 編集履歴視覚化キャッシュ
@@ -50,7 +51,7 @@ $ -> # = $(document).ready()
   b.bind "drop",     (e) -> # Drag&Dropでファイルをアップロード
     e.preventDefault() # デフォルトは「ファイルを開く」
     files = e.originalEvent.dataTransfer.files
-    sendfiles files
+    gu.sendfiles files
     false
   
   $('#filterdiv').css('display','none')
