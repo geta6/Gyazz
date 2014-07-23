@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "coffee gyazz.coffee",
+    "prestart": "cd public/javascripts; make",
     "test": "grunt test"
   },
   "dependencies": {
