@@ -19,7 +19,7 @@ gu =  new GyazzUpload(gb)    # アップロード処理
 historycache = {}            # 履歴cache
 clickline = -1               # マウスクリックして押してるときだけ行番号が入る
 
-### ナイーブなsocketio利用
+# ナイーブなsocketio利用
 window.socket = io()
 socket.on 'gyazz update notification', (msg) ->
   if msg.wiki == name && msg.title == title # 自分のページ更新必要
