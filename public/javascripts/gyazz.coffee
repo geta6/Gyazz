@@ -105,7 +105,8 @@ $ -> # = $(document).ready()
   gr.getrelated()
 
 longmousedown = ->
-  gb.seteditline clickline
+  gb.editline = clickline
+  gd.display gb, true
 
 $(document).mouseup (event) ->
   clearTimeout longPressTimeout?
@@ -140,6 +141,7 @@ $(document).keypress (event) ->
     if gb.editline >= 0
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
       gb.refresh()
+      # gd.display gb #######
       return false
     # カーソルキーやタブを無効化
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)

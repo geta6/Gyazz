@@ -71,9 +71,9 @@ class GyazzBuffer
 
   # 空白行を削除
   deleteblankdata: ->
-    #return
-    #@data = _.filter @data, (line) ->
-    #  typeof line == "string" && !line.match /^ *$/
+    return
+    @data = _.filter @data, (line) ->
+      typeof line == "string" && !line.match /^ *$/
 
   # 空白行を挿入
   addblankline: (line, indent) ->

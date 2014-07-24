@@ -53,7 +53,8 @@ module.exports = (app) ->
           Lines.timestamps wiki, title, data, (err, timestamps) ->
             # データ返信
             debug "readwrite.coffee: send data back to client"
-            io.sockets.emit 'pagedata', { # あらゆる接続先にデータ送信
+            # io.sockets.emit 'pagedata', { # あらゆる接続先にデータ送信
+            socket.broadcast.emit 'pagedata', { # 自分以外のあらゆる接続先にデータ送信
               wiki:        wiki
               title:       title
               date:        curtime
