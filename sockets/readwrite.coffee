@@ -16,14 +16,16 @@ module.exports = (app) ->
       console.log "readwrite.coffee: #{req.wiki}::#{req.title} read request from client"
       Pages.json req.wiki, req.title, req.opts, (err, page) ->
         if err
-          console.log "Pages error"
+          debug "Pages error"
           return
         data =  page?.text.split(/\n/) or []
         # 行ごとの古さを計算する
         Lines.timestamps req.wiki, req.title, data, (err, timestamps) ->
           # データ返信
-          console.log "readwrite.coffee: send data back to client"
-          io.sockets.emit 'pagedata', {
+          debug "readwrite.coffee: send data back to client"
+          io.sockets.emit 'pagedata', { # あらゆる接続先にデータ送信
+            wiki:        req.wiki
+            title:       req.title
             date:        page?.timestamp
             timestamps:  timestamps
             data:        data
@@ -56,6 +58,7 @@ module.exports = (app) ->
               if err
                 debug "line read error"
               if results.length == 0
+                console.log "save line time... line=#{line}, time=#{curtime}, length=#{results.length}"
                 newline = new Lines
                 newline.wiki      = wiki
                 newline.title     = title

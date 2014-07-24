@@ -7,10 +7,12 @@ class GyazzSocket
     
     @socket.on 'pagedata', (res) =>
       # alert "pagedata received... data = #{res.data}"
-      _data_old =   res['data'].concat()
-      @gb.data    = res.data.concat()
-      @gb.datestr = res.date
-      @gb.refresh()
+      if res.wiki == name && res.title == title
+        _data_old =   res['data'].concat()
+        @gb.data    = res.data.concat()
+        @gb.datestr = res.date
+        @gb.timestamps = res.timestamps
+        @gb.refresh()
 
   getdata: (opts=null, callback=null) =>
     opts = {} if opts == null || typeof opts != 'object'
