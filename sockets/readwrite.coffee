@@ -10,10 +10,9 @@ module.exports = (app) ->
   writetime = {}
 
   io.on 'connection', (socket) ->
-    console.log "socket.io connected from client--------"
-
+    debug "socket.io connected from client--------"
     socket.on 'read', (req) ->
-      console.log "readwrite.coffee: #{req.wiki}::#{req.title} read request from client"
+      debug "readwrite.coffee: #{req.wiki}::#{req.title} read request from client"
       Pages.json req.wiki, req.title, req.opts, (err, page) ->
         if err
           debug "Pages error"
@@ -21,9 +20,8 @@ module.exports = (app) ->
         data =  page?.text.split(/\n/) or []
         # 行ごとの古さを計算する
         Lines.timestamps req.wiki, req.title, data, (err, timestamps) ->
-          # データ返信
           debug "readwrite.coffee: send data back to client"
-          io.sockets.emit 'pagedata', { # あらゆる接続先にデータ送信
+          io.sockets.emit 'pagedata', { # 自分を含むあらゆる接続先にデータ送信
             wiki:        req.wiki
             title:       req.title
             date:        page?.timestamp
@@ -32,7 +30,7 @@ module.exports = (app) ->
           }
 
     socket.on 'write', (req) ->
-      console.log "readwrite.coffee: #{req.wiki}::#{req.title} write request from client"
+      debug "readwrite.coffee: #{req.wiki}::#{req.title} write request from client"
       wiki  = req.wiki
       title = req.title
       text  = req.data
@@ -51,9 +49,7 @@ module.exports = (app) ->
 
           data = text.split(/\n/) or []
           Lines.timestamps wiki, title, data, (err, timestamps) ->
-            # データ返信
             debug "readwrite.coffee: send data back to client"
-            # io.sockets.emit 'pagedata', { # あらゆる接続先にデータ送信
             socket.broadcast.emit 'pagedata', { # 自分以外のあらゆる接続先にデータ送信
               wiki:        wiki
               title:       title
