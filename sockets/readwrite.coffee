@@ -36,7 +36,6 @@ module.exports = (app) ->
       wiki  = req.wiki
       title = req.title
       text  = req.data
-      # console.log "text = #{text}"
       curtime = new Date
       lasttime = writetime["#{wiki}::#{title}"]
       if !lasttime || curtime > lasttime
@@ -49,6 +48,19 @@ module.exports = (app) ->
         newpage.save (err) ->
           if err
             debug "Write error"
+
+          data = text.split(/\n/) or []
+          Lines.timestamps wiki, title, data, (err, timestamps) ->
+            # データ返信
+            debug "readwrite.coffee: send data back to client"
+            io.sockets.emit 'pagedata', { # あらゆる接続先にデータ送信
+              wiki:        wiki
+              title:       title
+              date:        curtime
+              timestamps:  timestamps
+              data:        data
+            }
+            
           text.split(/\n/).forEach (line) -> # 新しい行ならば生成時刻を記録する
             Lines.find
               wiki:  wiki
@@ -58,7 +70,6 @@ module.exports = (app) ->
               if err
                 debug "line read error"
               if results.length == 0
-                console.log "save line time... line=#{line}, time=#{curtime}, length=#{results.length}"
                 newline = new Lines
                 newline.wiki      = wiki
                 newline.title     = title
