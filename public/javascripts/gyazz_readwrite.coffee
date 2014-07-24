@@ -50,7 +50,7 @@ class GyazzReadWrite
       error: ->
         notifyBox.print("write error").show(3000)
 
-  getdata: (opts=null, callback=null) -> # 20050815123456.utf のようなテキストを読み出し
+  getdata: (opts=null, callback=null) ->
     opts = {} if opts == null || typeof opts != 'object'
     if typeof opts.version != 'number' || 0 > opts.version
       opts.version = 0
