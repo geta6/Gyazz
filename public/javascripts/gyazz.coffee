@@ -9,27 +9,17 @@
 #  var title = 'MIRAIPEDIA';
 #  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
 #
+#
 
-gd =  new GyazzDisplay       # display()
-rw =  new GyazzReadWrite     # サーバとのデータやりとり
-gb =  new GyazzBuffer(rw,gd) # Gyazzテキスト編集関連
-gr =  new GyazzRelated       # 関連ページ取得
-gu =  new GyazzUpload(gb)    # アップロード処理
+gd = new GyazzDisplay       # display()
+rw = new GyazzReadWrite     # サーバとのデータやりとり
+gb = new GyazzBuffer(rw,gd) # Gyazzテキスト編集関連
+gr = new GyazzRelated       # 関連ページ取得
+gu = new GyazzUpload(gb)    # アップロード処理
+gs = new GyazzSocket(gb,gd) # socket.io
 
 historycache = {}            # 履歴cache
 clickline = -1               # マウスクリックして押してるときだけ行番号が入る
-
-# ナイーブなsocketio利用
-window.socket = io()
-socket.on 'gyazz update notification', (msg) ->
-  if msg.wiki == name && msg.title == title # 自分のページ更新必要
-    rw.getdata
-      async: true
-    , (res) ->
-      gb.timestamps = res.timestamps
-      gb.data       = res.data.concat()
-      gb.datestr    = res.date
-      refresh()
 
 KC =
   tab:   9
@@ -43,11 +33,6 @@ KC =
   n:     78
   p:     80
   s:     83
-
-refresh = ->
-  gb.zoomlevel = 0
-  gb.calcdoi()
-  gd.display gb
 
 $ -> # = $(document).ready()
   $('#rawdata').hide()
@@ -69,13 +54,13 @@ $ -> # = $(document).ready()
   $('#filterdiv').css('display','none')
   $("#filter").keyup (event) ->
     $('#filterdiv').css('display','none') if $('#filter').val() == ''
-    refresh()
+    gb.refresh()
 
   $('#historyimage').hover (() ->
     gd.showold = true
     ), () ->
     gd.showold = false
-    rw.getdata
+    gs.getdata
       async: false  # ヒストリ表示をきっちり終了させるのに必要...?
     , (res) ->
       gb.data    = res.data.concat()
@@ -89,7 +74,7 @@ $ -> # = $(document).ready()
     if historycache[age]
       show_history historycache[age]
     else
-      rw.getdata
+      gs.getdata
         async: false # こうしないと履歴表示が大変なことになるのだが...
         age:   age
       , (res) ->
@@ -104,14 +89,14 @@ $ -> # = $(document).ready()
       rw.writedata gb.data
     true
     
-  rw.getdata
+  gs.getdata
     async: false
     suggest: true # 1回目はsuggestオプションを付けてデータ取得
   , (res) ->
     gb.timestamps = res.timestamps
     gb.data       = res.data.concat()
     gb.datestr    = res.date
-    refresh()
+    gb.refresh()
     
 
   gr.getrelated()
@@ -152,7 +137,7 @@ $(document).keypress (event) ->
     # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
     if gb.editline >= 0
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
-      refresh()
+      gb.refresh()
       return false
     # カーソルキーやタブを無効化
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
@@ -161,12 +146,12 @@ $(document).keypress (event) ->
 getversion = (n) ->
   if gd.version + n >= -1
     gd.version += n
-    rw.getdata
+    gs.getdata
       version:gd.version
     , (res) ->
       gb.data = res.data.concat()
       gb.datestr = res.date
-    refresh()
+    gb.refresh()
           
 $(document).keydown (event) ->
   kc = event.which
@@ -228,7 +213,7 @@ show_history = (res) ->
   gb.datestr =    res.date
   gb.timestamps = res.timestamps
   gb.data =       res.data
-  refresh()
+  gb.refresh()
 
 window.adjustIframeSize = (newHeight, i) ->
   frame= document.getElementById("gistFrame"+i)

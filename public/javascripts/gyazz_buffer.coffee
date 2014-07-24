@@ -31,6 +31,11 @@ class GyazzBuffer
   editline: -1           # 現在編集中の行番号
   zoomlevel: 0
 
+  refresh: ->
+    @zoomlevel = 0
+    @calcdoi()
+    @gd.display @
+
   seteditline: (line) ->
     @editline = line
     @gd.display @, true

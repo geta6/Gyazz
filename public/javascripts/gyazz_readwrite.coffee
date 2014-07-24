@@ -5,6 +5,18 @@ class GyazzReadWrite
   
   _data_old = ''
 
+  #constructor: (socket) ->
+  #  @socket = socket
+  #  alert "socket = #{@socket}"
+  #  
+  #  #@socket.on 'pagedata', (res) ->
+  #  #  alert "pagedata sent... gb = #{gb}"
+  #  #  _data_old =   res['data'].concat()
+  #  #  gb.data    = res.data.concat()
+  #  #  gb.datestr = res.date
+  #  #  gd.display gb
+  #  #  # callback res if callback
+    
   not_saved: false
 
   writedata: (data) ->
@@ -51,6 +63,7 @@ class GyazzReadWrite
         notifyBox.print("write error").show(3000)
 
   getdata: (opts=null, callback=null) ->
+    alert "gyazz_readrite.getdata()" 
     opts = {} if opts == null || typeof opts != 'object'
     if typeof opts.version != 'number' || 0 > opts.version
       opts.version = 0
