@@ -5,21 +5,10 @@ class GyazzReadWrite
   
   _data_old = ''
 
-  #constructor: (socket) ->
-  #  @socket = socket
-  #  alert "socket = #{@socket}"
-  #  
-  #  #@socket.on 'pagedata', (res) ->
-  #  #  alert "pagedata sent... gb = #{gb}"
-  #  #  _data_old =   res['data'].concat()
-  #  #  gb.data    = res.data.concat()
-  #  #  gb.datestr = res.date
-  #  #  gd.display gb
-  #  #  # callback res if callback
-    
   not_saved: false
 
   writedata: (data) ->
+    alert "gyazz_readrite.writedata() これは使わないことに!"
     datastr = data.join("\n").replace(/\n+$/,'')+"\n"
     return if JSON.stringify(data) == JSON.stringify(_data_old) # 何か変
     
@@ -38,6 +27,7 @@ class GyazzReadWrite
       beforeSend: (xhr,settings) ->
         true
       success: (msg) ->
+        alert "update"
         socket.emit 'page update',
           wiki:  name
           title: title
@@ -63,7 +53,7 @@ class GyazzReadWrite
         notifyBox.print("write error").show(3000)
 
   getdata: (opts=null, callback=null) ->
-    alert "gyazz_readrite.getdata()" 
+    alert "gyazz_readrite.getdata() これは使わないことに!"
     opts = {} if opts == null || typeof opts != 'object'
     if typeof opts.version != 'number' || 0 > opts.version
       opts.version = 0

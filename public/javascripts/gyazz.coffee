@@ -11,12 +11,14 @@
 #
 #
 
-gd = new GyazzDisplay       # display()
-rw = new GyazzReadWrite     # サーバとのデータやりとり
-gb = new GyazzBuffer(rw,gd) # Gyazzテキスト編集関連
-gr = new GyazzRelated       # 関連ページ取得
-gu = new GyazzUpload(gb)    # アップロード処理
-gs = new GyazzSocket(gb,gd) # socket.io
+gs = new GyazzSocket         # socket.io
+gd = new GyazzDisplay        # display()
+#rw = new GyazzReadWrite     # サーバとのデータやりとり (Ajax版)
+gb = new GyazzBuffer(gs,gd)  # Gyazzテキスト編集関連
+gr = new GyazzRelated        # 関連ページ取得
+gu = new GyazzUpload(gb)     # アップロード処理
+
+gs.start gb, gd # GyazzSocket中でgd,gbを使ってるため... 苦しい
 
 historycache = {}            # 履歴cache
 clickline = -1               # マウスクリックして押してるときだけ行番号が入る
@@ -86,7 +88,7 @@ $ -> # = $(document).ready()
 
   $('#contents').mousedown (event) ->
     if clickline == -1  # 選択行がないとき
-      rw.writedata gb.data
+      gs.writedata gb.data
     true
     
   gs.getdata
@@ -116,7 +118,7 @@ $(document).mousemove (event) ->
 
 $(document).mousedown (event) ->
   if clickline == -1  # 行以外をクリック
-    rw.writedata gb.data
+    gs.writedata gb.data
     gb.seteditline clickline
   else
     clearTimeout longPressTimeout?
@@ -159,7 +161,7 @@ $(document).keydown (event) ->
   ck = event.ctrlKey
   cd = event.metaKey && !ck
     
-  rw.not_saved = true
+  # rw.not_saved = true
 
   switch
     when ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
@@ -167,7 +169,7 @@ $(document).keydown (event) ->
       gb.transpose()
     when kc == KC.enter
       $('#filter').val('')
-      rw.writedata gb.data
+      gs.writedata gb.data
     when kc == KC.down && sk # Shift+↓ = 下にブロック移動
       gb.block_down()
     when kc == KC.k && ck # Ctrl+K カーソルより右側を削除する
@@ -198,8 +200,8 @@ $(document).keydown (event) ->
       $('#filterdiv').css('display','block')
       $('#filter').focus()
       
-  if rw.not_saved
-    $("#editline").css('background-color','#f0f0d0')
+  #if rw.not_saved
+  #  $("#editline").css('background-color','#f0f0d0')
  
 # 行クリックで呼ばれる関数をクロージャで定義
 window.linefunc = (n,gb) ->

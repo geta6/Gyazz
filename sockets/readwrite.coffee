@@ -7,6 +7,8 @@ Lines  = mongoose.model 'Line'
 module.exports = (app) ->
   io = app.get 'socket.io'
 
+  writetime = {}
+
   io.on 'connection', (socket) ->
     console.log "socket.io connected from client--------"
 
@@ -27,35 +29,38 @@ module.exports = (app) ->
             data:        data
           }
 
-
-    #socket.on 'page update', (msg) ->
-    #  console.log "message from client"
-    #  console.log "  wiki = #{msg.wiki}"
-    #  console.log "  title = #{msg.title}"
-    #  console.log "  date = #{msg.date}"
-    #  io.sockets.emit 'gyazz update notification', # broadcast
-    #    wiki:  msg.wiki
-    #    title: msg.title
-    #    text:  "Gyazz page #{msg.wiki}::#{msg.title} updated!!"
-    #    
-    #  # socket.emit 'chat message', 'REPLY MESSAGE' # 個別に返す場合
-    #  # socket.broadcast.emit 'msg push', "BROADCAST MESSAGE"
-
-    #socket.on 'disconnect', ->
-    #  console.log 'disconnected'
-
-#   io.on 'connection', (socket) ->
-#    debug 'new connection'
-#
-#    socket.on 'chat', (data) ->
-#      debug data
-#      message = new Message data
-#      message.save (err) ->
-#        debug err if err
-#      io.sockets.emit 'chat', data  # broadcast
-#      return
-#
-#    io.sockets.emit 'chat', {
-#      from: "server"
-#      body: "hello new client (id:#{socket.id})"
-#    }
+    socket.on 'write', (req) ->
+      console.log "readwrite.coffee: #{req.wiki}::#{req.title} write request from client"
+      wiki  = req.wiki
+      title = req.title
+      text  = req.data
+      # console.log "text = #{text}"
+      curtime = new Date
+      lasttime = writetime["#{wiki}::#{title}"]
+      if !lasttime || curtime > lasttime
+        writetime["#{wiki}::#{title}"] = curtime
+        newpage = new Pages
+        newpage.wiki      = wiki
+        newpage.title     = title
+        newpage.text      = text
+        newpage.timestamp = curtime
+        newpage.save (err) ->
+          if err
+            debug "Write error"
+          text.split(/\n/).forEach (line) -> # 新しい行ならば生成時刻を記録する
+            Lines.find
+              wiki:  wiki
+              title: title
+              line:  line
+            .exec (err, results) ->
+              if err
+                debug "line read error"
+              if results.length == 0
+                newline = new Lines
+                newline.wiki      = wiki
+                newline.title     = title
+                newline.line      = line
+                newline.timestamp = curtime
+                newline.save (err) ->
+                  if err
+                    debug "line write error"

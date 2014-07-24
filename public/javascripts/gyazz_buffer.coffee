@@ -9,8 +9,8 @@ class GyazzBuffer
 
   tag = new GyazzTag
 
-  constructor: (rw, gd) ->
-    @rw = rw
+  constructor: (gs, gd) ->
+    @gs = gs
     @gd = gd
     
   # levelの長さの空白文字列
@@ -137,7 +137,7 @@ class GyazzBuffer
         setTimeout =>
           @editline = dest
           @deleteblankdata()
-          @rw.writedata @data
+          @gs.writedata @data
           @gd.display @
         , 1
 
@@ -150,7 +150,7 @@ class GyazzBuffer
         setTimeout =>
           @editline = dest
           @deleteblankdata()
-          @rw.writedata @data
+          @gs.writedata @data
           @gd.display @
         , 1
 
@@ -162,7 +162,7 @@ class GyazzBuffer
       setTimeout =>
         @editline += 1
         @deleteblankdata()
-        @rw.writedata @data  #####
+        @gs.writedata @data  #####
         @gd.display @
       , 1
   
@@ -174,7 +174,7 @@ class GyazzBuffer
       setTimeout =>
         @editline -= 1
         @deleteblankdata()
-        @rw.writedata @data  #####
+        @gs.writedata @data  #####
         @gd.display @
       , 1
   
@@ -191,7 +191,7 @@ class GyazzBuffer
         [0...m].forEach  (i) => @data[@editline+m2+i] = tmp[i]
         @editline += m2
         @deleteblankdata()
-        @rw.writedata @data
+        @gs.writedata @data
         @gd.display @
 
   # editlineのブロックを上に移動
@@ -207,7 +207,7 @@ class GyazzBuffer
         [0...m2].forEach (i) => @data[dst+m+i] = tmp[i]
         @editline = dst
         @deleteblankdata()
-        @rw.writedata @data
+        @gs.writedata @data
         @gd.display @
 
   #########################################################################
@@ -220,7 +220,7 @@ class GyazzBuffer
   indent: ->
     if @editline >= 0 && @editline < @data.length
       @data[@editline] = ' ' + @data[@editline]
-      @rw.writedata @data
+      @gs.writedata @data
       @gd.display @
 
   # アンデント
@@ -229,7 +229,7 @@ class GyazzBuffer
       s = @data[@editline]
       if s.substring(0,1) == ' '
         @data[@editline] = s.substring(1,s.length)
-      @rw.writedata @data
+      @gs.writedata @data
       @gd.display @
 
   #########################################################################
@@ -261,7 +261,7 @@ class GyazzBuffer
     if input.val().match(/^\s*$/) && @editline < @data.length-1  # 行が完全に削除された時
       @data[@editline] = ""# 現在の行を削除
       @deleteblankdata()
-      @rw.writedata @data
+      @gs.writedata @data
       setTimeout ->
         # カーソルを行頭に移動
         # input = $("#editline")
@@ -370,7 +370,7 @@ class GyazzBuffer
     [0...newlines.length].forEach (i) =>
       @data.splice beginline+i, 0, newlines[i]
   
-    @rw.writedata @data
+    @gs.writedata @data
     @editline = -1
     @gd.display @, true
     # transpose後に行選択しておきたいが、前の行データが残っててうまくいかない
