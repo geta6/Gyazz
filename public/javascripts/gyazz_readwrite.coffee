@@ -2,7 +2,7 @@
 # データ書込み/読出し関連 (Ajax版)
 #
 # socket.io 利用にあたりこれは使わないことにする 2014/07/24 13:03:44
-# 
+#
 class GyazzReadWrite
   
   _data_old = ''
