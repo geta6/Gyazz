@@ -21,7 +21,8 @@
     "morgan": "~1.0.0",
     "static-favicon": "~1.0.0",
     "underscore": "*",
-    "crc": "*"
+    "crc": "*",
+    "socket.io": "^1.0.6"
   },
   "devDependencies": {
     "coffeelint": "*",
