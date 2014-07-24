@@ -37,6 +37,8 @@ KC =
   s:     83
 
 $ -> # = $(document).ready()
+  window.root = "http://#{location.host}"
+
   $('#rawdata').hide()
 
   [0...1000].forEach (i) ->
@@ -100,9 +102,7 @@ $ -> # = $(document).ready()
     gb.datestr    = res.date
     gb.refresh()
     
-
   gr.getrelated()
-
 
 longmousedown = ->
   gb.seteditline clickline
