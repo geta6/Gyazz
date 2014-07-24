@@ -53,10 +53,10 @@ class GyazzTag
         [all, pre, inner, dummy, post] = m
         switch
           when t = inner.match /^(https?:\/\/[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[[http:... ....jpg]]]
-            matched.push "<a href='#{t[1]}'><img src='#{t[2]}.#{t[3]} border='none' target='_blank' height=80></a>"
+            matched.push "<a href='#{t[1]}'><img src='#{t[2]}.#{t[3]}' border='none' target='_blank' height=80></a>"
           when t = inner.match /^(https?:\/\/.+)\.(jpg|jpeg|jpe|png|gif)$/i  # [[[http...jpg]]]
             matched.push "<a href='#{t[1]}.#{t[2]} target='_blank'>" +
-              "<img src='#{t[1]}.#{t[2]} border='none' height=80></a>"
+              "<img src='#{t[1]}.#{t[2]}' border='none' height=80></a>"
           else  # [[[abc]]]
             matched.push "<b>#{inner}</b>"
         s = "#{pre}<<<#{matched.length-1}>>>#{post}"
