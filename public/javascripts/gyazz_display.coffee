@@ -30,7 +30,7 @@ class GyazzDisplay
     
     contline = -1
     if gb.data.length == 0
-      gb.setdata ["(empty)"]
+      gb.data = ["(empty)"]
       gb.doi[0] = gb.maxindent()
       
     [0...gb.data.length].forEach (i) =>
