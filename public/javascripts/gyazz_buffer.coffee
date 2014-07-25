@@ -78,7 +78,7 @@ class GyazzBuffer
     @editline = line
     # @eline = line # ?????
     @deleteblankdata()
-    # $('#debug').text("data.length=#{@data.length}, editline=#{@editline}")
+
     if @data.length > @editline
       [@data.length-1..@editline].forEach (i) =>
         @data[i+1] = @data[i]

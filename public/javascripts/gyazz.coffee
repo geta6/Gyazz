@@ -142,7 +142,8 @@ $(document).keypress (event) ->
   if kc == KC.enter
     # 1行追加
     # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
-    if gb.editline >= 0
+    gb.deleteblankdata()
+    if gb.editline >= 0 && gb.editline < gb.data.length
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
       gb.refresh()
       return false
