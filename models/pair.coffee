@@ -30,21 +30,27 @@ module.exports = (app) ->
         callback e, _.keys(related)
 
   # # あるページに関連するpairを全部消す
-  # pairSchema.statics.remove = (wiki, title) ->
-  #   debug "Pair.remove"
-  #   @.remove { wiki:wiki', title1:title }, (err) ->
-  #     @.remove { wiki:wiki', title2:title }, (err) ->
-  #   
+  pairSchema.statics.remove = (wiki, title) ->
+    debug "Pair.remove"
+    @.remove
+      wiki:   wiki
+      title1: title
+    , (err) ->
+      @.remove
+        wiki:   wiki
+        title2: title
+      , (err) ->
+    
   # # あるページに関連するpairを登録する
-  # pairSchema.statics.add = (wiki, title, relatedtitles) ->
-  #   debug "Pair.add"
-  #   relatedtitles.forEach (relatedtitle) ->
-  #     Pairs.update
-  #       wiki: wiki
-  #       title1: title
-  #       title2: relatedtitle
-  #     , (err) ->
-  #       if err
-  #         debug "Pair write error"
+  pairSchema.statics.add = (wiki, title, relatedtitles) ->
+    debug "Pair.add"
+    relatedtitles.forEach (relatedtitle) ->
+      @.update
+        wiki: wiki
+        title1: title
+        title2: relatedtitle
+      , (err) ->
+        if err
+          debug "Pair write error"
 
   mongoose.model 'Pair', pairSchema

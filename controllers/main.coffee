@@ -23,11 +23,6 @@ module.exports = (app) ->
   app.get '/:wiki/:title', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
     # アクセス記録
-    #access = new Access
-    #access.wiki      = req.params.wiki
-    #access.title     = req.params.title
-    #access.timestamp = new Date
-    #access.save (err) ->
     Access.update
       wiki:      req.params.wiki
       title:     req.params.title
@@ -139,12 +134,12 @@ module.exports = (app) ->
     lasttime = writetime["#{wiki}::#{title}"]
     if !lasttime || curtime > lasttime
       writetime["#{wiki}::#{title}"] = curtime
-      newpage = new Pages
-      newpage.wiki      = wiki
-      newpage.title     = title
-      newpage.text      = text
-      newpage.timestamp = curtime
-      newpage.save (err) ->
+      Pages.update
+        wiki:      wiki
+        title:     title
+        text:      text
+        timestamp: curtime
+      , (err) ->
         if err
           debug "Write error"
         res.send "noconflict"
@@ -157,12 +152,12 @@ module.exports = (app) ->
             if err
               debug "line read error"
             if results.length == 0
-              newline = new Lines
-              newline.wiki      = wiki
-              newline.title     = title
-              newline.line      = line
-              newline.timestamp = curtime
-              newline.save (err) ->
+              Lines.update
+                wiki:      wiki
+                title:     title
+                line:      line
+                timestamp: curtime
+              , (err) ->
                 if err
                   debug "line write error"
     

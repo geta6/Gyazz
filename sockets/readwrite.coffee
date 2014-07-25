@@ -57,16 +57,6 @@ module.exports = (app) ->
       lasttime = writetime["#{wiki}::#{title}"]
       if !lasttime || curtime > lasttime
         writetime["#{wiki}::#{title}"] = curtime
-        # Pages.update を使える?? APIがよくわからない
-        # Pages.update
-        #   wiki: wiki...
-
-        #newpage = new Pages
-        #newpage.wiki      = wiki
-        #newpage.title     = title
-        #newpage.text      = text
-        #newpage.timestamp = curtime
-        #newpage.save (err) ->
         Pages.update
           wiki:      wiki
           title:     title
@@ -96,12 +86,6 @@ module.exports = (app) ->
               if err
                 debug "line read error"
               if results.length == 0
-                # newline = new Lines
-                # newline.wiki      = wiki
-                # newline.title     = title
-                # newline.line      = line
-                # newline.timestamp = curtime
-                # newline.save (err) ->
                 Lines.update
                   wiki:      wiki
                   title:     title
