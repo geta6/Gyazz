@@ -23,16 +23,22 @@ module.exports = (app) ->
   app.get '/:wiki/:title', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
     # アクセス記録
-    page = new Access
-    page.wiki = req.params.wiki
-    page.title = req.params.title
-    page.timestamp = new Date
-    page.save (err) ->
+    access = new Access
+    access.wiki      = req.params.wiki
+    access.title     = req.params.title
+    access.timestamp = new Date
+    access.save (err) ->
       if err
         debug "Access write error"
       return res.render 'page',
         title: req.params.title
         wiki:  req.params.wiki
+
+  app.get '/:wiki/:title/__edit', (req, res) ->
+    return res.render 'edit',
+      title:   req.params.title
+      wiki:    req.params.wiki
+      version: req.query.version
 
   # 代表アイコン画像
   app.get '/:wiki/:title/icon', (req, res) ->
@@ -50,7 +56,7 @@ module.exports = (app) ->
       else
         res.send 404, "image not found"
 
-  #  ページ内容取得
+  #  ページ内容取得 (apiとしてだけ)用意
   app.get '/:wiki/:title/json', (req, res) ->
     debug "Getting #{req.params.wiki}/#{req.params.title}/json"
     debug JSON.stringify req.query # { suggest, version, age }

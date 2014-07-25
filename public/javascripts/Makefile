@@ -8,4 +8,5 @@ compile:
 	coffee -c gyazz_upload.coffee
 	coffee -c gyazz_display.coffee
 	coffee -c gyazz_socket.coffee
+	coffee -c gyazz_edit.coffee
 	coffee -c gyazz.coffee

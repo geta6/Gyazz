@@ -113,12 +113,12 @@ longmousedown = ->
   gd.display gb, true
 
 $(document).mouseup (event) ->
-  clearTimeout longPressTimeout?
+  clearTimeout longPressTimeout? && longPressTimeout
   clickline = -1
   true
 
 $(document).mousemove (event) ->
-  clearTimeout longPressTimeout?
+  clearTimeout longPressTimeout? && longPressTimeout
   true
 
 $(document).mousedown (event) ->
@@ -126,7 +126,7 @@ $(document).mousedown (event) ->
     gs.writedata gb.data
     gb.seteditline clickline
   else
-    clearTimeout longPressTimeout?
+    clearTimeout longPressTimeout? && longPressTimeout
     if gb.editline != clickline # #27
       longPressTimeout = setTimeout longmousedown, 300
   true

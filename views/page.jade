@@ -49,16 +49,16 @@ html
     script.
       var name = "#{wiki}"; // escape_jsvar
       var title = "#{title}"; // escape_jsvar
-      var root = "localhost:3000";
       var do_auth = false;
       var writable = true;
   body
+    - var writable = true;
     div.title
       span.wordtitle
         img#historyimage(src="/#{wiki}/#{title}/modify.png",height=18,width=80)
-        // sanitize必要
+        // sanitize必要!!!
         if writable
-          a#title(href="/#{wiki}/#{title}/__edit/0") #{title}
+          a#title(href="/#{wiki}/#{title}/__edit") #{title}
         else
           | #{title}
 
@@ -78,7 +78,7 @@ html
       | Search:
       input#filter(type="text", autocomplete="off",
         style="font-size:10pt;border:none;padding:1px;margin:0;background-color:#f0f0ff;")
-    
+
     #contents
 
     // テキスト入力はすべてこのinputを使っているが、毎回生成する方が良いかもしれない

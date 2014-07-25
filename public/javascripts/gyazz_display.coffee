@@ -18,7 +18,7 @@ class GyazzDisplay
       else         "#a0a080"
     $('#datestr').text if @version >= 0 || @showold then gb.datestr else ''
     $('#title').attr
-      href: "#{root}/#{name}/#{title}/__edit/#{ if @version >= 0 then @version else 0 }"
+      href: "#{root}/#{name}/#{title}/__edit?version=#{ if @version >= 0 then @version else 0 }"
     
     if delay # ちょっと待ってもう一度呼び出す!
       setTimeout ( =>  @display gb), 200

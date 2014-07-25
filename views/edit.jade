@@ -1,0 +1,39 @@
+//doctype html !!! これがあると動かない!
+html
+  head
+    meta(charset='utf-8')
+    title #{wiki} / #{title}
+    link(rel="stylesheet",href="/stylesheets/gyazz.css",type="text/css")
+    link(rel="shortcut icon",href="/favicon.ico")
+    script(src="/javascripts/jquery.js")
+    script(src='/javascripts/utf.js')
+    script(src='/javascripts/md5.js')
+    script(src='/javascripts/socket.io.js')
+    script(src='/javascripts/gyazz_edit.js')
+
+    script.
+      var name = "#{wiki}"; // escape_jsvar
+      var title = "#{title}"; // escape_jsvar
+      var do_auth = false;
+      var writable = true;
+      var version = "#{version}";
+
+  body
+    - var writable = true
+    div.title
+      span.wordtitle
+        if writable
+          a#title(href="/#{wiki}/#{title}") #{title}
+        else
+          | #{title}
+
+      span#debug
+
+      form(action="/__search/#{wiki}",method="get",style="float:right;font-size:12pt;")
+        input#search(height='20', name='q', type='text', value="#{query}")
+        input(type='submit', value='リスト/検索')
+
+    p
+    
+    textarea#contents(rows='40', cols='100')
+
