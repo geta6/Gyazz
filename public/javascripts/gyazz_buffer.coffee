@@ -6,12 +6,11 @@
 # _ = require 'underscore' if typeof module != "undefined" && module.exports
 
 class GyazzBuffer
-
   init: (gs, gd, tag) ->
     @gs = gs
     @gd = gd
     @tag = tag
-    
+
   # levelの長さの空白文字列
   _indentstr = (level) ->
     ([0...level].map (x) -> " ").join('')
@@ -52,12 +51,13 @@ class GyazzBuffer
       else
         @doi[i] = 0 - @line_indent(i) - 1
   
-  init: (arg) ->
-    @data = if typeof arg == 'string' then arg.split /\n/ else arg
+  #init: (arg) ->
+  #  @data = if typeof arg == 'string' then arg.split /\n/ else arg
     
   # n行目のインデントを計算
   line_indent: (n) ->
-    _indent @data[n]
+    s = @data[n] || ''
+    _indent s
       
   # 最大のインデント値を取得
   maxindent: ->
@@ -78,8 +78,10 @@ class GyazzBuffer
     @editline = line
     # @eline = line # ?????
     @deleteblankdata()
-    [@data.length-1..@editline].forEach (i) =>
-      @data[i+1] = @data[i]
+    # $('#debug').text("data.length=#{@data.length}, editline=#{@editline}")
+    if @data.length > @editline
+      [@data.length-1..@editline].forEach (i) =>
+        @data[i+1] = @data[i]
     @data[@editline] = _indentstr indent
   
   # n行目からブロック移動しようとするときのブロック行数

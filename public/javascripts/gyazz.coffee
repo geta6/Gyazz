@@ -145,7 +145,6 @@ $(document).keypress (event) ->
     if gb.editline >= 0
       gb.addblankline(gb.editline+1,gb.line_indent(gb.editline))
       gb.refresh()
-      # gd.display gb #######
       return false
     # カーソルキーやタブを無効化
     if !event.shiftKey && (kc == KC.down || kc == KC.up || kc == KC.tab)
@@ -215,6 +214,7 @@ window.linefunc = (n,gb) ->
     clickline = n
     if event.shiftKey
       gb.addblankline n, gb.line_indent(n)  # 上に行を追加
+      gb.refresh()
     true
     
 show_history = (res) ->
