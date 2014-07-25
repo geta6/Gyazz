@@ -11,14 +11,18 @@
 #
 #
 
-gs = new GyazzSocket         # socket.io
-gd = new GyazzDisplay        # display()
-#rw = new GyazzReadWrite     # サーバとのデータやりとり (Ajax版)
-gb = new GyazzBuffer(gs,gd)  # Gyazzテキスト編集関連
-gr = new GyazzRelated        # 関連ページ取得
-gu = new GyazzUpload(gb)     # アップロード処理
+gs = new GyazzSocket   # socket.io
+gd = new GyazzDisplay  # display()
+gb = new GyazzBuffer   # Gyazzテキスト編集関連
+gr = new GyazzRelated  # 関連ページ取得
+gu = new GyazzUpload   # アップロード処理
+gt = new GyazzTag
 
-gs.start gb, gd # GyazzSocket中でgd,gbを使ってるため... 苦しい
+# 依存関係を設定
+gd.init gt
+gb.init gs, gd, gt
+gs.init gb, gd
+gu.init gb
 
 historycache = {}            # 履歴cache
 clickline = -1               # マウスクリックして押してるときだけ行番号が入る

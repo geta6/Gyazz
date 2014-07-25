@@ -1,5 +1,5 @@
 class GyazzUpload
-  constructor: (gb) ->
+  init: (gb) ->
     @gb = gb
     
   sendfiles: (files) ->

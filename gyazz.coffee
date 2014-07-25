@@ -18,7 +18,7 @@ process.env.PORT ||= 3000
 module.exports = app = express()
 app.use express.static path.resolve 'public'  # public以下のファイルはWikiデータとみなさないようにする
 app.set 'view engine', 'jade'
-app.locals.pretty = true                      # jade出力を整形する
+app.locals.pretty = true                      # jade出力を整形する 本番では不要
 app.use bodyParser.json()
 app.use bodyParser.urlencoded()
 

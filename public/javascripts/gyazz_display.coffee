@@ -3,7 +3,8 @@
 #
 class GyazzDisplay
 
-  tag = new GyazzTag
+  init: (tag) ->
+    @tag = tag
     
   version: -1
   showold: false
@@ -65,7 +66,7 @@ class GyazzDisplay
             [contline..i].forEach (j) ->
               s += gb.data[j].replace(/\\$/,'__newline__')
             $("#list#{contline}").css('display','inline').css('visibility','visible')
-              .html(tag.expand(s,root,name,contline).replace(/__newline__/g,''))
+              .html(@tag.expand(s,root,name,contline).replace(/__newline__/g,''))
             $("#listbg#{contline}").css('display','inline').css('visibility','visible')
             t.css('visibility','hidden')
             p.css('visibility','hidden')
@@ -99,7 +100,7 @@ class GyazzDisplay
                 display: 'inline'
                 visibility: 'visible'
                 'line-height': ''
-              .html tag.expand(gb.data[i],root,name,i)
+              .html @tag.expand(gb.data[i],root,name,i)
               p.attr "class", "listedit#{ind}" # addClassだとダメ!! 前のが残るのか?
               p.css
                 display: 'block'

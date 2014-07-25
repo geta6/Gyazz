@@ -1,6 +1,6 @@
 class GyazzSocket
   
-  start: (gb, gd) ->
+  init: (gb, gd) ->
     @socket = io()
     @gb = gb
     @gd = gd
