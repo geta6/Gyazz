@@ -32,5 +32,3 @@ class GyazzSocket
       data:  datastr
   
 window.GyazzSocket = GyazzSocket
-
-  

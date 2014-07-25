@@ -23,11 +23,16 @@ module.exports = (app) ->
   app.get '/:wiki/:title', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
     # アクセス記録
-    access = new Access
-    access.wiki      = req.params.wiki
-    access.title     = req.params.title
-    access.timestamp = new Date
-    access.save (err) ->
+    #access = new Access
+    #access.wiki      = req.params.wiki
+    #access.title     = req.params.title
+    #access.timestamp = new Date
+    #access.save (err) ->
+    Access.update
+      wiki:      req.params.wiki
+      title:     req.params.title
+      timestamp: new Date
+    , (err) ->
       if err
         debug "Access write error"
       return res.render 'page',
@@ -124,7 +129,7 @@ module.exports = (app) ->
         res.set('Content-Type', 'image/png')
         res.send pngres
 
-  # データ書込み
+  # データ書込み (apiとしてだけ用意)
   app.post '/__write', (req, res) ->
     debug "__write: "
     wiki  = req.body.name
