@@ -12,7 +12,7 @@ html
     script(src='/javascripts/gyazz_edit.js')
 
     script.
-      var name = "#{wiki}"; // escape_jsvar
+      var wiki = "#{wiki}"; // escape_jsvar
       var title = "#{title}"; // escape_jsvar
       var do_auth = false;
       var writable = true;
@@ -22,6 +22,8 @@ html
     - var writable = true
     div.title
       span.wordtitle
+        img#historyimage(src="/#{wiki}/#{title}/modify.png",height=18,width=80)
+        // sanitize必要!!!
         if writable
           a#title(href="/#{wiki}/#{title}") #{title}
         else

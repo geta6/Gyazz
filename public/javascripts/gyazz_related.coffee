@@ -5,13 +5,13 @@ class GyazzRelated
     $.ajax
       type: "GET"
       async: true
-      url: "#{root}/#{name}/#{title}/related"
+      url: "#{root}/#{wiki}/#{title}/related"
       success: (pages) ->
         pages.map (page) ->
           title = page.title
           repimage = page.repimage
           imageurl = "http://Gyazo.com/#{repimage}.png"
-          url = "/#{name}/#{title}"
+          url = "/#{wiki}/#{title}"
           if repimage
             img = $('<img>').attr
               src: imageurl

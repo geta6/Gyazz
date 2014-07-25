@@ -5,7 +5,7 @@
 
 #
 #  以下はExpressでセットされる
-#  var name =  '増井研';
+#  var wiki =  '増井研';
 #  var title = 'MIRAIPEDIA';
 #  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
 #
@@ -68,6 +68,8 @@ $ -> # = $(document).ready()
     gd.showold = true
     ), () ->
     gd.showold = false
+    # socket実装にしたら要求が沢山出すぎるようになってしまった
+    # 要求中は次のものを出さないようにできるか?
     gs.getdata
       async: false  # ヒストリ表示をきっちり終了させるのに必要...?
     , (res) ->

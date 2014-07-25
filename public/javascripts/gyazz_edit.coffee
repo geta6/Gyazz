@@ -1,15 +1,14 @@
 socket = io()
 
 $ ->
-  opts = {version: 0}
+  opts = {version: version}
   
   socket.on 'pagedata', (res) =>
-    # alert "pagedata received... data = #{res.data}"
-    if res.wiki == name && res.title == title
+    if res.wiki == wiki && res.title == title
       $('#contents').val res.data.join("\n")
 
   socket.emit 'read',
-    wiki:  name
+    wiki:  wiki
     title: title
     opts:  opts
 
@@ -18,9 +17,9 @@ $(document).keyup (event) ->
   timeout = setTimeout ->
     datastr = $('#contents').val().replace(/\n+$/,'')+"\n"
     socket.emit 'write',
-      wiki:  name
+      wiki:  wiki
       title: title
       data:  datastr
     $("#contents").css('background-color','#ffffff')
-  , 2000
-  $("#contents").css('background-color','#f0f0f0')
+  , 3000
+  $("#contents").css('background-color','#e0e0e0')

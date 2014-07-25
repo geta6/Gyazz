@@ -18,7 +18,7 @@ class GyazzDisplay
       else         "#a0a080"
     $('#datestr').text if @version >= 0 || @showold then gb.datestr else ''
     $('#title').attr
-      href: "#{root}/#{name}/#{title}/__edit?version=#{ if @version >= 0 then @version else 0 }"
+      href: "#{root}/#{wiki}/#{title}/__edit?version=#{ if @version >= 0 then @version else 0 }"
     
     if delay # ちょっと待ってもう一度呼び出す!
       setTimeout ( =>  @display gb), 200
@@ -66,7 +66,7 @@ class GyazzDisplay
             [contline..i].forEach (j) ->
               s += gb.data[j].replace(/\\$/,'__newline__')
             $("#list#{contline}").css('display','inline').css('visibility','visible')
-              .html(@tag.expand(s,root,name,contline).replace(/__newline__/g,''))
+              .html(@tag.expand(s,root,wiki,contline).replace(/__newline__/g,''))
             $("#listbg#{contline}").css('display','inline').css('visibility','visible')
             t.css('visibility','hidden')
             p.css('visibility','hidden')
@@ -100,7 +100,7 @@ class GyazzDisplay
                 display: 'inline'
                 visibility: 'visible'
                 'line-height': ''
-              .html @tag.expand(gb.data[i],root,name,i)
+              .html @tag.expand(gb.data[i],root,wiki,i)
               p.attr "class", "listedit#{ind}" # addClassだとダメ!! 前のが残るのか?
               p.css
                 display: 'block'

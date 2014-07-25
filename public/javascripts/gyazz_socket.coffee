@@ -7,7 +7,7 @@ class GyazzSocket
     
     @socket.on 'pagedata', (res) =>
       # alert "pagedata received... data = #{res.data}"
-      if res.wiki == name && res.title == title
+      if res.wiki == wiki && res.title == title
         _data_old =   res['data'].concat()
         @gb.data    = res.data.concat()
         @gb.datestr = res.date
@@ -19,7 +19,7 @@ class GyazzSocket
     if typeof opts.version != 'number' || 0 > opts.version
       opts.version = 0
     @socket.emit 'read',
-      wiki:  name
+      wiki:  wiki
       title: title
       opts:  opts
 
@@ -27,7 +27,7 @@ class GyazzSocket
     notifyBox.print("saving..", {progress: true}).show()
     datastr = data.join("\n").replace(/\n+$/,'')+"\n"
     @socket.emit 'write',
-      wiki:  name
+      wiki:  wiki
       title: title
       data:  datastr
   
