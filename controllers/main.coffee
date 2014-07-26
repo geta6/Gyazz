@@ -19,31 +19,22 @@ module.exports = (app) ->
     return res.render 'index',
       title: 'Express'
 
-  # 普通にページアクセス
-  app.get '/:wiki/:title', (req, res) ->
-    debug "Get: wiki = #{req.params.wiki}, title=#{req.params.title}"
-    # アクセス記録
-    Access.update
-      wiki:      req.params.wiki
-      title:     req.params.title
-      timestamp: new Date
-    , (err) ->
-      if err
-        debug "Access write error"
-      return res.render 'page',
-        title: req.params.title
-        wiki:  req.params.wiki
-
-  app.get '/:wiki/:title/__edit', (req, res) ->
+  #app.get '/:wiki/:title/__edit', (req, res) ->
+  app.get /^\/([^\/]+)\/(.*)\/__edit$/, (req, res) ->
+    wiki  = req.params[0]
+    title = req.params[1]
     return res.render 'edit',
-      title:   req.params.title
-      wiki:    req.params.wiki
+      title:   title
+      wiki:    wiki
       version: req.query.version
 
   # 代表アイコン画像
-  app.get '/:wiki/:title/icon', (req, res) ->
-    debug "Getting #{req.params.wiki}/#{req.params.title}/icon"
-    Attrs.attr req.params.wiki, req.params.title, (err, result) ->
+  #app.get '/:wiki/:title/icon', (req, res) ->
+  app.get /^\/([^\/]+)\/(.*)\/icon$/, (req, res) ->
+    wiki  = req.params[0]
+    title = req.params[1]
+    debug "Getting #{wiki}/#{title}/icon"
+    Attrs.attr wiki, title, (err, result) ->
       if err
         return res.send
           error: 'icon: An error has occurred'
@@ -57,16 +48,19 @@ module.exports = (app) ->
         res.send 404, "image not found"
 
   #  ページ内容取得 (apiとしてだけ)用意
-  app.get '/:wiki/:title/json', (req, res) ->
-    debug "Getting #{req.params.wiki}/#{req.params.title}/json"
+  #app.get '/:wiki/:title/json', (req, res) ->
+  app.get /^\/([^\/]+)\/(.*)\/json$/, (req, res) ->
+    wiki  = req.params[0]
+    title = req.params[1]
+    debug "Getting #{wiki}/#{title}/json"
     debug JSON.stringify req.query # { suggest, version, age }
-    Pages.json req.params.wiki, req.params.title, req.query, (err, page) ->
+    Pages.json wiki, title, req.query, (err, page) ->
       if err
         return res.send
           error: 'An error has occurred'
       data =  page?.text.split(/\n/) or []
       # 行ごとの古さを計算する
-      Lines.timestamps req.params.wiki, req.params.title, data, (err, timestamps) ->
+      Lines.timestamps wiki, title, data, (err, timestamps) ->
         # データ返信
         res.send
           date:        page?.timestamp
@@ -74,8 +68,11 @@ module.exports = (app) ->
           data:        data
 
   # repimageなどのページ属性
-  app.get '/:wiki/:title/attr', (req, res) ->
-    Attrs.attr req.params.wiki, req.params.title, (err, result) ->
+  #app.get '/:wiki/:title/attr', (req, res) ->
+  app.get /^\/([^\/]+)\/(.*)\/attr$/, (req, res) ->
+    wiki  = req.params[0]
+    title = req.params[1]
+    Attrs.attr wiki, title, (err, result) ->
       debug "Getting related info===="
       if err
         return res.send
@@ -83,9 +80,12 @@ module.exports = (app) ->
       res.send result
 
   # 関連ページの配列 repimageも一緒に返す
-  app.get '/:wiki/:title/related', (req, res) ->
+  #app.get '/:wiki/:title/related', (req, res) ->
+  app.get /^\/([^\/]+)\/(.*)\/related$/, (req, res) ->
+    wiki  = req.params[0]
+    title = req.params[1]
     debug 'Getting wiki/title/related2'
-    Pairs.related req.params.wiki, req.params.title, (err, titles) ->
+    Pairs.related wiki, title, (err, titles) ->
       debug "Getting related info===="
       if err
         return res.send
@@ -94,7 +94,7 @@ module.exports = (app) ->
       repimages = 0
       for title in titles
         Attrs.find
-          wiki:  req.params.wiki
+          wiki:  wiki
           title: title
         .exec (err, results) ->
           if err
@@ -115,14 +115,37 @@ module.exports = (app) ->
             res.send result
 
   # ページ変更履歴とアクセス履歴からPNGを生成する
-  app.get '/:wiki/:title/modify.png', (req, res) ->
-    debug "modify: wiki = #{req.params.wiki}, title=#{req.params.title}"
+  # app.get '/:wiki/:title/modify.png', (req, res) ->
+  app.get /^\/([^\/]+)\/(.*)\/modify.png$/, (req, res) ->
+    wiki  = req.params[0]
+    title = req.params[1]
+    debug "modify: wiki = #{wiki}, title=#{title}"
 
-    Pages.access req.params.wiki, req.params.title, (err, data) ->
+    Pages.access wiki, title, (err, data) ->
       png = new PNG
       png.png data, (pngres) ->
         res.set('Content-Type', 'image/png')
         res.send pngres
+
+  # 普通にページアクセス
+  #app.get '/:wiki/:title', (req, res) ->
+  #  wiki = req.params.wiki
+  #  title = req.params.title
+  app.get /^\/([^\/]+)\/(.*)$/, (req, res) ->
+    wiki  = req.params[0]
+    title = req.params[1]
+    debug "Get: wiki = #{wiki}, title=#{title}"
+    # アクセス記録
+    Access.update
+      wiki:      wiki
+      title:     title
+      timestamp: new Date
+    , (err) ->
+      if err
+        debug "Access write error"
+      return res.render 'page',
+        title: title
+        wiki:  wiki
 
   # データ書込み (apiとしてだけ用意)
   app.post '/__write', (req, res) ->
