@@ -51,7 +51,7 @@ class GyazzTag
 
     elements = @split(s).map (s) ->
       # if m = s.match /^\[\[\[(.*)\]\]\]$/ # [[[....]]]
-      if m = s.match /^(.*)\[\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\]\](.*)$/ # [[[....]]]
+      while m = s.match /^(.*)\[\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\]\](.*)$/ # [[[....]]]
         [all, pre, inner, dummy, post] = m
         switch
           when t = inner.match /^(https?:\/\/[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[[http:... ....jpg]]]
@@ -63,7 +63,7 @@ class GyazzTag
             matched.push "<b>#{inner}</b>"
         s = "#{pre}<<<#{matched.length-1}>>>#{post}"
   
-      if m = s.match /^(.*)\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\](.*)$/ # [[....]]
+      while m = s.match /^(.*)\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\](.*)$/ # [[....]]
         [all, pre, inner, dummy, post] = m
         switch
           when t = inner.match /^(http[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://.../ http://.../abc.jpg]]
@@ -179,14 +179,13 @@ class GyazzTag
             matched.push "<a href='#{root}/#{wiki}/#{inner}' class='tag' target='_blank'>#{inner}</a>"
 
         s = "#{pre}<<<#{matched.length-1}>>>#{post}"
-      else
-        s
+      s
 
     [0...elements.length].forEach (i) ->
       while a = elements[i].match /^(.*)<<<(\d+)>>>(.*)$/
         elements[i] = a[1] + matched[a[2]] + a[3]
 
-    [elements, _keywords]
+    { elements:elements, keywords:_keywords }
 
   #
   # [[....]], [[[...]]]の中身を解釈してspanタグをつける
@@ -197,13 +196,13 @@ class GyazzTag
   #
   expand: (s, wiki, title, lineno) ->
     e = _tag_expand.call @, s, wiki, title
-    elements = e[0]
+    elements = e.elements
     [0...elements.length].forEach (i) ->
       elements[i] = "<span id='e#{lineno}_#{i}'>#{elements[i]}</span>" # 各要素にidをつける
     elements.join ' '
 
   keywords: (s, wiki, title, lineno) ->
     e = _tag_expand.call @, s, wiki, title
-    e[1]
+    e.keywords
 
 window.GyazzTag = GyazzTag
