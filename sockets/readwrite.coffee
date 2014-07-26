@@ -38,31 +38,18 @@ module.exports = (app) ->
     # データはgyazz_related.coffeeで使っている
     # pair.coffee でDBから取得している
     #
-    #  # リンク情報更新
-    #  pair = Pair.new("#{@wiki.dir}/pair")
-    #  olddata.keywords.each { |keyword|
-    #    pair.delete(title,keyword)
-    #  }
-    #  newdata.keywords.each { |keyword|
-    #    pair.add(title,keyword)
-    #  }
-    #  pair.close
-    #
     socket.on 'write', (req) ->
       debug "readwrite.coffee: #{req.wiki}::#{req.title} write request from client"
       wiki     = req.wiki
       title    = req.title
       text     = req.data
       keywords = req.keywords
-      console.log keywords
       curtime = new Date
       lasttime = writetime["#{wiki}::#{title}"]
       if !lasttime || curtime > lasttime
         writetime["#{wiki}::#{title}"] = curtime
 
-        #Pairs.remove wiki, title
-        #Pairs.add wiki, title, keywords
-        Pairs.refresh wiki, title, keywords
+        Pairs.refresh wiki, title, keywords # リンク情報登録
         
         Pages.update
           wiki:      wiki
