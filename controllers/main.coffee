@@ -19,7 +19,6 @@ module.exports = (app) ->
     return res.render 'index',
       title: 'Express'
 
-  #app.get '/:wiki/:title/__edit', (req, res) ->
   app.get /^\/([^\/]+)\/(.*)\/__edit$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
@@ -29,7 +28,6 @@ module.exports = (app) ->
       version: req.query.version
 
   # 代表アイコン画像
-  #app.get '/:wiki/:title/icon', (req, res) ->
   app.get /^\/([^\/]+)\/(.*)\/icon$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
@@ -48,7 +46,6 @@ module.exports = (app) ->
         res.send 404, "image not found"
 
   #  ページ内容取得 (apiとしてだけ)用意
-  #app.get '/:wiki/:title/json', (req, res) ->
   app.get /^\/([^\/]+)\/(.*)\/json$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
@@ -68,7 +65,6 @@ module.exports = (app) ->
           data:        data
 
   # repimageなどのページ属性
-  #app.get '/:wiki/:title/attr', (req, res) ->
   app.get /^\/([^\/]+)\/(.*)\/attr$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
@@ -80,7 +76,6 @@ module.exports = (app) ->
       res.send result
 
   # 関連ページの配列 repimageも一緒に返す
-  #app.get '/:wiki/:title/related', (req, res) ->
   app.get /^\/([^\/]+)\/(.*)\/related$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
@@ -115,7 +110,6 @@ module.exports = (app) ->
             res.send result
 
   # ページ変更履歴とアクセス履歴からPNGを生成する
-  # app.get '/:wiki/:title/modify.png', (req, res) ->
   app.get /^\/([^\/]+)\/(.*)\/modify.png$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
@@ -128,9 +122,6 @@ module.exports = (app) ->
         res.send pngres
 
   # 普通にページアクセス
-  #app.get '/:wiki/:title', (req, res) ->
-  #  wiki = req.params.wiki
-  #  title = req.params.title
   app.get /^\/([^\/]+)\/(.*)$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
