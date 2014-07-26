@@ -25,7 +25,7 @@ class GyazzSocket
       opts:  opts
 
   writedata: (data) ->
-    notifyBox.print("saving..", {progress: true}).show()
+    notifyBox.print("saving..", {progress: true}).show(1000) # 本当に書けてるかはわからないが1秒表示
     keywords = []
     data.forEach (line) =>
       keywords = keywords.concat @gt.keywords(line, wiki, title, 0)
