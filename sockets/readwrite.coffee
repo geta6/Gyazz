@@ -50,13 +50,20 @@ module.exports = (app) ->
     #
     socket.on 'write', (req) ->
       debug "readwrite.coffee: #{req.wiki}::#{req.title} write request from client"
-      wiki  = req.wiki
-      title = req.title
-      text  = req.data
+      wiki     = req.wiki
+      title    = req.title
+      text     = req.data
+      keywords = req.keywords
+      console.log keywords
       curtime = new Date
       lasttime = writetime["#{wiki}::#{title}"]
       if !lasttime || curtime > lasttime
         writetime["#{wiki}::#{title}"] = curtime
+
+        #Pairs.remove wiki, title
+        #Pairs.add wiki, title, keywords
+        Pairs.refresh wiki, title, keywords
+        
         Pages.update
           wiki:      wiki
           title:     title

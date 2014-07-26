@@ -21,7 +21,7 @@ gt = new GyazzTag
 # 依存関係を設定
 gd.init gt
 gb.init gs, gd, gt
-gs.init gb, gd
+gs.init gb, gd, gt
 gu.init gb
 
 historycache = {}            # 履歴cache

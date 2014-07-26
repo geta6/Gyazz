@@ -46,7 +46,9 @@ class GyazzTag
     return if typeof s != "string"
     matched = []
     s = s.replace /</g,'&lt'
-  
+
+    _keywords = []
+
     elements = @split(s).map (s) ->
       # if m = s.match /^\[\[\[(.*)\]\]\]$/ # [[[....]]]
       if m = s.match /^(.*)\[\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\]\](.*)$/ # [[[....]]]
@@ -173,6 +175,7 @@ class GyazzTag
             """
             matched.push s
           else
+            _keywords.push inner
             matched.push "<a href='#{root}/#{wiki}/#{inner}' class='tag' target='_blank'>#{inner}</a>"
 
         s = "#{pre}<<<#{matched.length-1}>>>#{post}"
@@ -183,7 +186,7 @@ class GyazzTag
       while a = elements[i].match /^(.*)<<<(\d+)>>>(.*)$/
         elements[i] = a[1] + matched[a[2]] + a[3]
 
-    elements
+    [elements, _keywords]
 
   #
   # [[....]], [[[...]]]の中身を解釈してspanタグをつける
@@ -193,9 +196,14 @@ class GyazzTag
   #   <span id='e10_0'>a</span> <span id='e10_1'><a href='http://gyazz.com/増井研/abc def' class='tag'...
   #
   expand: (s, wiki, title, lineno) ->
-    elements = _tag_expand.call @, s, wiki, title
+    e = _tag_expand.call @, s, wiki, title
+    elements = e[0]
     [0...elements.length].forEach (i) ->
       elements[i] = "<span id='e#{lineno}_#{i}'>#{elements[i]}</span>" # 各要素にidをつける
     elements.join ' '
+
+  keywords: (s, wiki, title, lineno) ->
+    e = _tag_expand.call @, s, wiki, title
+    e[1]
 
 window.GyazzTag = GyazzTag

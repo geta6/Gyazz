@@ -1,10 +1,11 @@
 class GyazzSocket
   
-  init: (gb, gd) ->
+  init: (gb, gd, gt) ->
     @socket = io()
     @gb = gb
     @gd = gd
-    
+    @gt = gt
+
     @socket.on 'pagedata', (res) =>
       # alert "pagedata received... data = #{res.data}"
       if res.wiki == wiki && res.title == title
@@ -25,10 +26,14 @@ class GyazzSocket
 
   writedata: (data) ->
     notifyBox.print("saving..", {progress: true}).show()
+    keywords = []
+    data.forEach (line) =>
+      keywords = keywords.concat @gt.keywords(line, wiki, title, 0)
     datastr = data.join("\n").replace(/\n+$/,'')+"\n"
     @socket.emit 'write',
-      wiki:  wiki
-      title: title
-      data:  datastr
+      wiki:     wiki
+      title:    title
+      data:     datastr
+      keywords: keywords
   
 window.GyazzSocket = GyazzSocket
