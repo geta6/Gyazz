@@ -22,7 +22,6 @@
     "static-favicon": "~1.0.0",
     "underscore": "*",
     "crc": "*",
-    "async": "*",
     "socket.io": "^1.0.6"
   },
   "devDependencies": {

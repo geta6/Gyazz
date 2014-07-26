@@ -5,7 +5,6 @@
 debug    = require('debug')('gyazz:pair')
 _        = require 'underscore'
 mongoose = require 'mongoose'
-async    = require 'async'
 
 module.exports = (app) ->
 
