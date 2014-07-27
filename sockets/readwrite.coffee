@@ -26,7 +26,8 @@ module.exports = (app) ->
         # 行ごとの古さを計算する
         Lines.timestamps req.wiki, req.title, data, (err, timestamps) ->
           debug "readwrite.coffee: send data back to client"
-          io.sockets.emit 'pagedata', { # 自分を含むあらゆる接続先にデータ送信
+          # io.sockets.emit 'pagedata', { # 自分を含むあらゆる接続先にデータ送信
+          socket.emit 'pagedata', { # 自分だけに返信
             wiki:        req.wiki
             title:       req.title
             date:        page?.timestamp
@@ -61,7 +62,7 @@ module.exports = (app) ->
           if err
             debug "Write error"
 
-          io.sockets.emit 'writesuccess'
+          socket.emit 'writesuccess' # クライアントだけに返す
           
           data = text.split(/\n/) or []
           Lines.timestamps wiki, title, data, (err, timestamps) ->
