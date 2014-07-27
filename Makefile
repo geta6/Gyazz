@@ -11,4 +11,11 @@ test:
 	grunt test
 
 backup:
-	mongoexport -d gyazz -c pages > export/masuilab.mongoexport
+	mongoexport -d gyazz -c pages > export/pages.mongoexport
+
+restore:
+	mongoimport -d gyazz -c pages    pages.mongoexport
+	mongoimport -d gyazz -c accesses accesses.mongoexport 
+	mongoimport -d gyazz -c attrs    attrs.mongoexport 
+	mongoimport -d gyazz -c pairs    pairs.mongoexport 
+	mongoimport -d gyazz -c lines    lines.mongoexport 
