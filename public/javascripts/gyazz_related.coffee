@@ -30,12 +30,13 @@ class GyazzRelated
             g = hex2 parseInt(md5.substr(2,2),16) * 0.5 + 16
             b = hex2 parseInt(md5.substr(4,2),16) * 0.5 + 16
             div1 = $('<div>').addClass('icontext').text(title)
-            div2 = $('<div>').addClass('icon').css('background-color','#'+r+g+b).append(div1)
+            div2 = $('<div>').addClass('icon').css('background-color',"\##{r}#{g}#{b}").append(div1)
             $('#links').append($("<a>").attr
-              href: url
+              href:   url
               target: '_blank'
-              class: 'links'
+              class:  'links'
             .append(div2))
+        $('#links').append $('<br clear="all">')
       error: ->
         notifyBox.print("getrelated() fail").show(1000)
 
