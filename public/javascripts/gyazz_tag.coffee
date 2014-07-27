@@ -156,22 +156,22 @@ class GyazzTag
                 linediv2.style.top = mapdiv.offsetTop;
                 linediv2.style.left = mapdiv.offsetLeft+150-2;
               });
-              //google.maps.event.addListener(map, 'mouseup', function() {
-              //  var latlng = map.getCenter();
-              //  var o = {};
-              //  o.lng = latlng.lng();
-              //  o.lat = latlng.lat();
-              //  o.zoom = map.getZoom();
-              //  ew = '[EW]\\d+\\.\\d+[\\d\\.]*';
-              //  ns = '[NS]\\d+\\.\\d+[\\d\\.]*';
-              //  s = "\\[\\[("+ew+ns+"|"+ns+ew+")(Z\\d+)?\\]\\]";
-              //  r = new RegExp(s);
-              //  for(var i=0;i<data.length;i++){
-              //    data[i] = data[i].replace(r,'[[#{locstr(o)}]]');
-              //  }
-              //  writedata();
-              //});
             """
+            #  //google.maps.event.addListener(map, 'mouseup', function() {
+            #  //  var latlng = map.getCenter();
+            #  //  var o = {};
+            #  //  o.lng = latlng.lng();
+            #  //  o.lat = latlng.lat();
+            #  //  o.zoom = map.getZoom();
+            #  //  ew = '[EW]\\d+\\.\\d+[\\d\\.]*';
+            #  //  ns = '[NS]\\d+\\.\\d+[\\d\\.]*';
+            #  //  s = "\\[\\[("+ew+ns+"|"+ns+ew+")(Z\\d+)?\\]\\]";
+            #  //  r = new RegExp(s);
+            #  //  for(var i=0;i<data.length;i++){
+            #  //    data[i] = data[i].replace(r,'[[#{locstr(o)}]]');
+            #  //  }
+            #  //  writedata();
+            #  //});
             matched.push s
           else
             _keywords.push inner
