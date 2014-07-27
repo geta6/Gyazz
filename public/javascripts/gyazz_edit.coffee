@@ -1,4 +1,5 @@
 socket = io()
+gt = new GyazzTag
 
 $ ->
   opts = {version: version}
@@ -15,11 +16,15 @@ $ ->
 $(document).keyup (event) ->
   clearTimeout timeout if timeout?
   timeout = setTimeout ->
-    datastr = $('#contents').val().replace(/\n+$/,'')+"\n"
+    contents = $('#contents').val()
+    datastr = contents.replace(/\n+$/,'')+"\n"
+    keywords = _.flatten contents.split(/\n/).map (line) =>
+      gt.keywords(line, wiki, title, 0)
     socket.emit 'write',
-      wiki:  wiki
-      title: title
-      data:  datastr
+      wiki:     wiki
+      title:    title
+      data:     datastr
+      keywords: keywords
     $("#contents").css('background-color','#ffffff')
   , 3000
   $("#contents").css('background-color','#e0e0e0')
