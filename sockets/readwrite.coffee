@@ -46,6 +46,7 @@ module.exports = (app) ->
       keywords = req.keywords
       curtime = new Date
       lasttime = writetime["#{wiki}::#{title}"]
+      console.log "Write! data=#{text}"
       if !lasttime || curtime > lasttime
         writetime["#{wiki}::#{title}"] = curtime
 
@@ -60,6 +61,8 @@ module.exports = (app) ->
           if err
             debug "Write error"
 
+          io.sockets.emit 'writesuccess'
+          
           data = text.split(/\n/) or []
           Lines.timestamps wiki, title, data, (err, timestamps) ->
             debug "readwrite.coffee: send data back to client"

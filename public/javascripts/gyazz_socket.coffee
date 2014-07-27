@@ -14,6 +14,9 @@ class GyazzSocket
         @gb.datestr = res.date
         @gb.timestamps = res.timestamps
         @gb.refresh()
+        
+    @socket.on 'writesuccess', (res) =>
+      notifyBox.hide()
 
   getdata: (opts=null, callback=null) =>
     opts = {} if opts == null || typeof opts != 'object'
@@ -24,12 +27,15 @@ class GyazzSocket
       title: title
       opts:  opts
 
+  _oldstr = ""
   writedata: (data) ->
-    notifyBox.print("saving..", {progress: true}).show(1000) # 本当に書けてるかはわからないが1秒表示
-    keywords = []
-    data.forEach (line) =>
-      keywords = keywords.concat @gt.keywords(line, wiki, title, 0)
     datastr = data.join("\n").replace(/\n+$/,'')+"\n"
+    if datastr == _oldstr
+      return
+    _oldstr = datastr
+    notifyBox.print("saving..", {progress: true}).show()
+    keywords = _.flatten data.map (line) =>
+      @gt.keywords(line, wiki, title, 0)
     @socket.emit 'write',
       wiki:     wiki
       title:    title
