@@ -14,9 +14,13 @@ module.exports = (app) ->
 
   writetime = {}
 
+  _busy = false
+
   io.on 'connection', (socket) ->
     debug "socket.io connected from client--------"
     socket.on 'read', (req) ->
+      return if _busy && ! req.opts.force
+      _busy = true
       debug "readwrite.coffee: #{req.wiki}::#{req.title} read request from client"
       Pages.json req.wiki, req.title, req.opts, (err, page) ->
         if err
@@ -34,6 +38,7 @@ module.exports = (app) ->
             timestamps:  timestamps
             data:        data
           }
+          _busy = false
 
     # write処理時にリンク情報を更新する必要あり
     # データはgyazz_related.coffeeで使っている

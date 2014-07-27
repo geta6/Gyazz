@@ -71,7 +71,7 @@ $ -> # = $(document).ready()
     # socket実装にしたら要求が沢山出すぎるようになってしまった
     # 要求中は次のものを出さないようにできるか?
     gs.getdata
-      async: false  # ヒストリ表示をきっちり終了させるのに必要...?
+      force: true
     , (res) ->
       gb.data    = res.data.concat()
       gb.datestr = res.date
@@ -85,7 +85,6 @@ $ -> # = $(document).ready()
       show_history historycache[age]
     else
       gs.getdata
-        async: false # こうしないと履歴表示が大変なことになるのだが...
         age:   age
       , (res) ->
         historycache[age] = res
@@ -100,7 +99,7 @@ $ -> # = $(document).ready()
     true
     
   gs.getdata
-    async: false
+    force:   true
     suggest: true # 1回目はsuggestオプションを付けてデータ取得
   , (res) ->
     gb.timestamps = res.timestamps
