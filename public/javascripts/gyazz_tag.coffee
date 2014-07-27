@@ -57,7 +57,7 @@ class GyazzTag
           when t = inner.match /^(https?:\/\/[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[[http:... ....jpg]]]
             matched.push "<a href='#{t[1]}'><img src='#{t[2]}.#{t[3]}' border='none' target='_blank' height=80></a>"
           when t = inner.match /^(https?:\/\/.+)\.(jpg|jpeg|jpe|png|gif)$/i  # [[[http...jpg]]]
-            matched.push "<a href='#{t[1]}.#{t[2]} target='_blank'>" +
+            matched.push "<a href='#{t[1]}.#{t[2]}' target='_blank'>" +
               "<img src='#{t[1]}.#{t[2]}' border='none' height=80></a>"
           else  # [[[abc]]]
             matched.push "<b>#{inner}</b>"
@@ -67,7 +67,7 @@ class GyazzTag
         [all, pre, inner, dummy, post] = m
         switch
           when t = inner.match /^(http[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://.../ http://.../abc.jpg]]
-            matched.push "<a href='#{t[1]}' target='_blank'><img src='#{t[2]}.#{t[3]} border='none'></a>"
+            matched.push "<a href='#{t[1]}' target='_blank'><img src='#{t[2]}.#{t[3]}' border='none'></a>"
           when t = inner.match /^(http.+)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://example.com/abc.jpg]
             matched.push "<a href='#{t[1]}.#{t[2]}' target='_blank'><img src='#{t[1]}.#{t[2]}' border='none'></a>"
           when t = inner.match /^(.+)\.(png|icon)$/i # ページ名.icon or ページ名.pngでアイコン表示
@@ -134,7 +134,6 @@ class GyazzTag
           # [[E135.0W35.0]] や [[W35.0.0E135.0.0Z12]] のような記法で地図を表示
           when inner.match /^([EW]\d+\.\d+[\d\.]*[NS]\d+\.\d+[\d\.]*|[NS]\d+\.\d+[\d\.]+[EW]\d+\.\d+[\d\.]*)(Z\d+)?$/
             o = parseloc(inner)
-            s = ""
             s = """
               <div id='map' style='width:300px;height:300px'></div>
               <div id='line1' style='position:absolute;width:300px;height:4px;
@@ -157,21 +156,21 @@ class GyazzTag
                 linediv2.style.top = mapdiv.offsetTop;
                 linediv2.style.left = mapdiv.offsetLeft+150-2;
               });
-              google.maps.event.addListener(map, 'mouseup', function() {
-                var latlng = map.getCenter();
-                var o = {};
-                o.lng = latlng.lng();
-                o.lat = latlng.lat();
-                o.zoom = map.getZoom();
-                ew = '[EW]\\d+\\.\\d+[\\d\\.]*';
-                ns = '[NS]\\d+\\.\\d+[\\d\\.]*';
-                s = "\\[\\[("+ew+ns+"|"+ns+ew+")(Z\\d+)?\\]\\]";
-                r = new RegExp(s);
-                for(var i=0;i<data.length;i++){
-                  data[i] = data[i].replace(r,'[[#{locstr(o)}]]');
-                }
-                writedata();
-              });
+              //google.maps.event.addListener(map, 'mouseup', function() {
+              //  var latlng = map.getCenter();
+              //  var o = {};
+              //  o.lng = latlng.lng();
+              //  o.lat = latlng.lat();
+              //  o.zoom = map.getZoom();
+              //  ew = '[EW]\\d+\\.\\d+[\\d\\.]*';
+              //  ns = '[NS]\\d+\\.\\d+[\\d\\.]*';
+              //  s = "\\[\\[("+ew+ns+"|"+ns+ew+")(Z\\d+)?\\]\\]";
+              //  r = new RegExp(s);
+              //  for(var i=0;i<data.length;i++){
+              //    data[i] = data[i].replace(r,'[[#{locstr(o)}]]');
+              //  }
+              //  writedata();
+              //});
             """
             matched.push s
           else
@@ -182,8 +181,9 @@ class GyazzTag
       s
 
     [0...elements.length].forEach (i) ->
-      while a = elements[i].match /^(.*)<<<(\d+)>>>(.*)$/
-        elements[i] = a[1] + matched[a[2]] + a[3]
+      while m = elements[i].match /^(.*)<<<(\d+)>>>(.*)$/
+        [all, pre, inner, post] = m
+        elements[i] = "#{pre}#{matched[inner]}#{post}"
 
     { elements:elements, keywords:_keywords }
 
