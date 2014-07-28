@@ -1,4 +1,4 @@
-//doctype html
+doctype html
 html
   head
     - pagetitle = (q == '' ? 'ページリスト' : "「#{q}」検索結果")
@@ -20,7 +20,6 @@ html
       $(function() {
         $('.lazyload').lazyload();
       });
-  </script>
   body
     div.title
       span.wordtitle #{wiki} #{pagetitle} (#{pages.length})
@@ -31,7 +30,7 @@ html
     div
       div(style="float:left;")
         - for(var i=0;i<pages.length;i++){
-          - title = pages[i];
+          - title = pages[i]._id;
           - url = "/"+wiki+"/"+title;
           div.listedit0__xxx
             img.lazyload(src="data:image/gif;base64,R0lGODdhMgAMAPAAAMzMzAAAACH/C1hNUCBEYXRhWE1QAz94cAAsAAAAADIADAAAAheEj6nL7Q+jnLTai7PevPsPhuJIlmZSAAA7",data-original="/#{wiki}/#{title}/modify.png",width="50",height="12",id='#{i}')
