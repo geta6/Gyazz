@@ -184,4 +184,13 @@ module.exports = (app) ->
         wiki:  req.params.wiki
         q:     ''
         pages: list
+        
+  app.get '/:wiki/', (req, res) ->
+    debug "Get: wiki = #{req.params.wiki}"
+
+    list = Pages.mlist req.params.wiki, (err, list) ->
+      res.render 'search',
+        wiki:  req.params.wiki
+        q:     ''
+        pages: list
 
