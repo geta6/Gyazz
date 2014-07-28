@@ -14,7 +14,9 @@ module.exports = (app) ->
     wiki: String
     title: String
     text: String
-    timestamp: Date
+    timestamp:
+      type: Date
+      index: true
 
   # Pages.json() 指定されたページを取得
   pageSchema.statics.json = (wiki, title, param, callback) ->
@@ -51,22 +53,23 @@ module.exports = (app) ->
     timesort Access, wiki, callback
     
   timesort = (db, wiki, callback) ->
-    db.find
-      wiki: wiki
-    .sort
-      timestamp: -1
+    db.aggregate
+      $match:
+        "wiki": wiki
+    .append
+      $sort:
+        "timestamp": 1
+    .append
+      $project:
+        "title": 1
+    .append
+      $group:
+        "_id": "$title"
     .exec (err, results) ->
       if err
         console.log err
         return
-      list = []
-      titles = {}
-      results.map (result) ->
-        title = result.title
-        unless titles[title]
-          titles[title] = true
-          list.push title
-      callback err, list
+      callback err, results
 
   # Pages.access() すべてのアクセス/変更時刻の配列を得る
   pageSchema.statics.access = (wiki, title, callback) ->
