@@ -119,7 +119,7 @@ class GyazzTag
             wikiname = t[1]
             wikititle = t[2]
             url = "#{root}/#{wikiname}/#{encodeURIComponent(wikititle).replace(/%2F/g,"/")}"
-            matched.push "<a href='#{url}' class='link' target='_blank' title='#{wikititle}'#{wikititle}</a>"
+            matched.push "<a href='#{url}' class='link' target='_blank' title='#{wikititle}'>#{wikititle}</a>"
           when t = inner.match /^(.+)::(.+)$/ #  Wikiname::Title で他Wikiに飛ぶ (2010 4/27)
             wikiname = t[1]
             wikititle = t[2]
