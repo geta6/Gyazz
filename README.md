@@ -1,12 +1,7 @@
 # Gyazzの再実装
 
-Node, Express, MongoDBで再実装するので助けて下さい (増井)
-
-Gyazzデータは [https://github.com/masui/Gyazz]() の
-Gyazz/admin/gyazz2mongo で MongoDBデータに変換できます
-
-mongoexportしたものをどこかに置いておきます
-
+Node, Express, MongoDBで再実装しました。
+ちゃんと動いてない機能も沢山ありますが…
 
 [![Build Status](https://travis-ci.org/masuilab/Gyazz.svg?branch=master)](https://travis-ci.org/masuilab/Gyazz)
 
