@@ -51,6 +51,10 @@ mongoose.connect mongodb_uri, (err) ->
     return
   debug "connect MongoDB"
 
+  if process.argv[1] isnt __filename
+    return   # if load as a module, do not start HTTP server
+
+  ## start server ##
   http.listen process.env.PORT, ->
     console.log "listening on *:#{process.env.PORT}..."
 
