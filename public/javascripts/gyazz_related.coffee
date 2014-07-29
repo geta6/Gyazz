@@ -10,7 +10,10 @@ class GyazzRelated
         pages.map (page) ->
           title = page.title
           repimage = page.repimage
-          imageurl = "http://Gyazo.com/#{repimage}.png"
+          imageurl = if repimage && repimage.match(/^[0-9a-f]+$/)
+            "http://Gyazo.com/#{repimage}.png"
+          else
+            repimage
           url = "/#{wiki}/#{title}"
           if repimage
             img = $('<img>').attr
