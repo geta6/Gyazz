@@ -122,7 +122,7 @@ module.exports = (app) ->
         res.send pngres
 
   # 普通にページアクセス
-  app.get /^\/([^\/]+)\/(.*)$/, (req, res) ->
+  app.get /^\/([^\/]+)\/(.+)$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
     debug "Get: wiki = #{wiki}, title=#{title}"
