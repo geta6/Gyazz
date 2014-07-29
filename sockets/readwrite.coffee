@@ -2,7 +2,7 @@
 # socket.ioを利用したデータ読み書き (サーバ側)
 #
 
-debug    = require('debug')('readwrite:sockets')
+debug    = require('debug')('gyazz:sockets:readwrite')
 mongoose = require 'mongoose'
 
 Pages  = mongoose.model 'Page'
