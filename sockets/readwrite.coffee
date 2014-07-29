@@ -52,7 +52,7 @@ module.exports = (app) ->
       keywords = req.keywords
       curtime = new Date
       lasttime = writetime["#{wiki}::#{title}"]
-      console.log "Write! data=#{text}"
+      # console.log "Write! data=#{text}"
       if !lasttime || curtime > lasttime
         writetime["#{wiki}::#{title}"] = curtime
 
