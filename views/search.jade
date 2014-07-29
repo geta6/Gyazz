@@ -1,9 +1,10 @@
 doctype html
 html
   head
+    - a = '"#{q}"'
     - pagetitle = (q == '' ? 'ページリスト' : "「#{q}」検索結果")
     meta(charset='utf-8')
-    title #{wiki} #{pagetitle}
+    title #{wiki} #{pagetitle} #{q}
     link(rel="stylesheet",href="/stylesheets/gyazz.css",type="text/css")
     link(rel="apple-touch-icon",href="/gyazz.png")
     link(rel="shortcut icon",href="/favicon.ico")
@@ -23,7 +24,7 @@ html
   body
     div.title
       span.wordtitle #{wiki} #{pagetitle} (#{pages.length})
-      form(action="/__search/#{wiki}",method="get",style="float:right;font-size:12pt;")
+      form(action="/#{wiki}/__search",method="get",style="float:right;font-size:12pt;")
         input(height='20',name='q',type='text', value='#{q}')
         input(type='submit',value='検索')
     p

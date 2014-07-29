@@ -168,8 +168,6 @@ $(document).keydown (event) ->
   sk = event.shiftKey
   ck = event.ctrlKey
   cd = event.metaKey && !ck
-    
-  # rw.not_saved = true
 
   switch
     when ck && kc == KC.s && gb.editline >= 0 # Ctrl-Sでtranspose
@@ -204,13 +202,10 @@ $(document).keydown (event) ->
       getversion 1
     when ck && kc == KC.right
       getversion -1
-    when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck
+    when kc >= 0x30 && kc <= 0x7e && gb.editline < 0 && !cd && !ck && $(':focus').attr('id') != 'search'
       $('#filterdiv').css('display','block')
       $('#filter').focus()
       
-  #if rw.not_saved
-  #  $("#editline").css('background-color','#f0f0d0')
- 
 # 行クリックで呼ばれる関数をクロージャで定義
 window.linefunc = (n,gb) ->
   (event) ->

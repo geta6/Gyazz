@@ -19,6 +19,16 @@ module.exports = (app) ->
     return res.render 'index',
       title: 'Express'
 
+  app.get '/:wiki/__search', (req, res) ->
+    if req.query.q == ''
+      res.redirect "/#{req.params.wiki}"
+    else
+      list = ["abc", "def"]
+      res.render 'search',
+        wiki:  req.params.wiki
+        q:     'abc' # req.query.q
+        pages: list
+    
   app.get /^\/([^\/]+)\/(.*)\/__edit$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
