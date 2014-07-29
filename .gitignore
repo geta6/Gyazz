@@ -5,3 +5,4 @@ node_modules
 *.log
 tmp
 public/javascripts/*.js
+*.js.map

@@ -11,8 +11,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
 
   grunt.registerTask 'test',    [ 'coffeelint', 'simplemocha' ]
-  grunt.registerTask 'default', [ 'test', 'watch' ]
-  grunt.registerTask 'compile', [ 'coffee' ]
+  grunt.registerTask 'default', [ 'test', 'build', 'watch' ]
+  grunt.registerTask 'build',   [ 'coffee' ]
 
   grunt.initConfig
 
@@ -48,27 +48,16 @@ module.exports = (grunt) ->
 
     coffee:
       compile:
-        # files: [
-        #   src: 'public/javascripts/*.coffee'
-        #   #dest: 'public/javascripts/'
-        #   expand: true
-        #   ext: '.js'
-        #  ]
-        # #src: ['public/javascripts/*.coffee']
-        # # dest: 'Resources/'
-        # # ext: '.js'
-        # #
-        files:
-          'public/javascripts/gyazz_related.js': 'public/javascripts/gyazz_related.coffee'
-          'public/javascripts/gyazz_tag.js': 'public/javascripts/gyazz_tag.coffee'
-          'public/javascripts/gyazz_notification.js': 'public/javascripts/gyazz_notification.coffee'
-          'public/javascripts/gyazz_buffer.js': 'public/javascripts/gyazz_buffer.coffee'
-          'public/javascripts/gyazz_lib.js': 'public/javascripts/gyazz_lib.coffee'
-          'public/javascripts/gyazz.js': 'public/javascripts/gyazz.coffee'
-          'public/javascripts/gyazz_readwrite.js': 'public/javascripts/gyazz_readwrite.coffee'
-      options:
-        bare: yes
-
+        files: [{
+          expand: yes
+          cwd: 'public/javascripts/'
+          src: [ '**/*.coffee' ]
+          dest: 'public/javascripts/'
+          ext: '.js'
+        }]
+        options: {
+          sourceMap: yes
+        }
 
     watch:
       options:
@@ -79,7 +68,8 @@ module.exports = (grunt) ->
           'models/**/*.coffee'
           'controllers/**/*.coffee'
           'sockets/**/*.coffee'
-          'public/**/*.{coffee,js,jade}'
+          'views/**/*.jade'
+          'public/**/*.coffee'
           'tests/**/*.coffee'
         ]
-        tasks: [ 'test' ]
+        tasks: [ 'test', 'build' ]

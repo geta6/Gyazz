@@ -2,7 +2,7 @@ run:
 	DEBUG=* npm start
 
 compile:
-	cd public/javascripts; make
+	grunt build
 
 push:
 	git push

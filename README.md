@@ -20,11 +20,18 @@ Node, Express, MongoDBで再実装しました。
     % PORT=3000 DEBUG=gyazz* npm start
 
 
-## Test
+## 開発
+
+gruntでファイル更新をwatchし、継続的にtestを実行しつつcoffeeをjsにコンパイルしたりできます。
+
+    % grunt
+
+
+## Testのみ実行
+
+コミットする前に必ずtestは走らせましょう。
 
     % npm test
-    or
-    % grunt
 
 
 ## Deploy on Heroku

@@ -5,9 +5,9 @@
   "author": "Toshiyuki Masui <masui@pitecan.com>",
   "license": "MIT",
   "scripts": {
-    "start": "coffee gyazz.coffee",
-    "prestart": "cd public/javascripts; make",
-    "test": "grunt test"
+    "start":    "coffee gyazz.coffee",
+    "prestart": "grunt build",
+    "test":     "grunt test"
   },
   "dependencies": {
     "body-parser": "~1.0.0",
