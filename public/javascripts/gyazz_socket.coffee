@@ -1,7 +1,7 @@
 class GyazzSocket
   
   init: (gb, gd, gt) ->
-    @socket = io()
+    @socket = io.connect "#{location.protocol}//#{location.hostname}?wiki=#{wiki}&title=#{title}"
     @gb = gb
     @gd = gd
     @gt = gt

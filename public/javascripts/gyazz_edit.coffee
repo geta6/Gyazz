@@ -1,4 +1,4 @@
-socket = io()
+socket = io.connect "#{location.protocol}//#{location.hostname}?wiki=#{wiki}&title=#{title}"
 gt = new GyazzTag
 
 $ ->

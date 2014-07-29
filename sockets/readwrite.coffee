@@ -18,6 +18,13 @@ module.exports = (app) ->
 
   io.on 'connection', (socket) ->
     debug "socket.io connected from client--------"
+
+    ## 同じページを見ているクライアント毎にroomで分ける
+    room = "#{socket.handshake.query.wiki}/#{socket.handshake.query.title}"
+    socket.join room
+    socket.once 'disconnect', ->
+      socket.leave room
+
     socket.on 'read', (req) ->
       return if _busy && ! req.opts.force
       _busy = true
@@ -72,7 +79,7 @@ module.exports = (app) ->
           data = text.split(/\n/) or []
           Lines.timestamps wiki, title, data, (err, timestamps) ->
             debug "readwrite.coffee: send data back to client"
-            socket.broadcast.emit 'pagedata', { # 自分以外のあらゆる接続先にデータ送信
+            io.sockets.to(room).emit 'pagedata', { # 同じページを見ている相手に送信
               wiki:        wiki
               title:       title
               date:        curtime
