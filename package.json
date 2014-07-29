@@ -12,31 +12,44 @@
   "dependencies": {
     "body-parser": "~1.0.0",
     "coffee-script": "^1.7.1",
-    "cookie-parser": "~1.0.1",
+    "cookie-parser": "^1.0.1",
     "crc": "*",
-    "debug": "~0.7.4",
+    "debug": "^0.7.4",
     "express": "^4.4",
-    "grunt-cli": "^0.1.13",
+    "grunt-cli": "*",
     "jade": "*",
     "mongoose": "3.x",
-    "morgan": "~1.0.0",
+    "morgan": "^1.0.0",
     "socket.io": "^1.0.6",
-    "static-favicon": "~1.0.0",
-    "underscore": "*"
-  },
-  "devDependencies": {
+    "static-favicon": "^1.0.0",
+    "underscore": "*",
     "coffeelint": "*",
     "coffee-errors": "*",
     "grunt": "*",
-    "grunt-cli": "*",
-    "grunt-coffeelint": "0.0.10",
-    "grunt-contrib-watch": "~0.6.1",
+    "grunt-coffeelint": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-contrib-watch": "*",
     "grunt-notify": "*",
-    "grunt-simple-mocha": "~0.4.0",
+    "grunt-simple-mocha": "*",
     "mocha": "*",
     "supertest": "*",
-    "grunt-contrib-coffee": "~0.10.1",
-    "chai": "~1.9.1"
+    "chai": "*"
   },
-  "homepage": "https://github.com/masuilab/Gyazz"
+  "homepage": "https://github.com/masuilab/Gyazz",
+  "description": "Node, Express, MongoDBで再実装しました。 ちゃんと動いてない機能も沢山ありますが…",
+  "main": "gyazz.coffee",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.7.1",
+    "mocha": "^1.21.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/masuilab/Gyazz.git"
+  },
+  "bugs": {
+    "url": "https://github.com/masuilab/Gyazz/issues"
+  }
 }
