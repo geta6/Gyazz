@@ -5,24 +5,24 @@
   "author": "Toshiyuki Masui <masui@pitecan.com>",
   "license": "MIT",
   "scripts": {
-    "start":    "coffee gyazz.coffee",
+    "start": "coffee gyazz.coffee",
     "prestart": "grunt build",
-    "test":     "grunt test"
+    "test": "grunt test"
   },
   "dependencies": {
     "body-parser": "~1.0.0",
     "coffee-script": "^1.7.1",
     "cookie-parser": "~1.0.1",
+    "crc": "*",
     "debug": "~0.7.4",
-    "ejs": "~0.8.5",
-    "jade": "*",
     "express": "^4.4",
+    "grunt-cli": "^0.1.13",
+    "jade": "*",
     "mongoose": "3.x",
     "morgan": "~1.0.0",
+    "socket.io": "^1.0.6",
     "static-favicon": "~1.0.0",
-    "underscore": "*",
-    "crc": "*",
-    "socket.io": "^1.0.6"
+    "underscore": "*"
   },
   "devDependencies": {
     "coffeelint": "*",
