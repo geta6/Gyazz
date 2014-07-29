@@ -176,8 +176,8 @@ module.exports = (app) ->
                   debug "line write error"
     
   # ページリスト
-  app.get '/:wiki/', (req, res) ->
-    res.redirect "/#{req.params.wiki}"
+  app.get /^\/(.+)\//, (req, res) ->
+    res.redirect "/#{req.params[0]}"
     
   app.get '/:wiki', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}"
