@@ -176,21 +176,16 @@ module.exports = (app) ->
                   debug "line write error"
     
   # ページリスト
+  app.get '/:wiki/', (req, res) ->
+    res.redirect "/#{req.params.wiki}"
+    
   app.get '/:wiki', (req, res) ->
     debug "Get: wiki = #{req.params.wiki}"
 
-    list = Pages.mlist req.params.wiki, (err, list) ->
+    list = Pages.alist req.params.wiki, (err, list) ->
       res.render 'search',
         wiki:  req.params.wiki
         q:     ''
         pages: list
         
-  app.get '/:wiki/', (req, res) ->
-    debug "Get: wiki = #{req.params.wiki}"
-
-    list = Pages.mlist req.params.wiki, (err, list) ->
-      res.render 'search',
-        wiki:  req.params.wiki
-        q:     ''
-        pages: list
 
