@@ -64,9 +64,9 @@ $ -> # = $(document).ready()
     $('#filterdiv').css('display','none') if $('#filter').val() == ''
     gb.refresh()
 
-  $('#historyimage').hover (() ->
+  $('#historyimage').hover ->
     gd.showold = true
-    ), () ->
+  , ->
     gd.showold = false
     # socket実装にしたら要求が沢山出すぎるようになってしまった
     # 要求中は次のものを出さないようにできるか?
