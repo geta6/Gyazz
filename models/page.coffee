@@ -53,18 +53,20 @@ module.exports = (app) ->
     timesort Access, wiki, callback
     
   timesort = (db, wiki, callback) ->
-    db.aggregate
+    db.aggregate # MongoDBの「パイプライン処理」
       $match:
-        "wiki": wiki
-    .append
+        wiki: wiki
+    ,
       $sort:
-        "timestamp": 1
-    .append
-      $project:
-        "title": 1
-    .append
+        timestamp: 1
+    ,
       $group:
         "_id": "$title"
+        timestamp:
+          $last: "$timestamp"
+    ,
+      $sort:
+        timestamp: -1
     .exec (err, results) ->
       if err
         console.log err

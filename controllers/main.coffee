@@ -137,11 +137,11 @@ module.exports = (app) ->
     title = req.params[1]
     debug "Get: wiki = #{wiki}, title=#{title}"
     # アクセス記録
-    Access.update
-      wiki:      wiki
-      title:     title
-      timestamp: new Date
-    , (err) ->
+    access = new Access()
+    access.wiki = wiki
+    access.title = title
+    access.timestamp = new Date
+    access.save (err) ->
       if err
         debug "Access write error"
       return res.render 'page',
