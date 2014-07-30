@@ -57,9 +57,6 @@ module.exports = (app) ->
       $match:
         wiki: wiki
     ,
-      $sort:
-        timestamp: 1
-    ,
       $group:
         "_id": "$title"
         timestamp:
