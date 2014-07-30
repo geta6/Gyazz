@@ -23,10 +23,10 @@ module.exports = (app) ->
     if req.query.q == ''
       res.redirect "/#{req.params.wiki}"
     else
-      list = ["abc", "def"]
+      list = [{_id: "検索は"}, {_id: "未実装"}]
       res.render 'search',
         wiki:  req.params.wiki
-        q:     'abc' # req.query.q
+        q:     req.query.q
         pages: list
     
   app.get /^\/([^\/]+)\/(.*)\/__edit$/, (req, res) ->
@@ -195,5 +195,3 @@ module.exports = (app) ->
         wiki:  req.params.wiki
         q:     ''
         pages: list
-        
-

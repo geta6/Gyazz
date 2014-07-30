@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    - a = '"#{q}"'
-    - pagetitle = (q == '' ? 'ページリスト' : "「#{q}」検索結果")
+    script.
+    - pagetitle = (q == '' ? 'ページリスト' : "「"+q+"」検索結果");
     meta(charset='utf-8')
-    title #{wiki} #{pagetitle} #{q}
+    title #{wiki} #{pagetitle}
     link(rel="stylesheet",href="/stylesheets/gyazz.css",type="text/css")
     link(rel="apple-touch-icon",href="/gyazz.png")
     link(rel="shortcut icon",href="/favicon.ico")
