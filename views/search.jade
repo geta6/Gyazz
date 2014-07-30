@@ -1,8 +1,8 @@
+- pagetitle = (q ? "「"+q+"」検索結果" : 'ページリスト');
+
 doctype html
 html
   head
-    script.
-    - pagetitle = (q == '' ? 'ページリスト' : "「"+q+"」検索結果");
     meta(charset='utf-8')
     title #{wiki} #{pagetitle}
     link(rel="stylesheet",href="/stylesheets/gyazz.css",type="text/css")
@@ -25,7 +25,7 @@ html
     div.title
       span.wordtitle #{wiki} #{pagetitle} (#{pages.length})
       form(action="/#{wiki}/__search",method="get",style="float:right;font-size:12pt;")
-        input(height='20',name='q',type='text', value='#{q}')
+        input(height='20',name='q',type='text', value=q)
         input(type='submit',value='検索')
     p
     div
