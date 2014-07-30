@@ -83,18 +83,15 @@ class GyazzTag
             matched.push "<a href='#{link_to}' class='link' target='_blank'>" +
               "<img src='#{img_url}' class='icon' height='24' border='0' alt='#{link_to}' title='#{link_to}' /></a>"
           when t = inner.match /^(.+)\.(png|icon|jpe?g|gif)[\*x×]([1-9][0-9]*)(|\.[0-9]+)$/ # (URL|ページ名).(icon|png)x個
-            link_to = null
-            img_url = null
+            link_to = "#{root}/#{wiki}/#{t[1]}"
+            img_url = "#{link_to}/icon"
             switch
               when t[1].match /^@[\da-z_]+$/i
                 screen_name = t[1].replace(/^@/,"")
                 link_to = "http://twitter.com/#{screen_name}"
                 img_url = "http://twiticon.herokuapp.com/#{screen_name}/mini"
               when t[1].match /^https?:\/\/.+$/
-                img_url = link_to = "#{t[1]}.#{t[2]}
-              else
-                link_to = "#{root}/#{wiki}/#{t[1]}"
-                img_url = "#{link_to}/icon"
+                img_url = link_to = "#{t[1]}.#{t[2]}"
             count = Number(t[3])
             icons = "<a href='#{link_to}' class='link' target='_blank'>"
             [0...count].forEach (i) ->
