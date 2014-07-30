@@ -311,8 +311,8 @@ class GyazzBuffer
   #
   # 桁揃え
   #
-  align: () -> # 同じパタンの連続を検出して桁を揃える
-    _similarlines.call @, _do_align, () -> true
+  align: -> # 同じパタンの連続を検出して桁を揃える
+    _similarlines.call @, _do_align, -> true
 
   _do_align = (begin, lines, dummy) -> # begin番目からlines個の行を桁揃え
     pos = []
@@ -344,7 +344,7 @@ class GyazzBuffer
   #
   # editline周辺の行の行と桁を入れ換える
   #
-  transpose: () ->
+  transpose: ->
     return if @editline < 0
     _similarlines.call @, _do_transpose, _transpose_condition # thisを伝播させる
 

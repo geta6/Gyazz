@@ -28,13 +28,13 @@ $ ->
     this.show = (timeout) ->
       box.show()
       if typeof timeout == 'number' && timeout > 0
-        setTimeout () ->
+        setTimeout ->
           box.fadeOut 800
         , timeout
 
       self
   
-    this.hide = () ->
+    this.hide = ->
       box.hide()
       self
 
