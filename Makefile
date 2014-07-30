@@ -11,5 +11,6 @@ test:
 	grunt test
 
 backup:
-	mongodump -d gyazz -o dump
+	mongodump -d gyazz $(OPTS)
+
 
