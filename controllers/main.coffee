@@ -188,10 +188,16 @@ module.exports = (app) ->
   # ページリスト
   app.get '/:wiki/', (req, res) ->
     wiki = req.params.wiki
-    debug "Get: wiki = #{wiki}"
+    search_query = req.query.q
+    if search_query
+      debug "Search: wiki = #{wiki} q = #{search_query}"
+    else
+      debug "Get: wiki = #{wiki}"
 
-    Pages.alist req.params.wiki, (err, list) ->
-      res.render 'search',
-        wiki:  req.params.wiki
-        q:     ''
+    Pages.alist wiki, (err, list) ->
+      args =
+        wiki:  wiki
+        q:     search_query
         pages: list
+
+      res.render 'search', args
