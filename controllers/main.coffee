@@ -135,6 +135,24 @@ module.exports = (app) ->
         res.set('Content-Type', 'image/png')
         res.send pngres
 
+	# ランダムにページを表示
+  app.get /^\/([^\/]+)\/__random$/, (req, res) ->
+    # 認証必要
+    wiki  = req.params[0]
+    Pages.alist wiki, (err, list) ->
+      len = list.length
+      ind = Math.floor(Math.random() * len)
+      title = list[ind]._id
+      Pages.json wiki, title, {}, (err, page) ->
+        if err
+          debug "Pages error"
+          return
+        rawdata =  page?.text or ""
+        return res.render 'page',
+          title:   title
+          wiki:    wiki
+          rawdata: rawdata
+
   # 普通にページアクセス
   app.get /^\/([^\/]+)\/(.+)$/, (req, res) ->
     wiki  = req.params[0]
