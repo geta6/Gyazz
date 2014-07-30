@@ -137,6 +137,30 @@ module.exports = (app) ->
         data[MAXH-y-1][MAX-i-1] = [0,0,0]
     callback false, data
       
+  # Pages.search() 検索
+  pageSchema.statics.search = (wiki, query, callback) ->
+    #@find
+    #  wiki: wiki
+    #  text: RegExp(query)
+    #.exec (err, results) ->dsfaisdfaf
+    @aggregate
+      $match:
+        wiki: "増井研"
+        text: RegExp(query,"i")
+    ,
+      $group:
+        "_id": "$title"
+        timestamp:
+          $last: "$timestamp"
+    ,
+      $sort:
+        timestamp: -1
+    .exec (err, results) ->
+      if err
+        console.log err
+        return
+      callback err, results
+
 #  # 関連ページをリストするインスタンスメソッドみたいなもの
 #  pageSchema.methods.related = (callback) ->
 

@@ -20,14 +20,18 @@ module.exports = (app) ->
       title: 'Express'
 
   app.get '/:wiki/__search', (req, res) ->
-    if req.query.q == ''
-      res.redirect "/#{req.params.wiki}"
+    wiki = req.params.wiki
+    query = req.query.q
+    if query == ''
+      res.redirect "/#{wiki}"
     else
-      list = [{_id: "検索は"}, {_id: "未実装"}]
-      res.render 'search',
-        wiki:  req.params.wiki
-        q:     req.query.q
-        pages: list
+      Pages.search wiki, query, (err, list) ->
+        if err
+          return res.send
+        res.render 'search',
+          wiki:  wiki
+          q:     query
+          pages: list
     
   app.get /^\/([^\/]+)\/(.*)\/__edit$/, (req, res) ->
     wiki  = req.params[0]
