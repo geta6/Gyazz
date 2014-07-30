@@ -3,6 +3,7 @@
 #
 
 express  = require 'express'
+favicon  = require 'serve-favicon'
 mongoose = require 'mongoose'
 path     = require 'path'
 debug    = require('debug')('gyazz:app')
@@ -16,6 +17,7 @@ process.env.PORT ||= 3000
 
 ## server setup ##
 module.exports = app = express()
+app.use favicon path.resolve 'public/favicon.ico'
 app.use express.static path.resolve 'public'  # public以下のファイルはWikiデータとみなさないようにする
 app.set 'view engine', 'jade'
 app.locals.pretty = true                      # jade出力を整形する 本番では不要
