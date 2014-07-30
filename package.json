@@ -16,7 +16,7 @@
     "coffee-script": "^1.7.1",
     "coffeelint": "*",
     "cookie-parser": "^1.0.1",
-    "crc": "buffer-crc32",
+    "buffer-crc32": "*",
     "debug": "^0.7.4",
     "express": "^4.4",
     "grunt": "*",
