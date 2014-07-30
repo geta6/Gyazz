@@ -6,3 +6,5 @@ node_modules
 tmp
 public/javascripts/*.js
 *.js.map
+dump/gyazz
+
