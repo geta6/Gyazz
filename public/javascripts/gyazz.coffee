@@ -94,8 +94,8 @@ $ -> # = $(document).ready()
         gd.display gb
 
   $('#contents').mousedown (event) ->
-    if clickline == -1  # 選択行がないとき
-      gs.writedata gb.data
+    # if clickline == -1  # 選択行がないとき
+    #   gs.writedata gb.data
     true
     
   gs.getdata
@@ -125,7 +125,7 @@ $(document).mousemove (event) ->
 
 $(document).mousedown (event) ->
   if clickline == -1  # 行以外をクリック
-    gs.writedata gb.data
+    # gs.writedata gb.data
     gb.seteditline clickline
   else
     clearTimeout longPressTimeout
