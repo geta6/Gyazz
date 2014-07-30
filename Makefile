@@ -5,7 +5,7 @@ compile:
 	grunt build
 
 push:
-	git push
+	git push origin master
 
 test:
 	grunt test
