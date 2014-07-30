@@ -144,9 +144,16 @@ module.exports = (app) ->
     access.save (err) ->
       if err
         debug "Access write error"
-      return res.render 'page',
-        title: title
-        wiki:  wiki
+      # ページデータを読み込んでrawdataとする
+      Pages.json wiki, title, {}, (err, page) ->
+        if err
+          debug "Pages error"
+          return
+        rawdata =  page?.text or ""
+        return res.render 'page',
+          title:   title
+          wiki:    wiki
+          rawdata: rawdata
 
   # データ書込み (apiとしてだけ用意)
   app.post '/__write', (req, res) ->
