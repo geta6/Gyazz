@@ -17,24 +17,32 @@
 # こういうのがあった (2014/07/14 15:49:14)
 # https://www.npmjs.org/package/node-png
 #
-crc  = require 'crc'
+
+crc32 = require 'buffer-crc32'
 zlib = require 'zlib'
 
 class PNG
   chunk = (type, data) ->
-    buf = new Buffer data.length+12
-    buf.writeInt32BE data.length, 0
+    buf = new Buffer data.length+12, 'binary'
+    buf.writeUInt32BE data.length, 0
     buf.write type, 4
     data.copy buf, 8
-    buf.writeUInt32BE parseInt(crc.crc32(type+data),16), data.length+8
+
+    bufx = new Buffer data.length+4, 'binary'
+    bufx.write type, 0
+    data.copy bufx, 4
+
+    buf_crc = crc32 bufx
+    buf_crc.copy buf, data.length+8
+
     buf
 
   png: (data, callback, depth=8, color_type=2) ->
     height = data.length
     width = data[0].length
-    buf1 = new Buffer "\x89PNG\r\n\x1a\n", 'ascii'
+    buf1 = new Buffer "\x89PNG\r\n\x1a\n", 'binary'
   
-    buf = new Buffer 13, 'ascii'
+    buf = new Buffer 13, 'binary'
     buf.writeUInt32BE width, 0
     buf.writeUInt32BE height, 4
     buf.writeUInt8 depth, 8
@@ -53,9 +61,9 @@ class PNG
       
     zlib.deflate imagebuf, (err, res) ->
       return if err
-      buf3 = chunk "IDAT", new Buffer res, 'ascii'
-      buf4 = chunk "IEND", new Buffer ""
-      buf = new Buffer 33+buf3.length+buf4.length
+      buf3 = chunk "IDAT", new Buffer res, 'binary'
+      buf4 = chunk "IEND", new Buffer "", 'binary'
+      buf = new Buffer 33+buf3.length+buf4.length, 'binary'
       buf1.copy buf, 0
       buf2.copy buf, 8
       buf3.copy buf, 33
