@@ -17,14 +17,17 @@ process.env.PORT ||= 3000
 
 ## server setup ##
 module.exports = app = express()
+app.disable 'x-powered-by'
 app.use favicon path.resolve 'public/favicon.ico'
 app.use express.static path.resolve 'public'  # public以下のファイルはWikiデータとみなさないようにする
 app.set 'view engine', 'jade'
-app.locals.pretty = true                      # jade出力を整形する 本番では不要
 app.use bodyParser.json()
 app.use bodyParser.urlencoded()
 
-http = require('http').Server(app)            # socket.io 対応
+if process.env.NODE_ENV isnt 'production'
+  app.locals.pretty = true  # jade出力を整形
+
+http = require('http').Server(app)
 io = require('socket.io')(http)
 app.set 'socket.io', io
 app.set 'package', package_json
