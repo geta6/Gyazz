@@ -43,6 +43,7 @@ html
     div.title
       span.wordtitle
         img#historyimage(src="/#{wiki}/#{title}/modify.png",height=18,width=80)
+        | &nbsp;
         // sanitize必要!!!
         if writable
           a#title(href="/#{wiki}/#{title}/__edit") #{title}
@@ -53,6 +54,7 @@ html
 
       form(action="/#{wiki}/__search",method="get",style="float:right;font-size:12pt;")
         input#search(height='20', name='q', type='text', value="")
+        | &nbsp;
         input(type='submit', value='リスト/検索')
     
       span#datestr.language
