@@ -141,6 +141,9 @@ module.exports = (app) ->
     wiki  = req.params[0]
     Pages.alist wiki, (err, list) ->
       len = list.length
+      if len == 0
+        res.redirect "/#{wiki}"
+        return
       ind = Math.floor(Math.random() * len)
       title = list[ind]._id
       Pages.json wiki, title, {}, (err, page) ->
