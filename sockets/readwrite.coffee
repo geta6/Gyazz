@@ -80,7 +80,7 @@ module.exports = (app) ->
           data = text.split(/\n/) or []
           Lines.timestamps wiki, title, data, (err, timestamps) ->
             debug "readwrite.coffee: send data back to client"
-            io.sockets.to(room).emit 'pagedata', { # 同じページを見ている相手に送信
+            socket.broadcast.to(room).emit 'pagedata', { # 同じページを見ている自分以外の相手に送信
               wiki:        wiki
               title:       title
               date:        curtime
