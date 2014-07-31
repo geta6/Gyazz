@@ -145,8 +145,13 @@ module.exports = (app) ->
     #.exec (err, results) ->dsfaisdfaf
     @aggregate
       $match:
-        wiki: "増井研"
-        text: RegExp(query,"i")
+        $or: [
+          wiki: wiki
+          title: RegExp(query,"i")
+        ,
+          wiki: wiki
+          text: RegExp(query,"i")
+        ]
     ,
       $group:
         "_id": "$title"
