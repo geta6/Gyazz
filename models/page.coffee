@@ -50,12 +50,15 @@ module.exports = (app) ->
         "#{m[1]}.#{m[2]}"
       else
         null
-    mongoose.model('Attr').findOne
+    Attr = mongoose.model('Attr')
+    Attr.findOne
       wiki: page.wiki
       title: page.title
     .exec (err, attr) =>
       if err
         return
+      unless attr
+        attr = new Attr {wiki: page.wiki, title: page.title}
       attr.attr.repimage = repimage
       attr.save (err) ->
         debug err if err
