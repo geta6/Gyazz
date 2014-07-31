@@ -48,8 +48,8 @@ module.exports = (app) ->
     debug "Getting #{wiki}/#{title}/icon"
     Attrs.attr wiki, title, (err, result) ->
       if err
-        return res.send
-          error: 'icon: An error has occurred'
+        return res.status(500).send
+          error: 'icon: An error has occurred (err)'
       image = result.repimage
       if image
         if image.match /^https?:\/\/.+\.(png|jpe?g|gif)$/i

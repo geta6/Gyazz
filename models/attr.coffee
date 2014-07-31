@@ -28,11 +28,13 @@ module.exports = (app) ->
 
   attrSchema.statics.attr = (wiki, title, callback) ->
     debug "Attrs.attr"
-    @find
+    @findOne
       wiki:wiki
       title:title
-    .exec (err, results) ->
-      callback false, results[0]?.attr
+    .exec (err, result) ->
+      return callback err if err
+      return callback "not found" unless result
+      callback null, result.attr
 
   mongoose.model 'Attr', attrSchema
 
