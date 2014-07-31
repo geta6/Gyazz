@@ -34,8 +34,9 @@ html
 
       span#debug
 
-      form(action="/__search/#{wiki}",method="get",style="float:right;font-size:12pt;")
-        input#search(height='20', name='q', type='text', value="#{query}")
+      form(action="/#{wiki}/__search",method="get",style="float:right;font-size:12pt;")
+        input#search(height='20', name='q', type='text', value="")
+        | &nbsp;
         input(type='submit', value='リスト/検索')
 
     p
