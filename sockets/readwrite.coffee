@@ -87,11 +87,11 @@ module.exports = (app) ->
               data:        data
             }
             
-          text.split(/\n/).forEach (line) -> # 新しい行ならば生成時刻を記録する
+          text.split(/\n/).forEach (linetext) -> # 新しい行ならば生成時刻を記録する
             Lines.find
               wiki:  wiki
               title: title
-              line:  line
+              line:  linetext
             .exec (err, results) ->
               if err
                 debug "line read error"
@@ -99,7 +99,7 @@ module.exports = (app) ->
                 line = new Lines
                 line.wiki      = wiki
                 line.title     = title
-                line.line      = line
+                line.line      = linetext
                 line.timestamp = curtime
                 line.save (err) ->
                   if err
