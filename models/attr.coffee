@@ -24,10 +24,15 @@ module.exports = (app) ->
         'Invalid WiKi name'
       ]
     attr:
-      repimage: String
+      repimage:
+        type: String
+        validate: [
+          (v) ->
+            return /^https?:\/\/.+/.test v
+          'Invalid Image URL'
+        ]
 
   attrSchema.statics.attr = (wiki, title, callback) ->
-    debug "Attrs.attr"
     @findOne
       wiki:wiki
       title:title

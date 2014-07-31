@@ -4,6 +4,8 @@
 
 debug    = require('debug')('gyazz:main')
 mongoose = require 'mongoose'
+_        = require 'underscore'
+async    = require 'async'
 PNG      = require '../lib/png'
 
 Pages  = mongoose.model 'Page'
@@ -82,46 +84,47 @@ module.exports = (app) ->
   app.get /^\/([^\/]+)\/(.*)\/attr$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
+    if !Pages.isValidName(wiki) or !Pages.isValidName(title)
+      return res.status(400).send
+        error: "Invalid name"
     Attrs.attr wiki, title, (err, result) ->
       debug "Getting related info===="
       if err
         return res.send
-          error: 'An error has occurred'
+          error: err
       res.send result
 
   # 関連ページの配列 repimageも一緒に返す
   app.get /^\/([^\/]+)\/(.*)\/related$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
+    if !Pages.isValidName(wiki) or !Pages.isValidName(title)
+      return res.status(400).send
+        error: "Invalid name"
     debug 'Getting wiki/title/related2'
     Pairs.related wiki, title, (err, titles) ->
       debug "Getting related info===="
       if err
         return res.send
-          error: 'An error has occurred'
-      repimage = {}
-      repimages = 0
-      for title in titles
-        Attrs.find
-          wiki:  wiki
-          title: title
-        .exec (err, results) ->
-          if err
-            return res.send
-              error: 'An error has occured'
-          result = results[0] || {}
-          attr = result['attr'] || {}
-          title = result['title']  # title ではダメ!!!!!!!!!
-          repimage[title] = attr.repimage
-          repimages += 1
-          if repimages == titles.length
-            result = []
-            for title2 in titles
-              result.push
-                title: title2
-                repimage: repimage[title2]
-            debug result.length
-            res.send result
+          error: err
+
+      async.mapSeries titles, (title, next) ->
+        Attrs.attr wiki, title, (err, attr) ->
+          if err or !attr
+            next()
+            return
+          next null, {
+            title: title
+            repimage: attr.repimage
+          }
+      , (err, results) ->
+        if err
+          return res.status(500).send
+            error: 'server error'
+        results = _.filter results, (i) -> i
+        debug "#{results.length} related pages found"
+        return res.send results
+
 
   # ページ変更履歴とアクセス履歴からPNGを生成する
   app.get /^\/([^\/]+)\/(.*)\/modify.png$/, (req, res) ->
