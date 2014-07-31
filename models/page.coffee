@@ -38,6 +38,10 @@ module.exports = (app) ->
       type: Date
       index: true
 
+  pageSchema.post 'save', (page) ->
+    ## アクセス履歴更新
+    new Access(wiki: page.wiki, title: page.title).save()
+
   pageSchema.statics.isValidName = isValidName
   pageSchema.statics.toValidName = toValidName
 
