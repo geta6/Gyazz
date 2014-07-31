@@ -29,7 +29,7 @@ module.exports = (app) ->
       return if _busy && ! req.opts.force
       _busy = true
       debug "readwrite.coffee: #{req.wiki}::#{req.title} read request from client"
-      Pages.json req.wiki, req.title, req.opts, (err, page) ->
+      Pages.findByName req.wiki, req.title, req.opts, (err, page) ->
         if err
           debug "Pages error"
           return
@@ -72,7 +72,8 @@ module.exports = (app) ->
         page.timestamp = curtime
         page.save (err) ->
           if err
-            debug "Write error"
+            debug "Write error: #{err}"
+            return
 
           socket.emit 'writesuccess' # クライアントだけに返す
           
@@ -95,6 +96,7 @@ module.exports = (app) ->
             .exec (err, results) ->
               if err
                 debug "line read error"
+                return
               if results.length == 0
                 line = new Lines
                 line.wiki      = wiki
