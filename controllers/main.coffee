@@ -168,14 +168,12 @@ module.exports = (app) ->
       wiki  = Pages.toValidName wiki
       return res.redirect "/#{wiki}/#{title}"
     debug "Get: wiki = #{wiki}, title=#{title}"
+
     # アクセス記録
-    access = new Access()
-    access.wiki = wiki
-    access.title = title
-    access.timestamp = new Date
-    access.save (err) ->
+    new Access(wiki: wiki, title: title).save (err) ->
       if err
         debug "Access write error"
+
     # ページデータを読み込んでrawdataとする
     Pages.findByName wiki, title, {}, (err, page) ->
       if err

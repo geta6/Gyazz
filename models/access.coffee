@@ -22,7 +22,9 @@ module.exports = (app) ->
           return mongoose.model('Page').isValidName(v)
         'Invalid WiKi name'
       ]
-    timestamp: Date
+    timestamp:
+      type: Date
+      default: Date.now
 
   #accessSchema.statics.access = (wiki, title, callback) ->
   #  debug "Access.access"
