@@ -9,9 +9,27 @@ mongoose = require 'mongoose'
 module.exports = (app) ->
 
   pairSchema = new mongoose.Schema
-    wiki: String
-    title1: String
-    title2: String
+    wiki:
+      type: String
+      validate: [
+        (v) ->
+          return mongoose.model('Page').isValidName(v)
+        'Invalid WiKi name'
+      ]
+    title1:
+      type: String
+      validate: [
+        (v) ->
+          return mongoose.model('Page').isValidName(v)
+        'Invalid WiKi name'
+      ]
+    title2:
+      type: String
+      validate: [
+        (v) ->
+          return mongoose.model('Page').isValidName(v)
+        'Invalid WiKi name'
+      ]
 
   # pageに関連するページの配列を得る
   pairSchema.statics.related = (wiki, title, callback) ->

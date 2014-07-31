@@ -9,8 +9,20 @@ mongoose = require 'mongoose'
 module.exports = (app) ->
 
   attrSchema = new mongoose.Schema
-    wiki: String
-    title: String
+    wiki:
+      type: String
+      validate: [
+        (v) ->
+          return mongoose.model('Page').isValidName(v)
+        'Invalid WiKi name'
+      ]
+    title:
+      type: String
+      validate: [
+        (v) ->
+          return mongoose.model('Page').isValidName(v)
+        'Invalid WiKi name'
+      ]
     attr:
       repimage: String
 

@@ -9,35 +9,63 @@ mongoose = require 'mongoose'
 module.exports = (app) ->
   
   Access = mongoose.model 'Access'
-  
+
+  ## ページ名/WiKi名が正しい名前かどうか
+  isValidName = (name) ->
+    if typeof name isnt 'string'
+      return false
+    if name.length < 1
+      return false
+    if /(^\/|\/$)/.test name
+      return false
+    return true
+
+  ## ページ名/WiKi名を(なるべく)正しい名前に変更して返す
+  ## そもそも空文字列を渡される等は無理なので、先にisValidName(str)で確認してほしい
+  toValidName = (name) ->
+    return name.replace(/^\/+/, '').replace(/\/+$/, '')
+
   pageSchema = new mongoose.Schema
-    wiki: String
-    title: String
-    text: String
+    wiki:
+      type: String
+      validate: [isValidName, 'Invalid WiKi name']
+    title:
+      type: String
+      validate: [isValidName, 'Invalid WiKi name']
+    text:
+      type: String
     timestamp:
       type: Date
       index: true
 
+  pageSchema.statics.isValidName = isValidName
+  pageSchema.statics.toValidName = toValidName
+
   # Pages.json() 指定されたページを取得
-  pageSchema.statics.json = (wiki, title, param, callback) ->
+  pageSchema.statics.findByName = (wiki, title, param, callback) ->
+    if !isValidName(title) or !isValidName(wiki)
+      callback "invalid name wiki:#{wiki}, title:#{title}"
+      return
     @find
       wiki: wiki
       title:title
     .sort
       timestamp: -1
     .exec (err, results) ->
+      if err
+        return callback err
       if param.age # 履歴画像上ドラッグで古いデータを取得
         days = Math.ceil(Math.exp(param.age * Math.log(1.5)))              # だいたい何日前のデータか計算
         if results.length > 0
           time = new Date(results[0].timestamp - days * 24 * 60 * 60 * 1000) # その日付を取得
           oldpage = _.find(results, (result) -> result.timestamp < time)     # それより古いデータを取得
           oldpage = results[results.length - 1] unless oldpage               # なければ最古のものを取得
-          callback err, oldpage if oldpage
-        return
+          callback null, oldpage if oldpage
+          return
       if param.version # Nバージョン前のデータを取得
-        callback err, results[param.version]
+        callback null, results[param.version]
         return
-      callback err, results[0] # 最新バージョンを取得
+      callback null, results[0] # 最新バージョンを取得
 
   # インデクス作成が必要
   # % mongo gyazz

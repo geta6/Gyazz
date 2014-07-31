@@ -27,7 +27,7 @@ module.exports = (app) ->
     else
       Pages.search wiki, query, (err, list) ->
         if err
-          return res.send
+          return res.end err
         res.render 'search',
           wiki:  wiki
           q:     query
@@ -140,13 +140,16 @@ module.exports = (app) ->
     # 認証必要
     wiki  = req.params[0]
     Pages.alist wiki, (err, list) ->
+      if err
+        res.redirect "/#{wiki}"
+        return
       len = list.length
       if len == 0
         res.redirect "/#{wiki}"
         return
       ind = Math.floor(Math.random() * len)
       title = list[ind]._id
-      Pages.json wiki, title, {}, (err, page) ->
+      Pages.findByName wiki, title, {}, (err, page) ->
         if err
           debug "Pages error"
           return
@@ -160,6 +163,10 @@ module.exports = (app) ->
   app.get /^\/([^\/]+)\/(.+)$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
+    if !Pages.isValidName(title) or !Pages.isValidName(wiki)
+      title = Pages.toValidName title
+      wiki  = Pages.toValidName wiki
+      return res.redirect "/#{wiki}/#{title}"
     debug "Get: wiki = #{wiki}, title=#{title}"
     # アクセス記録
     access = new Access()
@@ -169,16 +176,16 @@ module.exports = (app) ->
     access.save (err) ->
       if err
         debug "Access write error"
-      # ページデータを読み込んでrawdataとする
-      Pages.json wiki, title, {}, (err, page) ->
-        if err
-          debug "Pages error"
-          return
-        rawdata =  page?.text or ""
-        return res.render 'page',
-          title:   title
-          wiki:    wiki
-          rawdata: rawdata
+    # ページデータを読み込んでrawdataとする
+    Pages.findByName wiki, title, {}, (err, page) ->
+      if err
+        debug "Page error: #{err}"
+        return res.status(500).end err
+      rawdata =  page?.text or ""
+      return res.render 'page',
+        title:   title
+        wiki:    wiki
+        rawdata: rawdata
 
   # データ書込み (apiとしてだけ用意)
   app.post '/__write', (req, res) ->
@@ -186,6 +193,9 @@ module.exports = (app) ->
     wiki  = req.body.name
     title = req.body.title
     text  = req.body.data
+    if !Pages.isValidName(wiki) or !Pages.isValidName(title)
+      res.status(400).end "Invalid name - wiki:#{wiki}, title:#{title}"
+      return
     curtime = new Date
     lasttime = writetime["#{wiki}::#{title}"]
     if !lasttime || curtime > lasttime
@@ -197,7 +207,9 @@ module.exports = (app) ->
       page.timestamp = curtime
       page.save (err) ->
         if err
-          debug "Write error"
+          debug "Write error: #{err}"
+          res.status(500).end err
+          return
         res.send "noconflict"
         text.split(/\n/).forEach (line) -> # 新しい行ならば生成時刻を記録する
           Lines.find
@@ -207,6 +219,7 @@ module.exports = (app) ->
           .exec (err, results) ->
             if err
               debug "line read error"
+              return
             if results.length == 0
               line = new Lines
               line.wiki      = wiki
@@ -227,6 +240,10 @@ module.exports = (app) ->
       debug "Get: wiki = #{wiki}"
 
     Pages.alist wiki, (err, list) ->
+      if err
+        debug "pagelist get error: #{err}"
+        res.status(500).send err
+        return
       args =
         wiki:  wiki
         q:     search_query
