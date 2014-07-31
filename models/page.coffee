@@ -34,6 +34,7 @@ module.exports = (app) ->
       validate: [isValidName, 'Invalid WiKi name']
     text:
       type: String
+      default: ""
     timestamp:
       type: Date
       index: true
@@ -41,6 +42,25 @@ module.exports = (app) ->
   pageSchema.post 'save', (page) ->
     ## アクセス履歴更新
     new Access(wiki: page.wiki, title: page.title).save()
+
+    # ページ代表画像を更新
+    firstline = page.text.split(/\n/)[0]
+    repimage = switch
+      when m = firstline.match /(https?:\/\/\S+)\.(png|jpe?g|gif)/i
+        "#{m[1]}.#{m[2]}"
+      else
+        null
+    mongoose.model('Attr').findOne
+      wiki: page.wiki
+      title: page.title
+    .exec (err, attr) =>
+      if err
+        return
+      attr.attr.repimage = repimage
+      attr.save (err) ->
+        debug err if err
+
+
 
   pageSchema.statics.isValidName = isValidName
   pageSchema.statics.toValidName = toValidName

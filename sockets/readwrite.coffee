@@ -66,29 +66,6 @@ module.exports = (app) ->
 
         Pairs.refresh wiki, title, keywords # リンク情報登録
         
-        # 代表画像
-        firstline = text.split(/\n/)[0]
-        repimage = ''
-        switch
-          when m = firstline.match /gyazo.com\/([0-9a-f]{32})\.png/i
-            repimage = m[1]
-          when m = firstline.match /(https?:\/\/\S+)\.(png|jpe?g|gif)/i
-            repimage = "#{m[1]}.#{m[2]}"
-        # 古い情報を消して新しいrepimageを設定
-        Attrs.find
-          wiki:wiki
-          title:title
-        , (err, results) =>
-          results.forEach (result) =>
-            result.remove (err) ->
-              console.log "remove fail" if err
-          attr = new Attrs
-          attr.wiki          = wiki
-          attr.title         = title
-          attr.attr.repimage = repimage
-          attr.save (err) ->
-            debug err
-
         page = new Pages
         page.wiki      = wiki
         page.title     = title
