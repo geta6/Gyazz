@@ -46,29 +46,55 @@ module.exports = (app) ->
 
   # Pages.mlist() 更新順にページタイトルのリストを取得
   pageSchema.statics.mlist = (wiki, callback) ->
-    timesort this, wiki, callback
+    timesort this, this, wiki, callback
 
   # Pages.alist() アクセス順にページタイトルのリストを取得
   pageSchema.statics.alist = (wiki, callback) ->
-    timesort Access, wiki, callback
+    timesort this, Access, wiki, callback
     
-  timesort = (db, wiki, callback) ->
-    db.aggregate # MongoDBの「パイプライン処理」
+  timesort = (pagedb, db, wiki, callback) ->
+    # まず、中身が空のページをさがす
+    pagedb.aggregate
       $match:
         wiki: wiki
     ,
-      $group:
-        "_id": "$title"
-        timestamp:
-          $last: "$timestamp"
-    ,
       $sort:
         timestamp: -1
-    .exec (err, results) ->
-      if err
-        console.log err
-        return
-      callback err, results
+    ,
+      $group:
+        _id: "$title"
+        timestamp:
+          $last: "$timestamp"
+        text:
+          $first: "$text"
+    ,
+      $match:
+        $or: [
+          text: /^\(empty\)$/
+        ,
+          text: /^\s*$/
+        ]
+    .exec (err, emptypages) ->
+      emptytitles = emptypages.map (page) -> # 空ページのタイトル
+        page._id
+      # 全ページリストを取得
+      db.aggregate
+        $match:
+          wiki: wiki
+      ,
+        $group:
+          _id: "$title"
+          timestamp:
+            $last: "$timestamp"
+      ,
+        $sort:
+          timestamp: -1
+      .exec (err, results) ->
+        if err
+          console.log err
+          return
+        callback err, _.filter results, (entry) -> # 空ページを除いたリストを返す
+          ! (entry._id in emptytitles)
 
   # Pages.access() すべてのアクセス/変更時刻の配列を得る
   pageSchema.statics.access = (wiki, title, callback) ->
@@ -139,10 +165,6 @@ module.exports = (app) ->
       
   # Pages.search() 検索
   pageSchema.statics.search = (wiki, query, callback) ->
-    #@find
-    #  wiki: wiki
-    #  text: RegExp(query)
-    #.exec (err, results) ->dsfaisdfaf
     @aggregate
       $match:
         $or: [
