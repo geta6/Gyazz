@@ -187,12 +187,12 @@ module.exports = (app) ->
     lasttime = writetime["#{wiki}::#{title}"]
     if !lasttime || curtime > lasttime
       writetime["#{wiki}::#{title}"] = curtime
-      Pages.update
-        wiki:      wiki
-        title:     title
-        text:      text
-        timestamp: curtime
-      , (err) ->
+      page = new Pages
+      page.wiki      = wiki
+      page.title     = title
+      page.text      = text
+      page.timestamp = curtime
+      page.save (err) ->
         if err
           debug "Write error"
         res.send "noconflict"
@@ -205,12 +205,12 @@ module.exports = (app) ->
             if err
               debug "line read error"
             if results.length == 0
-              Lines.update
-                wiki:      wiki
-                title:     title
-                line:      line
-                timestamp: curtime
-              , (err) ->
+              line = new Lines
+              line.wiki      = wiki
+              line.title     = title
+              line.line      = line
+              line.timestamp = curtime
+              line.save (err) ->
                 if err
                   debug "line write error"
     
