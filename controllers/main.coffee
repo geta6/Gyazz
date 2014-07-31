@@ -17,7 +17,7 @@ writetime = {}
 module.exports = (app) ->
   app.get '/', (req, res) ->
     return res.render 'index',
-      title: 'Express'
+      title: 'Gyazz'
 
   app.get '/:wiki/__search', (req, res) ->
     wiki = req.params.wiki
