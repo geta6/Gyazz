@@ -28,6 +28,7 @@ module.exports = (app) ->
         type: String
         validate: [
           (v) ->
+            return true if v is null
             return /^https?:\/\/.+/.test v
           'Invalid Image URL'
         ]

@@ -59,7 +59,7 @@ module.exports = (app) ->
         else
           res.redirect "http://gyazo.com/#{image}.png"
       else
-        res.send 404, "image not found"
+        res.status(404).send "image not found"
 
   #  ページ内容取得 (apiとしてだけ)用意
   app.get /^\/([^\/]+)\/(.*)\/json$/, (req, res) ->
