@@ -35,7 +35,7 @@ app.set 'package', package_json
 ## load controllers, models, socket.io ##
 components =
   models:      [ 'access', 'pair', 'page', 'attr', 'line' ]
-  controllers: [ 'main' ]
+  controllers: [ 'api', 'main' ]
   lib:         [ 'png' ]
   sockets:     [ 'readwrite' ]
 
