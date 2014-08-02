@@ -5,10 +5,9 @@
 debug    = require('debug')('gyazz:sockets:readwrite')
 mongoose = require 'mongoose'
 
-Pages  = mongoose.model 'Page'
-Lines  = mongoose.model 'Line'
-Pairs  = mongoose.model 'Pair'
-Attrs  = mongoose.model 'Attr'
+Page  = mongoose.model 'Page'
+Line  = mongoose.model 'Line'
+Pair  = mongoose.model 'Pair'
 
 module.exports = (app) ->
   io = app.get 'socket.io'
@@ -30,13 +29,13 @@ module.exports = (app) ->
       return if _busy && ! req.opts.force
       _busy = true
       debug "readwrite.coffee: #{req.wiki}::#{req.title} read request from client"
-      Pages.findByName req.wiki, req.title, req.opts, (err, page) ->
+      Page.findByName req.wiki, req.title, req.opts, (err, page) ->
         if err
-          debug "Pages error"
+          debug "Page error"
           return
         data =  page?.text.split(/\n/) or []
         # 行ごとの古さを計算する
-        Lines.timestamps req.wiki, req.title, data, (err, timestamps) ->
+        Line.timestamps req.wiki, req.title, data, (err, timestamps) ->
           debug "readwrite.coffee: send data back to client"
           # io.sockets.emit 'pagedata', { # 自分を含むあらゆる接続先にデータ送信
           socket.emit 'pagedata', { # 自分だけに返信
@@ -64,9 +63,9 @@ module.exports = (app) ->
       if !lasttime || curtime > lasttime
         writetime["#{wiki}::#{title}"] = curtime
 
-        Pairs.refresh wiki, title, keywords # リンク情報登録
+        Pair.refresh wiki, title, keywords # リンク情報登録
         
-        page = new Pages
+        page = new Page
         page.wiki      = wiki
         page.title     = title
         page.text      = text
@@ -79,7 +78,7 @@ module.exports = (app) ->
           socket.emit 'writesuccess' # クライアントだけに返す
           
           data = text.split(/\n/) or []
-          Lines.timestamps wiki, title, data, (err, timestamps) ->
+          Line.timestamps wiki, title, data, (err, timestamps) ->
             debug "readwrite.coffee: send data back to client"
             socket.broadcast.to(room).emit 'pagedata', { # 同じページを見ている自分以外の相手に送信
               wiki:        wiki
@@ -90,7 +89,7 @@ module.exports = (app) ->
             }
             
           text.split(/\n/).forEach (linetext) -> # 新しい行ならば生成時刻を記録する
-            Lines.find
+            Line.find
               wiki:  wiki
               title: title
               line:  linetext
@@ -99,7 +98,7 @@ module.exports = (app) ->
                 debug "line read error"
                 return
               if results.length == 0
-                line = new Lines
+                line = new Line
                 line.wiki      = wiki
                 line.title     = title
                 line.line      = linetext
