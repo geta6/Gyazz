@@ -5,6 +5,8 @@
 debug    = require('debug')('gyazz:page')
 _        = require 'underscore'
 mongoose = require 'mongoose'
+memjs    = require 'memjs'
+cache    = memjs.Client.create null, {expires: 60}
 
 module.exports = (app) ->
   
@@ -68,11 +70,66 @@ module.exports = (app) ->
   pageSchema.statics.isValidName = isValidName
   pageSchema.statics.toValidName = toValidName
 
-  # Pages.json() 指定されたページを取得
+
+  saveNewPage_timeouts = {}
+
+  ## 新しくページを保存する（キャッシュ有効）
+  pageSchema.statics.saveNewPage = (wiki, title, text, callback) ->
+    if !isValidName(wiki) or !isValidName(title)
+      callback "invalid name wiki:#{wiki}, title:#{title}"
+      return
+    text = text.trim()
+    cache_key = "page_#{wiki}::#{title}"
+    cache.get cache_key, (err, cached_text, flag) =>
+      if err
+        debug "chache get Error - #{err}"
+      if text is decodeURI(cached_text)
+        callback "cache hit"
+        return
+      cache.set cache_key, encodeURI(text), (err, val) =>
+        wait = 20000
+        if err
+          debug "cache set Error - #{err}"
+          wait = 10
+
+        ## 20秒待って、新しいデータが来なければ保存
+        clearTimeout saveNewPage_timeouts["#{wiki}::#{title}"]
+        saveNewPage_timeouts["#{wiki}::#{title}"] = setTimeout =>
+          page = new @
+            wiki: wiki
+            title: title
+            text: text
+            timestamp: Date.now()
+          page.save callback
+        , wait
+
+
+  # 指定されたページを取得（キャッシュ有効）
   pageSchema.statics.findByName = (wiki, title, param, callback) ->
     if !isValidName(title) or !isValidName(wiki)
       callback "invalid name wiki:#{wiki}, title:#{title}"
       return
+    if !param.age? and (!param.version? or param.version is 0)
+      cache.get "page_#{wiki}::#{title}", (err, cached_text, flag) =>
+        if !err and cached_text?
+          page = new @
+            wiki: wiki
+            title: title
+            text: decodeURI cached_text
+          callback null, page
+          return
+        @find
+          wiki: wiki
+          title: title
+        .sort
+          timestamp: -1
+        .limit 1
+        .exec (err, results) ->
+          if err
+            return callback err
+          callback null, results[0]
+      return
+
     @find
       wiki: wiki
       title:title
@@ -92,7 +149,7 @@ module.exports = (app) ->
       if param.version # Nバージョン前のデータを取得
         callback null, results[param.version]
         return
-      callback null, results[0] # 最新バージョンを取得
+
 
   # インデクス作成が必要
   # % mongo gyazz
