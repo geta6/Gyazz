@@ -23,6 +23,7 @@ Node, Express, MongoDBで再実装しました。
 
 ## 起動
 
+    % GYAZZ_URL=http://gyazz.com
     % PORT=3000 npm start
 
 ## Debug
@@ -56,6 +57,7 @@ gruntでファイル更新をwatchし、継続的にtestを実行しつつcoffee
     % heroku config:add TZ=Asia/Tokyo
     % heroku config:set "DEBUG=gyazz*"
     % heroku config:set NODE_ENV=production
+    % heroku config:set GYAZZ_URL=http://(app_name).herokuapp.com
 
 ### enable MongoDB plug-in
 

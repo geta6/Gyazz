@@ -1,7 +1,7 @@
 #
 # Gyazzページのデータ, アクセス情報
 #
- 
+
 debug    = require('debug')('gyazz:page')
 _        = require 'underscore'
 mongoose = require 'mongoose'
@@ -65,6 +65,7 @@ module.exports = (app) ->
       attr.save (err) ->
         debug err if err
 
+    app.emit 'page saved', page
 
 
   pageSchema.statics.isValidName = isValidName
