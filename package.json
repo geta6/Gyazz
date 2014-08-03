@@ -28,6 +28,7 @@
     "grunt-notify": "*",
     "grunt-simple-mocha": "*",
     "jade": "*",
+    "memjs": "^0.8.5",
     "mocha": "*",
     "mongoose": "3.x",
     "morgan": "^1.0.0",

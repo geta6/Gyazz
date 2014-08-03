@@ -7,24 +7,20 @@ class GyazzSocket
     @gt = gt
 
     @socket.on 'pagedata', (res) =>
-      # alert "pagedata received... data = #{res.data}"
-      if res.wiki == wiki && res.title == title
-        _data_old =   res['data'].concat()
-        @gb.data    = res.data.concat()
-        @gb.datestr = res.date
-        @gb.timestamps = res.timestamps
-        @gb.refresh()
+      _data_old =   res['data'].concat()
+      @gb.data    = res.data.concat()
+      @gb.datestr = res.date
+      @gb.timestamps = res.timestamps or []
+      @gb.refresh()
         
     @socket.on 'writesuccess', (res) =>
       notifyBox.hide()
 
-  getdata: (opts=null, callback=null) =>
-    opts = {} if opts == null || typeof opts != 'object'
+  getdata: (opts = {}, callback = ->) =>
+    opts = {} if typeof opts isnt 'object'
     if typeof opts.version != 'number' || 0 > opts.version
       opts.version = 0
     @socket.emit 'read',
-      wiki:  wiki
-      title: title
       opts:  opts
 
   _oldstr = ""
@@ -37,8 +33,6 @@ class GyazzSocket
     keywords = _.flatten data.map (line) =>
       @gt.keywords(line, wiki, title, 0)
     @socket.emit 'write',
-      wiki:     wiki
-      title:    title
       data:     datastr
       keywords: keywords
   

@@ -6,7 +6,17 @@ Node, Express, MongoDBで再実装しました。
 [![Build Status](https://travis-ci.org/masuilab/Gyazz.svg?branch=master)](https://travis-ci.org/masuilab/Gyazz)
 
 
+# 必要環境
+
+- Node.js 0.10.x
+- MongoDB 2.x
+- memcached
+
+
 # Install Dependencies
+
+
+    % brew install mongodb memcached
 
     % npm i
 
@@ -53,6 +63,9 @@ gruntでファイル更新をwatchし、継続的にtestを実行しつつcoffee
     # or
     % heroku addons:add mongohq
 
+### enable memcached plug-in
+
+    % heroku addons:add memcachier
 
 ### logs
 
