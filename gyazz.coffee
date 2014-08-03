@@ -38,6 +38,7 @@ components =
   controllers: [ 'api', 'main' ]
   lib:         [ 'png' ]
   sockets:     [ 'readwrite' ]
+  events:      [ 'notify' ]
 
 for type, items of components
   for item in items
