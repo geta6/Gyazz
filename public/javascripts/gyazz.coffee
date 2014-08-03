@@ -140,7 +140,7 @@ $(document).keyup (event) ->
 $(document).keypress (event) ->
   kc = event.which
   if kc == KC.enter
-    event.preventDefault()
+    event.preventDefault() if $(':focus').attr('id') != 'search'
   if kc == KC.enter
     # 1行追加
     # IME確定でもkeydownイベントが出てしまうのでここで定義が必要!
