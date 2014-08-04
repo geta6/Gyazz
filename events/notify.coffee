@@ -1,5 +1,5 @@
 #
-# socket.ioを利用したデータ読み書き (サーバ側)
+# webhookによるPage更新通知
 #
 
 debug    = require('debug')('gyazz:events:notify')
