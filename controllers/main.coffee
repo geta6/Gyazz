@@ -72,6 +72,8 @@ module.exports = (app) ->
   app.get /^\/([^\/]+)\/(.+)$/, (req, res) ->
     wiki  = req.params[0]
     title = req.params[1]
+    if typeof req._parsedUrl.query is "string"
+      title += "?" + req._parsedUrl.query
     if !Page.isValidName(title) or !Page.isValidName(wiki)
       title = Page.toValidName title
       wiki  = Page.toValidName wiki
