@@ -97,12 +97,6 @@ module.exports = (app) ->
   # ページリスト
   app.get '/:wiki/', (req, res) ->
     wiki = req.params.wiki
-    search_query = req.query.q
-    if search_query
-      debug "Search: wiki = #{wiki} q = #{search_query}"
-    else
-      debug "Get: wiki = #{wiki}"
-
     Page.alist wiki, (err, list) ->
       if err
         debug "pagelist get error: #{err}"
@@ -110,7 +104,7 @@ module.exports = (app) ->
         return
       args =
         wiki:  wiki
-        q:     search_query
+        q:     ""
         pages: list
 
       res.render 'search', args
