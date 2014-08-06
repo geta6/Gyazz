@@ -263,6 +263,7 @@ class GyazzBuffer
       @data[@editline] = ""# 現在の行を削除
       @deleteblankdata()
       @gs.writedata @data
+      @refresh()
       setTimeout ->
         # カーソルを行頭に移動
         # input = $("#editline")
