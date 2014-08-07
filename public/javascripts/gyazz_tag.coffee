@@ -42,7 +42,7 @@ class GyazzTag
   #  ]
   #
 
-  _tag_expand = (s, root, wiki) ->
+  _tag_expand = (s, wiki) ->
     return if typeof s != "string"
     matched = []
     s = s.replace /</g,'&lt'
@@ -66,30 +66,30 @@ class GyazzTag
       while m = s.match /^(.*)\[\[(([^\]]|\][^\]]|[^\]]\])*)\]\](.*)$/ # [[....]]
         [all, pre, inner, dummy, post] = m
         switch
-          when t = inner.match /^(http[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://.../ http://.../abc.jpg]]
+          when t = inner.match /^(https?:\/\/[^ ]+) (.*)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://.../ http://.../abc.jpg]]
             matched.push "<a href='#{t[1]}' target='_blank'><img src='#{t[2]}.#{t[3]}' border='none'></a>"
-          when t = inner.match /^(http.+)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://example.com/abc.jpg]
+          when t = inner.match /^(https?:\/\/.+)\.(jpg|jpeg|jpe|png|gif)$/i # [[http://example.com/abc.jpg]
             matched.push "<a href='#{t[1]}.#{t[2]}' target='_blank'><img src='#{t[1]}.#{t[2]}' border='none'></a>"
           when t = inner.match /^(.+)\.(png|icon)$/i # ページ名.icon or ページ名.pngでアイコン表示
             link_to = null
             img_url = null
             if t[1].match /^@[\da-z_]+$/i
               screen_name = t[1].replace(/^@/,"")
-              link_to = "http://twitter.com/#{screen_name}"
-              img_url = "http://twiticon.herokuapp.com/#{screen_name}/mini"
+              link_to = "https://twitter.com/#{screen_name}"
+              img_url = "//twiticon.herokuapp.com/#{screen_name}/mini"
             else
-              link_to = "#{root}/#{wiki}/#{t[1]}"
+              link_to = "/#{wiki}/#{t[1]}"
               img_url = "#{link_to}/icon"
             matched.push "<a href='#{link_to}' class='link' target='_blank'>" +
               "<img src='#{img_url}' class='icon' height='24' border='0' alt='#{link_to}' title='#{link_to}' /></a>"
           when t = inner.match /^(.+)\.(png|icon|jpe?g|gif)[\*x×]([1-9][0-9]*)(|\.[0-9]+)$/ # (URL|ページ名).(icon|png)x個
-            link_to = "#{root}/#{wiki}/#{t[1]}"
+            link_to = "/#{wiki}/#{t[1]}"
             img_url = "#{link_to}/icon"
             switch
               when t[1].match /^@[\da-z_]+$/i
                 screen_name = t[1].replace(/^@/,"")
-                link_to = "http://twitter.com/#{screen_name}"
-                img_url = "http://twiticon.herokuapp.com/#{screen_name}/mini"
+                link_to = "https://twitter.com/#{screen_name}"
+                img_url = "//twiticon.herokuapp.com/#{screen_name}/mini"
               when t[1].match /^https?:\/\/.+$/
                 img_url = link_to = "#{t[1]}.#{t[2]}"
             count = Number(t[3])
@@ -102,26 +102,26 @@ class GyazzTag
                 alt='#{link_to}' title='#{link_to}' />"
             icons += '</a>'
             matched.push icons
-          when t = inner.match /^((http[s]?|javascript):[^ ]+) (.*)$/ # [[http://example.com/ example]]
+          when t = inner.match /^((https?|javascript):[^ ]+) (.*)$/ # [[http://example.com/ example]]
             target = t[1].replace /"/g, '%22'
             matched.push "<a href='#{target}' target='_blank'>#{t[3]}</a>"
-          when t = inner.match /^((http[s]?|javascript):[^ ]+)$/ # [[http://example.com/]]
+          when t = inner.match /^((https?|javascript):[^ ]+)$/ # [[http://example.com/]]
             target = t[1].replace /"/g, '%22'
             matched.push "<a href='#{target}' class='link' target='_blank'>#{t[1]}</a>"
           when t = inner.match /^@([a-zA-Z0-9_]+)$/ # @名前 を twitterへのリンクにする
-            matched.push "<a href='http://twitter.com/#{t[1]}' class='link' target='_blank'>@#{t[1]}</a>"
+            matched.push "<a href='https://twitter.com/#{t[1]}' class='link' target='_blank'>@#{t[1]}</a>"
           when t = inner.match /^(.+)::$/ #  Wikiname:: で他Wikiに飛ぶ (2011 4/17)
-            matched.push "<a href='#{root}/#{t[1]}' class='link' target='_blank' title='#{t[1]}'>#{t[1]}</a>"
+            matched.push "<a href='/#{t[1]}' class='link' target='_blank' title='#{t[1]}'>#{t[1]}</a>"
           when t = inner.match /^(.+):::(.+)$/ #  Wikiname:::Title で他Wikiに飛ぶ (2010 4/27)
             wikiname = t[1]
             wikititle = t[2]
-            url = "#{root}/#{wikiname}/#{encodeURIComponent(wikititle).replace(/%2F/g,"/")}"
+            url = "/#{wikiname}/#{encodeURIComponent(wikititle).replace(/%2F/g,"/")}"
             matched.push "<a href='#{url}' class='link' target='_blank' title='#{wikititle}'>#{wikititle}</a>"
           when t = inner.match /^(.+)::(.+)$/ #  Wikiname::Title で他Wikiに飛ぶ (2010 4/27)
             wikiname = t[1]
             wikititle = t[2]
-            wikiurl = "#{root}/#{wikiname}/"
-            url = "#{root}/#{wikiname}/#{encodeURIComponent(wikititle).replace(/%2F/g,"/")}"
+            wikiurl = "/#{wikiname}/"
+            url = "/#{wikiname}/#{encodeURIComponent(wikititle).replace(/%2F/g,"/")}"
             matched.push "<a href='#{wikiurl}' class='link' target='_blank' title='#{wikiname}'>#{wikiname}" +
                  "</a>::<a href='#{url}' class='link' target='_blank' title='#{wikititle}'>#{wikititle}</a>"
           when t = inner.match /^([a-fA-F0-9]{32})\.(\w+) (.*)$/ # (MD5).ext をmasui.sfcにリンク
@@ -172,7 +172,7 @@ class GyazzTag
             matched.push s
           else
             _keywords.push inner
-            matched.push "<a href='#{root}/#{wiki}/#{inner}' class='tag' target='_blank'>#{inner}</a>"
+            matched.push "<a href='/#{wiki}/#{inner}' class='tag' target='_blank'>#{inner}</a>"
 
         s = "#{pre}<<<#{matched.length-1}>>>#{post}"
       s

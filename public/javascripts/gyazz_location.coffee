@@ -25,7 +25,6 @@ window.parseloc = (s) -> # 'E130.43.19.70N31.47.47.34Z2' => {130.7221, 31.79648,
     zoom: 1
     lat:  0.0
     lng: 0.0
-  console.log o
   while a = s.match /^([EWNSZ])([1-9][0-9\.]*)(.*)$/
     v = if a[2].match /\..*\./ then loc2val(a[2]) else parseFloat(a[2])
     switch a[1]

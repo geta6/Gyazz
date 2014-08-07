@@ -26,10 +26,6 @@ div.links {
   border-color:#aaa;
   background-color:#c0c0c0;
   line-height:10pt;
-/*
--moz-border-radius: 5px;
-border-radius: 5px;
-*/
 }
 
 span.wordtitle {
@@ -264,7 +260,7 @@ div.listedit0 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 10;
+  margin: 0px 0px 0px 10px;
 }
 div.listedit0:before {
   display: marker;
@@ -278,7 +274,7 @@ div.listedit1 {
   /* font-style: italic; */
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 40;
+  margin: 0px 0px 0px 40px;
 }
 
 div.listedit1:before {
@@ -293,7 +289,7 @@ div.listedit2 {
   /* font-style: italic; */
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 70;
+  margin: 0px 0px 0px 70px;
 }
 
 div.listedit2:before {
@@ -309,7 +305,7 @@ div.listedit3 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 100;
+  margin: 0px 0px 0px 100px;
 }
 
 div.listedit3:before {
@@ -323,7 +319,7 @@ div.listedit4 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 130;
+  margin: 0px 0px 0px 130px;
 }
 
 div.listedit4:before {
@@ -337,7 +333,7 @@ div.listedit5 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 160;
+  margin: 0px 0px 0px 160px;
 }
 
 div.listedit5:before {
@@ -351,7 +347,7 @@ div.listedit6 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 190;
+  margin: 0px 0px 0px 190px;
 }
 
 div.listedit6:before {
@@ -365,7 +361,7 @@ div.listedit7 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 220;
+  margin: 0px 0px 0px 220px;
 }
 
 div.listedit7:before {
@@ -379,7 +375,7 @@ div.listedit8 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0 0 0 250;
+  margin: 0px 0px 0px 250px;
 }
 
 div.listedit8:before {
@@ -391,7 +387,7 @@ div.listedit8:before {
 input#editline {
   font-size:10pt;
   position:absolute;
-  width:600;
+  width: 600px;
   visibility:hidden;
   border:none;
   padding:1px;
@@ -400,18 +396,18 @@ input#editline {
 }
 
 div.icontext {
-  font-size:9pt;
-  margin:3;
+  font-size: 9pt;
+  margin: 3px;
   color:white;
   overflow:hidden;
   word-wrap:break-word
 }
 
 div.icon {
-  height:64;
-  width:64;
-  margin:2;
-  float:left;
+  height: 64px;
+  width:  64px;
+  margin: 2px;
+  float:  left;
   /*
   overflow:hidden;
   word-wrap:break-word;
