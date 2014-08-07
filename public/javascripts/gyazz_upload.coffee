@@ -8,9 +8,9 @@ class GyazzUpload
       _sendfile.call @, file, (filename) ->
         @gb.editline = @gb.data.length
         if filename.match(/\.(jpg|jpeg|png|gif)$/i)
-          @gb.data[@gb.editline] = "[[[#{root}/upload/#{filename}]]]"
+          @gb.data[@gb.editline] = "[[[/upload/#{filename}]]]"
         else
-          @gb.data[@gb.editline] = "[[#{root}/upload/#{filename} #{file.name}]]"
+          @gb.data[@gb.editline] = "[[/upload/#{filename} #{file.name}]]"
         writedata()
         @gb.editline = -1
         display gb, true
@@ -20,7 +20,7 @@ class GyazzUpload
     fd.append 'uploadfile', file
     notifyBox.print("uploading..", {progress: true}).show()
     $.ajax
-      url: root + "/__upload"
+      url: "/__upload"
       type: "POST"
       data: fd
       processData: false

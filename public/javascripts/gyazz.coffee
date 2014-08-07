@@ -7,8 +7,6 @@
 #  以下はExpressでセットされる
 #  var wiki =  '増井研';
 #  var title = 'MIRAIPEDIA';
-#  var root =  'http://masui.sfc.keio.ac.jp/Gyazz';
-#
 #
 
 gs = new GyazzSocket   # socket.io
@@ -41,8 +39,6 @@ KC =
   s:     83
 
 $ -> # = $(document).ready()
-  window.root = "http://#{location.host}"
-
   $('#rawdata').hide()
 
   [0...1000].forEach (i) ->

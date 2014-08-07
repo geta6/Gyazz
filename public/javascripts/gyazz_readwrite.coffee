@@ -21,7 +21,7 @@ class GyazzReadWrite
     $.ajax
       type: "POST"
       async: true
-      url: "#{root}/__write"
+      url: "/__write"
       data:
         name:  name
         title: title
@@ -62,7 +62,7 @@ class GyazzReadWrite
     $.ajax
       type: "GET"
       async: if opts.async? then opts.async else true
-      url: "#{root}/#{name}/#{title}/json"
+      url: "/#{name}/#{title}/json"
       data: opts
       success: (res) ->
         _data_old =   res['data'].concat()

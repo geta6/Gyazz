@@ -5,13 +5,13 @@ class GyazzRelated
     $.ajax
       type: "GET"
       async: true
-      url: "#{root}/#{wiki}/#{title}/related"
+      url: "/#{wiki}/#{title}/related"
       success: (pages) ->
         pages.map (page) ->
           title = page.title
           repimage = page.repimage
           imageurl = if repimage && repimage.match(/^[0-9a-f]+$/)
-            "http://Gyazo.com/#{repimage}.png"
+            "//gyazo.com/#{repimage}.png"
           else
             repimage
           url = "/#{wiki}/#{title}"
