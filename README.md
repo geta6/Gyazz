@@ -3,7 +3,8 @@
 Node, Express, MongoDBで再実装しました。
 ちゃんと動いてない機能も沢山ありますが…
 
-[![Build Status](https://travis-ci.org/masuilab/Gyazz.svg?branch=master)](https://travis-ci.org/masuilab/Gyazz)
+- [![Build Status](https://travis-ci.org/masuilab/Gyazz.svg?branch=master)](https://travis-ci.org/masuilab/Gyazz)
+- [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 
 # 必要環境
