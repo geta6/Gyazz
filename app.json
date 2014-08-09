@@ -1,0 +1,16 @@
+{
+  "name": "Node Gyazz",
+  "description": "Gyazz on Node.js",
+  "website": "https://github.com/masuilab/gyazz",
+  "success_url": "/memo/test",
+  "addons": [
+    "mongolab",
+    "memcachier"
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "DEBUG": "gyazz:*",
+    "GYAZZ_URL": "https://(YOUR_APP_NAME).herokuapp.com",
+    "TZ": "Asia/Tokyo"
+  }
+}
