@@ -27,6 +27,13 @@ module.exports = (app) ->
   toValidName = (name) ->
     return name.replace(/^\/+/, '').replace(/\/+$/, '')
 
+  ## ページテキストが(Gyazzのルール上で)空ページかどうか
+  isEmptyPageText = (text) ->
+    return false if typeof text isnt 'string'
+    return text is null or
+           text.length < 1 or
+           text is '(empty)'
+
   pageSchema = new mongoose.Schema
     wiki:
       type: String
@@ -71,6 +78,8 @@ module.exports = (app) ->
   pageSchema.statics.isValidName = isValidName
   pageSchema.statics.toValidName = toValidName
 
+  pageSchema.methods.isEmpty = ->
+    return isEmptyPageText @text
 
   saveNewPage_timeouts = {}
 
@@ -92,6 +101,8 @@ module.exports = (app) ->
         if err
           debug "cache set Error - #{err}"
           wait = 10
+        if isEmptyPageText text
+          wait = 1
 
         ## 20秒待って、新しいデータが来なければ保存
         clearTimeout saveNewPage_timeouts["#{wiki}::#{title}"]
@@ -107,7 +118,8 @@ module.exports = (app) ->
 
   # 指定されたページを取得（キャッシュ有効）
   pageSchema.statics.findByName = (wiki, title, param, callback) ->
-    if !isValidName(title) or !isValidName(wiki)
+    if !isValidName(wiki) or
+       (!(title instanceof RegExp) and !isValidName(title))
       callback "invalid name wiki:#{wiki}, title:#{title}"
       return
     if !param.age? and (!param.version? or param.version is 0)
