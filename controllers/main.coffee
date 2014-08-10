@@ -84,10 +84,15 @@ module.exports = (app) ->
         debug "Access write error"
 
     # ページデータを読み込んでrawdataとする
-    Page.findByName wiki, title, {}, (err, page) ->
+    title_regexp =
+      new RegExp "^#{title.replace(/\s/g,'').split('').join(' ?')}$", 'i'
+    Page.findByName wiki, title_regexp, {}, (err, page) ->
       if err
         debug "Page error: #{err}"
         return res.status(500).end err
+      if page? and title isnt page?.title and !page?.isEmpty()
+        res.redirect "/#{page.wiki}/#{page.title}"
+        return
       rawdata =  page?.text or ""
       return res.render 'page',
         title:   title
