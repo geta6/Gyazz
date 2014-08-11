@@ -16,6 +16,44 @@ div.title {
   border-width:1px;
   border-color:#aaa;
   background-color:#e0e0e0;
+  position: relative;
+}
+
+/* Search */
+form.search {
+  text-indent: 0;
+  margin-top: -11px;
+  padding: 1px;
+  height: 21px;
+  background: #888888;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 100%;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+}
+form.search input[type='text'] {
+  border: 0;
+  background: #FFFFFF;
+  margin: 0;
+  padding: 4px;
+  vertical-align: middle;
+  width:140px;
+}
+form.search input[type='submit'] {
+  padding: 2px 7px 3px 0;
+  height: 100%;
+  border: 0;
+  background: #888888;
+  color: #F4F4F4;
+  font-weight: bold;
+  vertical-align: middle;
+  line-height: 18px;
+  cursor: pointer;
+}
+form.search input[type='submit']:hover {
+  color: #4F4F4;
 }
 
 div.links {
@@ -79,7 +117,7 @@ pre {
   font-family: monospace;
   border-style: solid;
   border-width: 1px 2px 2px 1px;
-  border-color: #6666aa; 
+  border-color: #6666aa;
   color: #444466;
   background-color: #e8e8ff;
   white-space: pre;
