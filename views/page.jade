@@ -52,11 +52,10 @@ html
 
       span#debug
 
-      form(action="/#{wiki}/__search",method="get",style="float:right;font-size:12pt;")
-        input#search(height='20', name='q', type='text', value="")
-        | &nbsp;
+      form.search(action="/#{wiki}/__search", method="get")
+        input#search(name='q', type='text', value="")
         input(type='submit', value='リスト/検索')
-    
+
       span#datestr.language
 
     #rawdata #{rawdata}
