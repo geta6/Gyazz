@@ -94,7 +94,7 @@ module.exports = (app) ->
       if err
         debug "chache get Error - #{err}"
       if text is decodeURI(cached_text)
-        callback "cache hit"
+        callback null
         return
       cache.set cache_key, encodeURI(text), (err, val) =>
         wait = 20000

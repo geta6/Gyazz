@@ -13,8 +13,11 @@ class GyazzSocket
       @gb.timestamps = res.timestamps or []
       @gb.refresh()
         
-    @socket.on 'writesuccess', (res) =>
-      notifyBox.hide()
+    @socket.on 'after write', (err) =>
+      if err
+        notifyBox.print(err).show(3000)
+        return
+      notifyBox.show(1)
 
   getdata: (opts = {}, callback = ->) =>
     opts = {} if typeof opts isnt 'object'

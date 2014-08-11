@@ -62,12 +62,16 @@ module.exports = (app) ->
         data: text?.split(/[\r\n]+/) or []
       }
 
+      # 書き込んできたクライアントに完了通知
+      socket.emit 'after write', null
+
       Page.saveNewPage wiki, title, text, (err) ->
         if err
           debug "save error: #{err}"
+          socket.emit 'after write', err
           return
         debug "#{wiki}::#{title} page saved"
-        socket.emit 'writesuccess' # 書き込んできたクライアントに完了通知
+
         Pair.refresh wiki, title, keywords # リンク情報登録
 
         # 行の生成時刻を記録する
