@@ -446,10 +446,8 @@ div.icon {
   width:  64px;
   margin: 2px;
   float:  left;
-  /*
   overflow:hidden;
   word-wrap:break-word;
-  */
 }
 
 div.icon img {
