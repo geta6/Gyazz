@@ -5,17 +5,25 @@ module.exports = (grunt) ->
   require 'coffee-errors'
 
   grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-contrib-csslint'
   grunt.loadNpmTasks 'grunt-jsonlint'
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-simple-mocha'
   grunt.loadNpmTasks 'grunt-notify'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
 
-  grunt.registerTask 'test',    [ 'jsonlint', 'coffeelint', 'simplemocha' ]
+  grunt.registerTask 'test',    [ 'csslint', 'jsonlint', 'coffeelint', 'simplemocha' ]
   grunt.registerTask 'default', [ 'test', 'build', 'watch' ]
   grunt.registerTask 'build',   [ 'coffee' ]
 
   grunt.initConfig
+
+    csslint:
+      strict:
+        src: [
+          '**/*.css'
+          '!node_modules/**'
+        ]
 
     jsonlint:
       config:
