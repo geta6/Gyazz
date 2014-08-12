@@ -19,7 +19,7 @@ class GyazzRelated
             iconCSS =
               'background-image': "url(#{imageurl})"
 
-            icontext = $('<div>').addClass('icontext overimage').text(title)
+            icontext = $('<span>').addClass('icontext overimage').text(title)
             div = $('<div>').addClass('icon').css(iconCSS).append(icontext)
             $('#links').append $("<a>").attr('href',url).attr('target','_blank').append(div)
           else
