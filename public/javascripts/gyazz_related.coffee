@@ -16,16 +16,11 @@ class GyazzRelated
             repimage
           url = "/#{wiki}/#{title}"
           if repimage
-            img = $('<img>').attr
-              src: imageurl
-              title: title
-            .css
-              'max-height':'64'
-              border:'none'
-              width:'64'
-  
-            center = $('<center>').append img
-            div = $('<div>').addClass('icon').append(center)
+            iconCSS =
+              'background-image': "url(#{imageurl})"
+
+            icontext = $('<div>').addClass('icontext overimage').text(title)
+            div = $('<div>').addClass('icon').css(iconCSS).append(icontext)
             $('#links').append $("<a>").attr('href',url).attr('target','_blank').append(div)
           else
             md5 = MD5_hexhash title
@@ -44,4 +39,3 @@ class GyazzRelated
         notifyBox.print("getrelated() fail").show(1000)
 
 window.GyazzRelated = GyazzRelated
-
