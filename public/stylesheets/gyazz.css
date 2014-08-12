@@ -451,3 +451,8 @@ div.icon {
   word-wrap:break-word;
   */
 }
+
+div.icon img {
+  max-height: 100%;
+  max-width: 100%;
+}
