@@ -446,6 +446,10 @@ div.icon {
   width:  64px;
   margin: 2px;
   float:  left;
+  background-color: #FFFFFF;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
   overflow:hidden;
   word-wrap:break-word;
 }
@@ -453,4 +457,11 @@ div.icon {
 div.icon img {
   max-height: 100%;
   max-width: 100%;
+}
+div.icontext.overimage {
+  height: 58px;
+  width:  58px;
+  margin: 0;
+  padding: 3px;
+  background-color: rgba(0, 0, 0, 0.2);
 }
