@@ -433,7 +433,7 @@ input#editline {
   background-color:#ddd;
 }
 
-div.icontext {
+.icontext {
   font-size: 9pt;
   margin: 3px;
   color:white;
@@ -458,10 +458,12 @@ div.icon img {
   max-height: 100%;
   max-width: 100%;
 }
-div.icontext.overimage {
+
+.icontext.overimage {
+  font-size: 8pt;
   height: 58px;
   width:  58px;
   margin: 0;
-  padding: 3px;
-  background-color: rgba(0, 0, 0, 0.2);
+  padding: 0px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
