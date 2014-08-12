@@ -13,7 +13,7 @@
 #  http://nodejs.org/api/buffer.html
 #
 # もしかして: npmに既存だったりして?
-# 
+#
 # こういうのがあった (2014/07/14 15:49:14)
 # https://www.npmjs.org/package/node-png
 #
