@@ -5,16 +5,25 @@ module.exports = (grunt) ->
   require 'coffee-errors'
 
   grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-jsonlint'
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-simple-mocha'
   grunt.loadNpmTasks 'grunt-notify'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
 
-  grunt.registerTask 'test',    [ 'coffeelint', 'simplemocha' ]
+  grunt.registerTask 'test',    [ 'jsonlint', 'coffeelint', 'simplemocha' ]
   grunt.registerTask 'default', [ 'test', 'build', 'watch' ]
   grunt.registerTask 'build',   [ 'coffee' ]
 
   grunt.initConfig
+
+    jsonlint:
+      config:
+        src: [
+          '**/*.json'
+          '!node_modules/**'
+          '!tmp/**'
+        ]
 
     coffeelint:
       options:
@@ -29,13 +38,12 @@ module.exports = (grunt) ->
         no_unnecessary_fat_arrows:
           level: 'ignore'
       dist:
-        files: [
-          { expand: yes, cwd: './', src: [ '*.coffee' ] }
-          { expand: yes, cwd: 'models/', src: [ '**/*.coffee' ] }
-          { expand: yes, cwd: 'controllers/', src: [ '**/*.coffee' ] }
-          { expand: yes, cwd: 'sockets/', src: [ '**/*.coffee' ] }
-          { expand: yes, cwd: 'public/', src: [ '**/*.coffee' ] }
-        ]
+        files:
+          src: [
+            '**/*.coffee'
+            '!node_modules/**'
+            '!tmp/**'
+          ]
 
     simplemocha:
       options:
@@ -64,12 +72,9 @@ module.exports = (grunt) ->
         interrupt: yes
       dist:
         files: [
-          '*.coffee'
-          'models/**/*.coffee'
-          'controllers/**/*.coffee'
-          'sockets/**/*.coffee'
-          'views/**/*.jade'
-          'public/**/*.coffee'
-          'tests/**/*.coffee'
+          '**/*.{coffee,js,jade}'
+          '!node_modules/**'
+          '!tmp/**'
+          '!public/**/*.js'
         ]
         tasks: [ 'test', 'build' ]
