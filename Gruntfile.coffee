@@ -12,7 +12,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-notify'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
 
-  grunt.registerTask 'test',    [
+  grunt.registerTask 'test', [
     'coffeelint'
     'simplemocha'
     'jsonlint'
