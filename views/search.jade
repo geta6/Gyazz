@@ -25,8 +25,7 @@ html
     div.title
       span.wordtitle #{wiki} #{pagetitle} (#{pages.length})
       form.search(action="/#{wiki}/__search", method="get")
-        input(name='q',type='text', value=q)
-        input(type='submit',value='リスト/検索')
+        input(name='q',type='text', value=q, placeholder="リスト / 検索")
     p
     div
       div(style="float:left;")
