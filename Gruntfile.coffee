@@ -26,7 +26,6 @@ module.exports = (grunt) ->
     csslint:
       strict:
         src: [
-          # '**/*.css'
           '**/gyazz.css'
           '!node_modules/**'
         ]
