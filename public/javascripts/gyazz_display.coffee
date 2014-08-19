@@ -102,7 +102,7 @@ class GyazzDisplay
                 display: 'inline'
                 visibility: 'visible'
                 'line-height': ''
-              .html @tag.expand(gb.data[i],wiki,i)
+              .html @tag.expand(gb.data[i],wiki,title,i)
               p.attr "class", "listedit#{ind}" # addClassだとダメ!! 前のが残るのか?
               p.css
                 display: 'block'
