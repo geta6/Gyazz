@@ -38,7 +38,8 @@
     "serve-favicon": "*",
     "socket.io": "^1.0.6",
     "supertest": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "multer": "~0.1.4"
   },
   "homepage": "https://github.com/masuilab/Gyazz",
   "description": "Node, Express, MongoDBで再実装しました。 ちゃんと動いてない機能も沢山ありますが…",

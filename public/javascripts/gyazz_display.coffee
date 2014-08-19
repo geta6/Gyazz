@@ -21,7 +21,9 @@ class GyazzDisplay
       href: "/#{wiki}/#{title}/__edit?version=#{ if @version >= 0 then @version else 0 }"
     
     if delay # ちょっと待ってもう一度呼び出す!
-      setTimeout ( =>  @display gb), 200
+      setTimeout =>
+          @display gb
+      , 3000
       return
     
     input = $("#editline")

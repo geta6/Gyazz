@@ -24,6 +24,9 @@ app.set 'view engine', 'jade'
 app.use bodyParser.json()
 app.use bodyParser.urlencoded()
 
+multer = require 'multer'
+app.use multer { dest: './public/upload/'}
+
 if process.env.NODE_ENV isnt 'production'
   app.locals.pretty = true  # jade出力を整形
 

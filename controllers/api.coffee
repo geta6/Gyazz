@@ -155,3 +155,30 @@ module.exports = (app) ->
                 if err
                   debug "line write error"
     
+  # ファイルアップロード
+  fs = require 'fs'
+  crypto = require 'crypto'
+  app.post '/__upload', (req, res) ->
+    uploadfile = req.files.uploadfile
+    if !uploadfile
+      res.status(400).end "Upload fail"
+      return
+    uploaded_path = uploadfile.path # MD5みたいなパスになる
+    console.log uploaded_path
+    fs.readFile uploaded_path, (err, data) ->
+      if err
+        res.status(400).end "Upload fail"
+        return
+      md5 = crypto.createHash 'md5'
+      md5.update data # , 'utf8'
+      hash = md5.digest 'hex'
+      console.log hash
+      ext = uploaded_path.match(/\.\w+$/)?[0]
+      ext = "" unless ext
+      new_path = uploaded_path.replace /[0-9a-f]{32}/, hash
+      fs.rename uploaded_path, new_path, (err) ->
+        #if err
+        #  res.status(400).end "Rename fail"
+        #  return
+        res.send "#{hash}#{ext}"
+

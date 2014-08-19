@@ -20,7 +20,7 @@ gt = new GyazzTag
 gd.init gt
 gb.init gs, gd, gt
 gs.init gb, gd, gt
-gu.init gb
+gu.init gb, gs, gd
 
 historycache = {}            # 履歴cache
 clickline = -1               # マウスクリックして押してるときだけ行番号が入る

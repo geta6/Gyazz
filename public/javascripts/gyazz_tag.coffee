@@ -124,6 +124,8 @@ class GyazzTag
             url = "/#{wikiname}/#{encodeURIComponent(wikititle).replace(/%2F/g,"/")}"
             matched.push "<a href='#{wikiurl}' class='link' target='_blank' title='#{wikiname}'>#{wikiname}" +
                  "</a>::<a href='#{url}' class='link' target='_blank' title='#{wikititle}'>#{wikititle}</a>"
+          when t = inner.match /^([a-fA-F0-9]{32})\.(\w+) (.*)$/ # (MD5).ext
+            matched.push "<a href='/upload/#{t[1]}.#{t[2]}' class='link'>#{t[3]}</a>"
 
           # googlemapの表示
           # [[E135.0W35.0]] や [[W35.0.0E135.0.0Z12]] のような記法で地図を表示
