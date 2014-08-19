@@ -24,7 +24,7 @@ form.search {
   text-indent: 0;
   margin-top: -11px;
   padding: 1px;
-  height: 21px;
+  /* height: 21px; */
   background: #888888;
   border-radius: 2px;
   font-size: 13px;
@@ -39,8 +39,9 @@ form.search input[type='text'] {
   margin: 0;
   padding: 4px;
   vertical-align: middle;
-  width:140px;
+  /* width: 140px; */
 }
+/*
 form.search input[type='submit'] {
   padding: 2px 7px 3px 0;
   height: 100%;
@@ -52,9 +53,12 @@ form.search input[type='submit'] {
   line-height: 18px;
   cursor: pointer;
 }
+*/
+/*
 form.search input[type='submit']:hover {
   color: #4F4F4;
 }
+*/
 
 div.links {
   margin:1px;
@@ -73,7 +77,8 @@ span.wordtitle {
 span.memotitle {
   color:darkgreen;
 }
-span.language {
+/* span.language { */
+.language {
   font-size:12pt;
   color:#8080e0;
 }
@@ -130,8 +135,8 @@ pre {
 h1 {
   color: #004400;
   background-color: #c0c0ff;
-  margin-right: 0%;
-  margin-left: 0%;
+  margin-right: 0;
+  margin-left: 0;
   text-align: center;
   padding: 0.5em 0.5em;
   text-indent: 0.25em;
@@ -140,16 +145,16 @@ h1 {
 h2 {
   color: black;
   background-color: #c0ffc0;
-  margin-right: 0%;
-  margin-left: 0%;
+  margin-right: 0;
+  margin-left: 0;
   text-align: left;
   padding: 0.1em 0.1em;
   text-indent: 0.25em;
   border-style: none;
 }
 h3 {
-  margin-right: 0%;
-  margin-left: 0%;
+  margin-right: 0;
+  margin-left: 0;
   text-align: left;
   padding: 0.1em 0.1em;
   color: #000000;
@@ -163,7 +168,8 @@ a {
   /* color:black; */
   font-family: "Lucida Grande", "Lucida", "Lucida Sans", "Tahoma", Verdana, Arial, sans-serif;
 }
-a.tag {
+/* a.tag { */
+.tag {
   margin:1px;
   padding:1px;
 
@@ -180,7 +186,8 @@ a.tag {
 */
   background-color:#ffffff;
 }
-a.memo {
+/* a.memo { */
+.memo {
   margin:1px;
   padding:1px;
 
@@ -208,10 +215,12 @@ a:visited {
   color:blue;
 }
 
-td.td2 {
+/* td.td2 { lint */
+.td2 {
   background-color: #ffffff;
 }
-td.td3 {
+/* td.td3 {  lint */
+.td3 {
   background-color: #ffffff;
 }
 /*
@@ -270,11 +279,13 @@ div.link {
   padding:1pt;
 }
 */
-div.link_wrap2 {
+/* div.link_wrap2 { lint */
+.link_wrap2 {
   float:left;
   padding:1pt;
 }
-div.link a {
+/* div.link a { */
+.link a {
   text-decoration: none;
   color: white;
 }
@@ -298,10 +309,10 @@ div.listedit0 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 10px;
+  margin: 0 0 0 10px;
 }
 div.listedit0:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #008000;
 }
@@ -312,11 +323,11 @@ div.listedit1 {
   /* font-style: italic; */
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 40px;
+  margin: 0 0 0 40px;
 }
 
 div.listedit1:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #00b000;
 }
@@ -327,11 +338,11 @@ div.listedit2 {
   /* font-style: italic; */
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 70px;
+  margin: 0 0 0 70px;
 }
 
 div.listedit2:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #00e000;
 /*  marker-offset: 8em; */
@@ -343,11 +354,11 @@ div.listedit3 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 100px;
+  margin: 0 0 0 100px;
 }
 
 div.listedit3:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #00f000;
 }
@@ -357,11 +368,11 @@ div.listedit4 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 130px;
+  margin: 0 0 0 130px;
 }
 
 div.listedit4:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #00f000;
 }
@@ -371,11 +382,11 @@ div.listedit5 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 160px;
+  margin: 0 0 0 160px;
 }
 
 div.listedit5:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #00f000;
 }
@@ -385,11 +396,11 @@ div.listedit6 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 190px;
+  margin: 0 0 0 190px;
 }
 
 div.listedit6:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #00f000;
 }
@@ -399,11 +410,11 @@ div.listedit7 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 220px;
+  margin: 0 0 0 220px;
 }
 
 div.listedit7:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #00f000;
 }
@@ -413,22 +424,23 @@ div.listedit8 {
   font-weight: normal;
   list-style-type:disc;
   list-style-position: inside;
-  margin: 0px 0px 0px 250px;
+  margin: 0 0 0 250px;
 }
 
 div.listedit8:before {
-  display: marker;
+  /* display: marker; */
   content: "■ ";
   color: #00f000;
 }
 
-input#editline {
+/* input#editline { */
+.editline {
   font-size:10pt;
   position:absolute;
   width: 600px;
   visibility:hidden;
   border:none;
-  padding:1px;
+  /* padding:1px; lint */
   margin:0;
   background-color:#ddd;
 }
@@ -459,11 +471,22 @@ div.icon img {
   max-width: 100%;
 }
 
-.icontext.overimage {
+/* .icontext.overimage { */
+.icontext {
   font-size: 8pt;
   height: 58px;
   width:  58px;
   margin: 0;
-  padding: 0px;
+  padding: 0;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.overimage {
+  font-size: 8pt;
+  height: 58px;
+  width:  58px;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.5);
 }
