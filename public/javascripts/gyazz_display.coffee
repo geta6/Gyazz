@@ -22,7 +22,7 @@ class GyazzDisplay
     
     if delay # ちょっと待ってもう一度呼び出す!
       setTimeout =>
-          @display gb
+        @display gb
       , 3000
       return
     
