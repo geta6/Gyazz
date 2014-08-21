@@ -23,7 +23,7 @@ class GyazzDisplay
     if delay # ちょっと待ってもう一度呼び出す!
       setTimeout =>
         @display gb
-      , 3000
+      , 100
       return
     
     input = $("#editline")
