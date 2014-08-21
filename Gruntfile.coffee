@@ -85,7 +85,7 @@ module.exports = (grunt) ->
         interrupt: yes
       dist:
         files: [
-          '**/*.{coffee,js,jade}'
+          '**/*.{coffee,js,jade,json,css}'
           '!node_modules/**'
           '!tmp/**'
           '!public/**/*.js'
