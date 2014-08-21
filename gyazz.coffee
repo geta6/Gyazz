@@ -9,7 +9,8 @@ path     = require 'path'
 debug    = require('debug')('gyazz:app')
 
 ## express modules
-bodyParser = require 'body-parser' # POSTに必要?
+bodyParser = require 'body-parser'
+multer     = require 'multer'
 
 ## Config
 package_json = require path.resolve 'package.json'
@@ -23,8 +24,6 @@ app.use express.static path.resolve 'public'  # public以下のファイルはWi
 app.set 'view engine', 'jade'
 app.use bodyParser.json()
 app.use bodyParser.urlencoded()
-
-multer = require 'multer'
 app.use multer { dest: './public/upload/'}
 
 if process.env.NODE_ENV isnt 'production'
