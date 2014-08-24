@@ -7,4 +7,4 @@ tmp
 public/javascripts/*.js
 *.js.map
 dump/gyazz
-
+.vagrant
