@@ -37,6 +37,7 @@
     "multer": "~0.1.4",
     "newrelic": "^1.10.3",
     "request": "*",
+    "rollbar": "^0.3.13",
     "serve-favicon": "*",
     "socket.io": "^1.0.6",
     "supertest": "*",
