@@ -2,7 +2,13 @@
 # ExpressによるGyazzサーバのメインプログラム
 #
 
-require('newrelic')
+# New Relic
+newRelicConfig = require('./newrelic').config
+app_name = process.env.NEW_RELIC_APP_NAME or newRelicConfig.app_name
+license_key = process.env.NEW_RELIC_LICENSE_KEY or newRelicConfig.license_key
+
+if(app_name.length > 0 and license_key.length > 0)
+  require('newrelic')
 
 express  = require 'express'
 favicon  = require 'serve-favicon'
