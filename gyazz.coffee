@@ -2,6 +2,8 @@
 # ExpressによるGyazzサーバのメインプログラム
 #
 
+require('newrelic')
+
 express  = require 'express'
 favicon  = require 'serve-favicon'
 mongoose = require 'mongoose'
