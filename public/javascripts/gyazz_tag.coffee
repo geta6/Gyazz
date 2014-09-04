@@ -59,6 +59,9 @@ class GyazzTag
           when t = inner.match /^(https?:\/\/.+)\.(jpg|jpeg|jpe|png|gif)$/i  # [[[http...jpg]]]
             matched.push "<a href='#{t[1]}.#{t[2]}' target='_blank'>" +
               "<img src='#{t[1]}.#{t[2]}' border='none' height=80></a>"
+          when t = inner.match /^([0-9a-f]{32})\.(jpg|jpeg|jpe|png|gif)$/i  # [[[(MD5).png]]]
+            matched.push "<a href='/upload/#{t[1]}.#{t[2]}' target='_blank'>" +
+              "<img src='/upload/#{t[1]}.#{t[2]}' border='none' height=80></a>"
           else  # [[[abc]]]
             matched.push "<b>#{inner}</b>"
         s = "#{pre}<<<#{matched.length-1}>>>#{post}"
