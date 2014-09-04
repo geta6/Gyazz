@@ -90,8 +90,8 @@ $ -> # = $(document).ready()
         gd.display gb
 
   $('#contents').mousedown (event) ->
-    # if clickline == -1  # 選択行がないとき
-    #   gs.writedata gb.data
+    if gb.editline > 0 && clickline == -1  # 選択行がないとき
+      gs.writedata gb.data
     true
     
   gs.getdata
