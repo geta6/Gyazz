@@ -6,7 +6,7 @@ getData = ->
 
 $ ->
   opts = {version: version}
-  
+
   socket.on 'pagedata', (res) =>
     $('#contents').val res.data.join("\n")
 

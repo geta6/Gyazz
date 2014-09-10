@@ -89,11 +89,6 @@ $ -> # = $(document).ready()
         gb.datestr = res.date
         gd.display gb
 
-  $('#contents').mousedown (event) ->
-    if gb.editline > 0 && clickline == -1  # 選択行がないとき
-      gs.writedata gb.data
-    true
-    
   gs.getdata
     force:   true
     suggest: true # 1回目はsuggestオプションを付けてデータ取得
@@ -102,7 +97,7 @@ $ -> # = $(document).ready()
     gb.data       = res.data.concat()
     gb.datestr    = res.date
     gb.refresh()
-    
+
   gr.getrelated()
 
 longPressTimeout = false
@@ -121,8 +116,8 @@ $(document).mousemove (event) ->
 
 $(document).mousedown (event) ->
   if clickline == -1  # 行以外をクリック
-    # gs.writedata gb.data
     gb.seteditline clickline
+    gs.writedata gb.data
   else
     clearTimeout longPressTimeout
     if gb.editline != clickline # #27
