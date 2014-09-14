@@ -10,33 +10,19 @@ html
     link(rel="alternate",type="application/rss+xml",title="#{title} RSS Feed",href="#{wiki}/rss.xml")
     meta(name="robots",content="page.wiki[searchable] ? index,follow : noindex,nofollow")
 
+    // Twitter Card
+    - tw_img = (rawdata.match(/https?:\/\/[^\s]+\.(png|jpe?g|gif)/) || [])[0]
+    - tw_desc = rawdata.replace(/https?:\/\/[^\s]+\.(png|jpe?g|gif)/g,'').substr(0,200).replace(/[\[\]]/g,'')
+    meta(name="twitter:card", value="summary")
+    meta(name="twitter:title", value="#{wiki}/#{title}")
+    meta(name="twitter:image", value=tw_img)
+    meta(name="twitter:description", value=tw_desc)
+
     script.
       var wiki = "#{wiki}"; // escape_jsvar
       var title = "#{title}"; // escape_jsvar
       var do_auth = false;
       var writable = true;
-
-    script(src='/javascripts/pbsearch.js')
-    script(src='/javascripts/pbdict.js')
-    script(src='/javascripts/utf.js')
-    script(src='/javascripts/md5.js')
-    script(src="/javascripts/jquery.js")
-    script(src='/javascripts/jQuery.kill_referrer.js')
-    script(src='/javascripts/jquery.tipTip.js')
-    script(src='/javascripts/underscore.js')
-
-    script(src='/socket.io/socket.io.js')
-
-    script(src='/javascripts/gyazz_lib.js')
-    script(src='/javascripts/gyazz_tag.js')
-    script(src='/javascripts/gyazz_buffer.js')
-    script(src='/javascripts/gyazz_related.js')
-    script(src='/javascripts/gyazz_notification.js')
-    script(src='/javascripts/gyazz_upload.js')
-    script(src='/javascripts/gyazz_display.js')
-    script(src='/javascripts/gyazz_socket.js')
-    script(src='/javascripts/gyazz_location.js')
-    script(src='/javascripts/gyazz.js')
 
   body
     - var writable = true;
@@ -76,4 +62,25 @@ html
 
     #links.links
 
+    script(src="/javascripts/pbsearch.js")
+    script(src="/javascripts/pbdict.js")
+    script(src="/javascripts/utf.js")
+    script(src="/javascripts/md5.js")
+    script(src="/javascripts/jquery.js")
+    script(src="/javascripts/jQuery.kill_referrer.js")
+    script(src="/javascripts/jquery.tipTip.js")
+    script(src="/javascripts/underscore.js")
+
+    script(src="/socket.io/socket.io.js")
+
+    script(src="/javascripts/gyazz_lib.js")
+    script(src="/javascripts/gyazz_tag.js")
+    script(src="/javascripts/gyazz_buffer.js")
+    script(src="/javascripts/gyazz_related.js")
+    script(src="/javascripts/gyazz_notification.js")
+    script(src="/javascripts/gyazz_upload.js")
+    script(src="/javascripts/gyazz_display.js")
+    script(src="/javascripts/gyazz_socket.js")
+    script(src="/javascripts/gyazz_location.js")
+    script(src="/javascripts/gyazz.js")
     script(src="//maps.googleapis.com/maps/api/js?sensor=false")
