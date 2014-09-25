@@ -84,8 +84,10 @@ module.exports = (app) ->
         debug "Access write error"
 
     # ページデータを読み込んでrawdataとする
+    escape_regexp_token = (str) ->
+      return str.replace /[\\\+\*\.\[\]\{\}\(\)\^\|]/g, (c) -> "\\#{c}"
     title_regexp =
-      new RegExp "^#{title.replace(/\s/g,'').split('').join(' ?')}$", 'i'
+      new RegExp "^#{title.replace(/\s/g,'').split('').join(' ?').escape_regexp_token}$", 'i'
     Page.findByName wiki, title_regexp, {}, (err, page) ->
       if err
         debug "Page error: #{err}"
