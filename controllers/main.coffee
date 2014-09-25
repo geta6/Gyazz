@@ -87,7 +87,7 @@ module.exports = (app) ->
     escape_regexp_token = (str) ->
       return str.replace /[\\\+\*\.\[\]\{\}\(\)\^\|]/g, (c) -> "\\#{c}"
     title_regexp =
-      new RegExp "^#{title.replace(/\s/g,'').split('').join(' ?').escape_regexp_token}$", 'i'
+      new RegExp "^#{escape_regexp_token title.replace(/\s/g,'').split('').join(' ?')}$", 'i'
     Page.findByName wiki, title_regexp, {}, (err, page) ->
       if err
         debug "Page error: #{err}"
