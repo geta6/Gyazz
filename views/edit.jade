@@ -8,8 +8,8 @@ html
     script(src="/javascripts/jquery.js")
     script(src="/socket.io/socket.io.js")
     script.
-      var wiki = "#{wiki}"; // escape_jsvar
-      var title = "#{title}"; // escape_jsvar
+      var wiki = unescape("!{escape(wiki)}");
+      var title = unescape("!{title}");
       var do_auth = false;
       var writable = true;
       var version = "#{version}";
@@ -28,7 +28,6 @@ html
       span.wordtitle
         img#historyimage(src="/#{wiki}/#{title}/modify.png",height=18,width=80)
         | &nbsp;
-        // sanitize必要!!!
         if writable
           a#title(href="/#{wiki}/#{title}") #{title}
         else

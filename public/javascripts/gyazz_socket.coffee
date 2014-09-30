@@ -1,7 +1,7 @@
 class GyazzSocket
-  
+
   init: (gb, gd, gt) ->
-    @socket = io.connect "#{location.protocol}//#{location.hostname}?wiki=#{wiki}&title=#{title}"
+    @socket = io.connect "#{location.protocol}//#{location.hostname}?wiki=#{escape wiki}&title=#{escape title}"
     @gb = gb
     @gd = gd
     @gt = gt
@@ -12,7 +12,7 @@ class GyazzSocket
       @gb.datestr = res.date
       @gb.timestamps = res.timestamps or []
       @gb.refresh()
-        
+
     @socket.on 'after write', (err) =>
       if err
         notifyBox.print(err).show(3000)
@@ -38,5 +38,5 @@ class GyazzSocket
     @socket.emit 'write',
       data:     datastr
       keywords: keywords
-  
+
 window.GyazzSocket = GyazzSocket
