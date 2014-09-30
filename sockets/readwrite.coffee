@@ -18,9 +18,8 @@ module.exports = (app) ->
   io.on 'connection', (socket) ->
     debug "socket.io connected from client"
 
-    wiki  = unescape socket.handshake.query.wiki
-    title = unescape socket.handshake.query.title
-    console.log title
+    wiki  = decodeURI socket.handshake.query.wiki
+    title = decodeURI socket.handshake.query.title
     unless wiki and title
       socket.disconnect()
       return
