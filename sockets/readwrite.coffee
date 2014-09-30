@@ -16,10 +16,11 @@ module.exports = (app) ->
   io = app.get 'socket.io'
 
   io.on 'connection', (socket) ->
-    debug "socket.io connected from client--------"
+    debug "socket.io connected from client"
 
-    wiki  = socket.handshake.query.wiki
-    title = socket.handshake.query.title
+    wiki  = unescape socket.handshake.query.wiki
+    title = unescape socket.handshake.query.title
+    console.log title
     unless wiki and title
       socket.disconnect()
       return

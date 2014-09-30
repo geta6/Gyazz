@@ -19,8 +19,8 @@ html
     meta(name="twitter:description", value=tw_desc)
 
     script.
-      var wiki = "#{wiki}"; // escape_jsvar
-      var title = "#{title}"; // escape_jsvar
+      var wiki = unescape("!{escape(wiki)}"); // escape_jsvar
+      var title = unescape("!{escape(title)}"); // escape_jsvar
       var do_auth = false;
       var writable = true;
 
@@ -30,7 +30,6 @@ html
       span.wordtitle
         img#historyimage(src="/#{wiki}/#{title}/modify.png",height=18,width=80)
         | &nbsp;
-        // sanitize必要!!!
         if writable
           a#title(href="/#{wiki}/#{title}/__edit") #{title}
         else
