@@ -23,10 +23,10 @@ module.exports = (app) ->
           error: 'icon: An error has occurred (err)'
       image = result.repimage
       if image
-        if image.match /^https?:\/\/.+\.(png|jpe?g|gif)$/i
+        if /^https?:\/\/.+\.(png|jpe?g|gif)$/i.test image
           res.redirect image
-        else
-          res.redirect "http://gyazo.com/#{image}.png"
+        if /^[a-z0-9]+\.(jpe?g|gif|png)$/.test image
+          res.redirect "/upload/#{image}"
       else
         res.status(404).send "image not found"
 
@@ -164,7 +164,7 @@ module.exports = (app) ->
       res.status(400).end "Upload fail"
       return
     uploaded_path = uploadfile.path # MD5みたいなパスになる
-    console.log uploaded_path
+    debug "upload #{uploaded_path}"
     fs.readFile uploaded_path, (err, data) ->
       if err
         res.status(400).end "Upload fail"
@@ -172,7 +172,6 @@ module.exports = (app) ->
       md5 = crypto.createHash 'md5'
       md5.update data # , 'utf8'
       hash = md5.digest 'hex'
-      console.log hash
       ext = uploaded_path.match(/\.\w+$/)?[0]
       ext = "" unless ext
       new_path = uploaded_path.replace /[0-9a-f]{32}/, hash

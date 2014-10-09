@@ -29,7 +29,7 @@ module.exports = (app) ->
         validate: [
           (v) ->
             return true if v is null
-            return /^https?:\/\/.+/.test v
+            return /^https?:\/\/.+/.test(v) or /^[0-9a-z]+\.(png|jpe?g|gif)$/.test(v)
           'Invalid Image URL'
         ]
 
