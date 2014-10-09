@@ -57,6 +57,8 @@ module.exports = (app) ->
     repimage = switch
       when m = firstline.match /(https?:\/\/\S+)\.(png|jpe?g|gif)/i
         "#{m[1]}.#{m[2]}"
+      when m = firstline.match /([a-z0-9]+)\.(png|jpe?g|gif)/i
+        "#{m[1]}.#{m[2]}"
       else
         null
     Attr = mongoose.model('Attr')

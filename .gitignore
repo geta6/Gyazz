@@ -8,3 +8,4 @@ public/javascripts/*.js
 *.js.map
 dump/gyazz
 .vagrant
+*/upload/*
