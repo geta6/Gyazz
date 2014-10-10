@@ -27,6 +27,8 @@ module.exports = (app) ->
           res.redirect image
         if /^[a-z0-9]+\.(jpe?g|gif|png)$/.test image
           res.redirect "/upload/#{image}"
+        else
+          res.redirect "//gyazo.com/#{image}.png"
       else
         res.status(404).send "image not found"
 
