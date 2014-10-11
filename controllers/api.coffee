@@ -24,13 +24,13 @@ module.exports = (app) ->
       image = result.repimage
       if image
         if /^https?:\/\/.+\.(png|jpe?g|gif)$/i.test image
-          res.redirect image
+          return res.redirect image
         if /^[a-z0-9]+\.(jpe?g|gif|png)$/.test image
-          res.redirect "/upload/#{image}"
+          return res.redirect "/upload/#{image}"
         else
-          res.redirect "//gyazo.com/#{image}.png"
+          return res.redirect "//gyazo.com/#{image}.png"
       else
-        res.status(404).send "image not found"
+        return res.status(404).send "image not found"
 
 
   #  ページ内容取得 (apiとしてだけ)用意
