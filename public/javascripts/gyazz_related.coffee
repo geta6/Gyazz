@@ -10,10 +10,13 @@ class GyazzRelated
         pages.map (page) ->
           title = page.title
           repimage = page.repimage
-          imageurl = if repimage?.match(/^[0-9a-f]+\.(png|jpe?g|gif)$/)
-            "//#{location.host}/upload/#{repimage}"
-          else
-            repimage
+          imageurl =
+            if /^[0-9a-f]+\.(png|jpe?g|gif)$/.test repimage
+              "/upload/#{repimage}"
+            else if /^[0-9a-f]+$/.test repimage
+              "//gyazo.com/#{repimage}.png"
+            else
+              repimage
           url = "/#{wiki}/#{title}"
           if repimage
             iconCSS =
